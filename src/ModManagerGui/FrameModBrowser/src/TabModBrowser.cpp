@@ -12,6 +12,7 @@
 
 
 #include <future>
+#include <StateAlchemist/controller.h>
 
 
 LoggerInit([]{
@@ -29,56 +30,67 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
 
     _modItemList_.emplace_back();
     _modItemList_.back().item = new brls::ListItem(
-        "No mods have been found in " + this->getModManager().getGameFolderPath(),
-        "There you need to put your mods such as: ./<name-of-the-mod>/<file-structure-in-installed-directory>"
+        "No mods have been found in " + controller.getGamePath(),
+        "There you need to put your mods such as: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
     _modItemList_.back().item->show([](){}, false );
-  }
-  else{
+  } else {
     LogInfo << "Adding " << modList.size() << " mods..." << std::endl;
 
+    std::string lastGroup;
+    std::string lastSource;
     _modItemList_.reserve(modList.size());
     for( auto& mod : modList ) {
       LogScopeIndent;
-      LogInfo << "Adding mod: \"" << mod.modName << "\"" << std::endl;
+      LogInfo << "Adding mod: \"" << mod.getLabel() << "\"" << std::endl;
+
+      // If group & source are different, add the default option:
+      if (mod.source != lastSource || mod.group != lastGroup) {
+        ModEntry defaultEntry("");
+        defaultEntry.source = mod.source;
+        defaultEntry.group = mod.group;
+        
+        // memory allocation
+        auto* item = new brls::ListItem(mod.getLabel() + " DEFAULT", "", "");
+
+        // initialization
+        item->getClickEvent()->subscribe([&, this, mod](View* view) {
+          controller.group = mod.group;
+          controller.source = mod.source;
+          
+          ModEntry activeEntry(controller.getActiveMod(mod.source));
+          activeEntry.source = mod.source;
+          activeEntry.group = mod.group;
+          
+          _owner_->getGuiModManager().startRemoveModThread( activeEntry.getLabel() );
+          this->updateDisplayedModsStatus();
+          return true;
+        });
+        item->updateActionHint(brls::Key::A, "Apply");
+
+        // create the holding struct
+        _modItemList_.emplace_back();
+        _modItemList_.back().modIndex = int(_modItemList_.size() ) - 1;
+        _modItemList_.back().item = item;
+
+        lastGroup = mod.group;
+        lastSource = mod.source;
+      }
 
       // memory allocation
-      auto* item = new brls::ListItem(mod.modName, "", "");
+      auto* item = new brls::ListItem(mod.getLabel(), "", "");
 
       // initialization
-      item->getClickEvent()->subscribe([&, mod](View* view) {
-        auto* dialog = new brls::Dialog("Do you want to install \"" + mod.modName + "\" ?");
-
-        dialog->addButton("Yes", [&, mod, dialog](brls::View* view) {
-          // first, close the dialog box before the apply mod thread starts
-          dialog->close();
-
-          // starts the async routine
-          _owner_->getGuiModManager().startApplyModThread( mod.modName );
-        });
-        dialog->addButton("No", [dialog](brls::View* view) { dialog->close(); });
-
-        dialog->setCancelable(true);
-        dialog->open();
-
+      item->getClickEvent()->subscribe([&, this, mod](View* view) {
+        _owner_->getGuiModManager().startApplyModThread( mod.getLabel() );
+        this->updateDisplayedModsStatus();
         return true;
       });
       item->updateActionHint(brls::Key::A, "Apply");
 
-      item->registerAction("Disable", brls::Key::X, [&, mod]{
-        auto* dialog = new brls::Dialog("Do you want to disable \"" + mod.modName + "\" ?");
-
-        dialog->addButton("Yes", [&, dialog, mod](brls::View* view) {
-          // first, close the dialog box before the async routine starts
-          dialog->close();
-
-          // starts the async routine
-          _owner_->getGuiModManager().startRemoveModThread( mod.modName );
-        });
-        dialog->addButton("No", [dialog](brls::View* view) { dialog->close(); });
-
-        dialog->setCancelable(true);
-        dialog->open();
+      item->registerAction("Disable", brls::Key::X, [&, this, mod]{
+        _owner_->getGuiModManager().startRemoveModThread( mod.getLabel() );
+        this->updateDisplayedModsStatus();
         return true;
       });
 
@@ -100,14 +112,7 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
 
 void TabModBrowser::draw(NVGcontext *vg, int x, int y, unsigned int width, unsigned int height, brls::Style *style,
                          brls::FrameContext *ctx) {
-
   ScrollView::draw(vg, x, y, width, height, style, ctx);
-
-  if( _owner_->getGuiModManager().isTriggerUpdateModsDisplayedStatus() ){
-    LogDebug << "Updating mod status display..." << std::endl;
-    updateDisplayedModsStatus();
-    _owner_->getGuiModManager().setTriggerUpdateModsDisplayedStatus( false );
-  }
 }
 
 void TabModBrowser::updateDisplayedModsStatus(){
@@ -116,30 +121,53 @@ void TabModBrowser::updateDisplayedModsStatus(){
   auto& modEntryList = _owner_->getGameBrowser().getModManager().getModList();
   LogReturnIf( modEntryList.empty(), "No mod in this folder. Nothing to update." );
 
-  auto currentPreset = this->getModManager().fetchCurrentPreset().name;
-  LogInfo << "Will display mod status with install preset: " << currentPreset << std::endl;
+  // Build list that includes the default options:
+  std::vector<ModEntry> modEntryListWithDefaults;
+  std::string lastGroup;
+  std::string lastSource;
+  for (auto& modEntry : modEntryList) {
+    if (modEntry.source != lastSource || modEntry.group != lastGroup) {
+      ModEntry defaultEntry("");
+      defaultEntry.source = modEntry.source;
+      defaultEntry.group = modEntry.group;
+      modEntryListWithDefaults.push_back(defaultEntry);
+      lastGroup = modEntry.group;
+      lastSource = modEntry.source;
+    }
+    modEntryListWithDefaults.push_back(modEntry);
+  }
 
-  for( size_t iMod = 0 ; iMod < modEntryList.size() ; iMod++ ){
+  // TEMP CODE
+  // Ordered array of active mods - first match for first index must be the first active mod
+  std::vector<std::string> activeMods;
+  std::vector<std::string> groups = controller.loadGroups(true);
+  for (auto& group : groups) {
+    controller.group = group;
+    std::vector<std::string> sources = controller.loadSources(true);
+    for (auto& source : sources) {
+      activeMods.push_back(controller.getActiveMod(source));
+    }
+  }
+  size_t activeCount = activeMods.size();
+  LogInfo << "Active mods: " << activeCount << std::endl;
 
-    // processing tag
-    _modItemList_[iMod].item->setValue( modEntryList[iMod].getStatus(currentPreset ) );
-    double frac = modEntryList[iMod].getStatusFraction(currentPreset);
+  size_t modCount = modEntryListWithDefaults.size();
+  size_t activeI = 0;
+  for (size_t iMod = 0; iMod < modCount; iMod++) {
+    ModEntry& modEntry = modEntryListWithDefaults[iMod];
 
     NVGcolor color;
-    // processing color
-    if     ( frac == 0 ){
+    if (activeI < activeCount && modEntry.mod == activeMods[activeI]) {
+      _modItemList_[iMod].item->setValue("ACTIVE");
+      // applied color (less saturated green)
+      color = nvgRGB(88, 195, 169);
+      activeI++;
+    } else {
+      _modItemList_[iMod].item->setValue("inactive", true);
       // inactive color
       color = GenericToolbox::Borealis::grayNvgColor;
     }
-    else if( frac == 1 ){
-      // applied color (less saturated green)
-      color = nvgRGB(88, 195, 169);
-    }
-    else{
-      // partial color
-      color = GenericToolbox::Borealis::orangeNvgColor;
-    }
-    _modItemList_[iMod].item->setValueActiveColor( color );
+    _modItemList_[iMod].item->setValueActiveColor(color);
   }
 }
 

@@ -38,7 +38,6 @@ private:
 
 struct GameItem{
   std::string title{};
-  int nMods{-1};
 
   // memory is fully handled by brls
   brls::ListItem* item{nullptr};

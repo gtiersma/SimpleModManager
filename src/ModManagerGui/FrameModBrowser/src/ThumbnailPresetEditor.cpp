@@ -19,7 +19,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 
   // fill the item list
   for( auto& availableMod : _owner_->getGameBrowser().getModManager().getModList() ){
-    auto* item = new brls::ListItem( availableMod.modName, "", "" );
+    auto* item = new brls::ListItem( availableMod.getLabel(), "", "" );
 
     // add mod
     item->getClickEvent()->subscribe([this,item](brls::View* view){

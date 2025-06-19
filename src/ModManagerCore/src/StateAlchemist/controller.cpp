@@ -3,17 +3,12 @@
 #include "StateAlchemist/constants.h"
 #include "StateAlchemist/fs_manager.h"
 #include "StateAlchemist/meta_manager.h"
+#include <Logger.h>
 
 Controller controller;
 
 
 void Controller::init() {
-
-  // Get the title ID of the currently running game:
-  u64 processId;
-  FsManager::tryResult(pmdmntGetApplicationProcessId(&processId));
-  FsManager::tryResult(pminfoGetProgramId(&this->titleId, processId));
-
   FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
 
   // Create the Atmosphere title ID folder for the current game
@@ -322,6 +317,9 @@ void Controller::activateMod(const std::string& mod) {
 
   // Path to the "mod" folder in alchemy's directory:
   std::string modPath = this->getModPath(mod);
+
+  LogInfo << "Installing files in: " << modPath << std::endl;
+
   // The txt file for the active mod:
   FsFile movedFilesFile = FsManager::initFile(this->getMovedFilesListFilePath(mod));
 
@@ -601,7 +599,7 @@ void Controller::returnFiles(const std::string& mod) {
  * Gets Mod Alchemist's game directory:
  */
 std::string Controller::getGamePath() {
-  return ALCHEMIST_PATH + MetaManager::getHexTitleId(this->titleId);
+  return ALCHEMIST_PATH + "/" + MetaManager::getHexTitleId(this->titleId);
 }
 
 /*

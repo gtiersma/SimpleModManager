@@ -6,7 +6,6 @@
 #include "SimpleModManager.h"
 
 #include <FrameRoot.h>
-#include "ConsoleHandler.h"
 
 #include "ConfigHandler.h"
 
@@ -37,13 +36,7 @@ int main(int argc, char* argv[]){
 //  const auto username = config["username"].as<std::string>();
 //  const auto password = config["password"].as<std::string>();
 
-  ConfigHandler c;
-  if( c.getConfig().useGui ){ runGui(); }
-  else{
-    consoleInit(nullptr);
-    ConsoleHandler::run();
-    consoleExit(nullptr);
-  }
+  runGui();
 
   // Exit
   return EXIT_SUCCESS;

@@ -32,11 +32,10 @@ public:
   ConfigHandler &getConfigHandler();
 
   // browse
-  void selectGame(const std::string &gameName_);
+  void selectGame(const u64 &gameName_);
 
   // IO
   void scanInputs(u64 kDown, u64 kHeld);
-  void printTerminal();
   void rebuildSelectorMenu();
 
   // utils -> move to gui lib??

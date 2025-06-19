@@ -15,10 +15,12 @@
 #include <iomanip>
 #include <algorithm>
 #include "sstream"
+#include <StateAlchemist/controller.h>
+#include <ModManager.h>
 
 
-void ModsPresetHandler::setModFolder(const std::string &gameFolder_) {
-  _gameFolder_ = gameFolder_;
+void ModsPresetHandler::setGameId(const u64 &gameId_) {
+  controller.titleId = gameId_;
   this->readConfigFile();
 }
 
@@ -108,8 +110,25 @@ void ModsPresetHandler::editPreset( size_t entryIndex_ ) {
 
   auto& preset = _presetList_[entryIndex_];
 
-  std::vector<std::string> modsList = GenericToolbox::lsFilesRecursive(_gameFolder_);
-  std::sort( modsList.begin(), modsList.end() );
+  // list mods
+  // for now, just combining group names with mod names - will be separated in a future commit
+  std::vector<std::string> modsList;
+  std::vector<std::string> groups = controller.loadGroups(true);
+  for (auto& group : groups) {
+    controller.group = group;
+    std::vector<std::string> sources = controller.loadSources(true);
+    for (auto& source : sources) {
+      controller.source = source;
+      std::vector<std::string> mods = controller.loadMods(true);
+      for (auto& mod : mods) {
+        ModEntry modEntry(mod);
+        modEntry.source = source;
+        modEntry.group = group;
+        modsList.push_back(modEntry.getLabel());
+      }
+    }
+  }
+
   Selector sel;
   sel.setEntryList(modsList);
 
@@ -194,115 +213,6 @@ void ModsPresetHandler::deletePreset( size_t entryIndex ){
   this->writeConfigFile();
   this->readConfigFile();
 }
-void ModsPresetHandler::showConflictingFiles( size_t entryIndex_ ) {
-  using namespace GenericToolbox::Switch::Terminal;
-
-  auto& preset = _presetList_[entryIndex_];
-
-  consoleClear();
-
-  printLeft("Scanning preset files...", GenericToolbox::ColorCodes::magentaBackground);
-  consoleUpdate(nullptr);
-
-  struct ModFileEntry{
-    long finalFileSize{0};
-    std::vector<std::string> fromModList{};
-  };
-
-  std::map<std::string, ModFileEntry> installedFileList;
-
-  for( auto& mod : preset.modList ){
-    printLeft(" > Getting files for the mod: " + mod, GenericToolbox::ColorCodes::magentaBackground);
-    consoleUpdate(nullptr);
-
-    auto filesList = GenericToolbox::lsFilesRecursive(_gameFolder_ + "/" + mod );
-    for( auto& file: filesList ){
-      std::stringstream ss;
-      ss << _gameFolder_ << "/" << mod << "/" << file;
-      installedFileList[file].finalFileSize = GenericToolbox::getFileSize( ss.str() );
-      installedFileList[file].fromModList.emplace_back( mod );
-    }
-  }
-
-  double presetSize{0};
-  for( auto& installedFile : installedFileList ){
-    presetSize += double( installedFile.second.finalFileSize );
-  }
-
-//  std::string total_SD_size_str = GenericToolbox::parseSizeUnits(total_SD_size);
-
-  std::vector<std::string> conflictFileList;
-  std::vector<std::string> overridingModList;
-  for( auto& installedFile : installedFileList ){
-    if( installedFile.second.fromModList.size() == 1 ){ continue; }
-    conflictFileList.emplace_back( installedFile.first );
-    overridingModList.emplace_back( installedFile.second.fromModList.back() );
-  }
-
-  Selector sel;
-  sel.setEntryList(conflictFileList);
-  sel.setTagList(overridingModList);
-
-  auto rebuildHeader = [&]{
-    consoleClear();
-
-    sel.getHeader() >> "SimpleModManager v" >> Toolbox::getAppVersion() << std::endl;
-    sel.getHeader() << GenericToolbox::ColorCodes::redBackground << "Conflicted files for the preset \"" << preset.name << "\":" << std::endl;
-    sel.getHeader() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-
-    sel.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-    sel.getFooter() << GenericToolbox::ColorCodes::greenBackground << "Total size of the preset:" + GenericToolbox::parseSizeUnits(presetSize) << std::endl;
-    sel.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-    sel.getFooter() << "Page (" << sel.getCursorPage() << "/" << sel.getNbPages() << ")" << std::endl;
-    sel.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-    sel.getFooter() << " A : OK" << std::endl;
-    sel.getFooter() << " <- : Previous Page" >> "-> : Next Page " << std::endl;
-
-    sel.invalidatePageCache();
-    sel.refillPageEntryCache();
-  };
-
-
-  auto printSelector = [&]{
-    // first nb page processing
-    if( sel.getFooter().empty() ) rebuildHeader();
-
-    // update page number
-    rebuildHeader();
-
-    consoleClear();
-    sel.printTerminal();
-    consoleUpdate(nullptr);
-  };
-
-  printSelector();
-
-  PadState pad;
-  padInitializeAny(&pad);
-
-  // Main loop
-  u64 kDown{0}, kHeld{0};
-  while(appletMainLoop()) {
-
-    //Scan all the inputs. This should be done once for each frame
-    padUpdate(&pad);
-
-    //hidKeysDown returns information about which buttons have been just pressed (and they weren't in the previous frame)
-    kDown = padGetButtonsDown(&pad);
-    kHeld = padGetButtons(&pad);
-
-    if (kDown & HidNpadButton_A) {
-      break; // break in order to return to hbmenu
-    }
-
-    sel.scanInputs(kDown, kHeld);
-
-    if( kDown != 0 or kHeld != 0 ){
-      printSelector();
-    }
-  }
-
-}
 
 void ModsPresetHandler::deletePreset( const std::string& presetName_ ){
   int index = GenericToolbox::findElementIndex( presetName_, _selector_.getEntryList(), []( const SelectorEntry& e ){ return e.title; } );
@@ -331,7 +241,7 @@ void ModsPresetHandler::readConfigFile() {
   _presetList_.clear();
 
   // check if file exist
-  auto lines = GenericToolbox::dumpFileAsVectorString(_gameFolder_ + "/mod_presets.conf", true );
+  auto lines = GenericToolbox::dumpFileAsVectorString(controller.getGamePath() + "/mod_presets.conf", true);
 
   for( auto &line : lines ){
     if(line[0] == '#') continue;
@@ -379,7 +289,7 @@ void ModsPresetHandler::writeConfigFile() {
   }
 
   std::string data = ss.str();
-  GenericToolbox::dumpStringInFile(_gameFolder_ + "/mod_presets.conf", data);
+  GenericToolbox::dumpStringInFile(controller.getGamePath() + "/mod_presets.conf", data);
 
 }
 void ModsPresetHandler::fillSelector(){

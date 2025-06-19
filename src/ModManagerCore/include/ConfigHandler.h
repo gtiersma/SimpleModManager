@@ -32,7 +32,6 @@ struct ConfigHolder{
 
   bool useGui{true};
   SortGameList sortGameList{SortGameList::NbMods};
-  std::string baseFolder{"/mods"};
   int selectedPresetIndex{0};
   std::vector<PresetConfig> presetList{
       {{"default"}, {"/atmosphere"}},
@@ -53,7 +52,6 @@ struct ConfigHolder{
     std::stringstream ss;
     ss << GET_VAR_NAME_VALUE(useGui) << std::endl;
     ss << GET_VAR_NAME_VALUE(sortGameList.toString()) << std::endl;
-    ss << GET_VAR_NAME_VALUE(baseFolder) << std::endl;
     ss << GET_VAR_NAME_VALUE(selectedPresetIndex) << std::endl;
     ss << GET_VAR_NAME_VALUE(lastSmmVersion) << std::endl;
     ss << GET_VAR_NAME_VALUE(configFilePath) << std::endl;

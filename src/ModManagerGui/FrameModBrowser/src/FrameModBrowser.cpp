@@ -11,6 +11,7 @@
 
 #include "GenericToolbox.Switch.h"
 #include "Logger.h"
+#include <StateAlchemist/controller.h>
 
 
 LoggerInit([]{
@@ -21,12 +22,11 @@ LoggerInit([]{
 FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModManagerPtr_(guiModManagerPtr_) {
 
   // fetch game title
-  this->setTitle( getGameBrowser().getModManager().getGameName() );
+  this->setTitle(controller.getHexTitleId());
 
-  std::string gamePath = getGameBrowser().getModManager().getGameFolderPath();
+  std::string gamePath = controller.getGamePath();
 
-  _titleId_ = GenericToolbox::Switch::Utils::lookForTidInSubFolders( gamePath, 5);
-  _icon_ = GenericToolbox::Switch::Utils::getIconFromTitleId( _titleId_ );
+  _icon_ = GenericToolbox::Switch::Utils::getIconFromTitleId(controller.getHexTitleId());
   if(_icon_ != nullptr){ this->setIcon(_icon_, 0x20000); }
   else{ this->setIcon("romfs:/images/icon_corner.png"); }
 
@@ -81,7 +81,4 @@ bool FrameModBrowser::onCancel() {
 
 uint8_t *FrameModBrowser::getIcon() {
   return _icon_;
-}
-std::string FrameModBrowser::getTitleId() {
-  return _titleId_;
 }

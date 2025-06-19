@@ -1,6 +1,9 @@
 #include "StateAlchemist/fs_manager.h"
 #include "StateAlchemist/meta_manager.h"
 
+#include <algorithm>
+#include <cstring>
+
 FsFileSystem FsManager::sdSystem;
 
 /**
@@ -88,7 +91,8 @@ std::vector<std::string> FsManager::listNames(const std::string& path, bool sort
   FsDirectoryEntry entry;
   s64 readCount = 0;
   while (R_SUCCEEDED(fsDirRead(&dir, &readCount, 1, &entry)) && readCount) {
-    if (entry.type == FsDirEntryType_Dir) {
+    // Exclude hidden folders that start with "."
+    if (entry.type == FsDirEntryType_Dir && entry.name[0] != '.') {
       names.push_back(MetaManager::parseName(entry.name));
     }
   }

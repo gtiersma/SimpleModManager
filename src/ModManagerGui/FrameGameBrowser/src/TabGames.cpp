@@ -11,6 +11,7 @@
 #include "Logger.h"
 
 #include <sstream>
+#include <StateAlchemist/constants.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabGames]");
@@ -27,13 +28,10 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
     std::stringstream ssTitle;
     std::stringstream ssSubTitle;
 
-    auto baseFolder = this->getConfig().baseFolder;
-    ssTitle << "No game folders have been found in " << baseFolder;
+    ssTitle << "No game folders have been found.";
 
     ssSubTitle << "- To add mods, you need to copy them such as: ";
-    ssSubTitle << baseFolder << "/<name-of-the-game>/<name-of-the-mod>/<mods-files-and-folders>." << std::endl;
-    ssSubTitle << "- You can also change this folder (" + baseFolder;
-    ssSubTitle << ") by editing the config file in /config/SimpleModManager/parameters.ini";
+    ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<name-of-the-mod>/<mods-files-and-folders>." << std::endl;
 
     _gameList_.emplace_back();
     _gameList_.back().item = new brls::ListItem( ssTitle.str(), ssSubTitle.str() );
@@ -47,19 +45,17 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       LogScopeIndent;
       LogInfo << "Adding game folder: \"" << gameEntry.title << "\"" << std::endl;
 
-      std::string gamePath{GenericToolbox::joinPath(this->getConfig().baseFolder, gameEntry.title)};
-      int nMods = int( GenericToolbox::lsDirs(gamePath).size() );
+      std::string gamePath{GenericToolbox::joinPath(ALCHEMIST_FOLDER, gameEntry.title)};
 
       // memory allocation
-      auto* item = new brls::ListItem(gameEntry.title, "", std::to_string(nMods) + " mod(s) available.");
+      // TODO: Game ID being used instead of name
+      auto* item = new brls::ListItem(gameEntry.title, "", "");
 
-      // looking for tid is quite slow... Slows down the boot up
-      std::string _titleId_{ GenericToolbox::Switch::Utils::lookForTidInSubFolders(gamePath) };
-      auto* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(_titleId_);
+      auto* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(gameEntry.title);
       if(icon != nullptr){ item->setThumbnail(icon, 0x20000); }
       item->getClickEvent()->subscribe([&, gameEntry](View* view) {
         LogWarning << "Opening \"" << gameEntry.title << "\"" << std::endl;
-        getGameBrowser().selectGame( gameEntry.title );
+        getGameBrowser().selectGame(std::stoi(gameEntry.title));
         auto* modsBrowser = new FrameModBrowser( &_owner_->getGuiModManager() );
         brls::Application::pushView(modsBrowser, brls::ViewAnimation::SLIDE_LEFT);
         modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
@@ -71,39 +67,14 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       _gameList_.emplace_back();
       _gameList_.back().title = gameEntry.title;
       _gameList_.back().item = item;
-      _gameList_.back().nMods = nMods;
 
     }
   }
 
-  switch( this->getConfig().sortGameList.value ){
-    case ConfigHolder::SortGameList::Alphabetical:
-    {
-      LogInfo << "Sorting games wrt nb of mods..." << std::endl;
-      GenericToolbox::sortVector(_gameList_, [](const GameItem& a_, const GameItem& b_){
-        return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title); // if true, then a_ goes first
-      });
-      break;
-    }
-    case ConfigHolder::SortGameList::NbMods:
-    {
-      // "nb-mods" or default
-      LogInfo << "Sorting games wrt nb of mods..." << std::endl;
-      GenericToolbox::sortVector(_gameList_, [](const GameItem& a_, const GameItem& b_){
-        return a_.nMods > b_.nMods; // if true, then a_ goes first
-      });
-      break;
-    }
-    case ConfigHolder::SortGameList::NoSort:
-    {
-      LogInfo << "No sort selected." << std::endl;
-      break;
-    }
-    default:
-    {
-      LogError << "Invalid sort preset: " << this->getConfig().sortGameList << " / " << this->getConfig().sortGameList.toString() << std::endl;
-    }
-  }
+  LogInfo << "Sorting games wrt nb of mods..." << std::endl;
+  GenericToolbox::sortVector(_gameList_, [](const GameItem& a_, const GameItem& b_){
+    return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title); // if true, then a_ goes first
+  });
   LogDebug << "Sort done." << std::endl;
 
   // add to the view

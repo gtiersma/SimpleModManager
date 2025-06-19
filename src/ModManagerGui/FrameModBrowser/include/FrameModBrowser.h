@@ -25,7 +25,6 @@ public:
   bool onCancel() override;
 
   uint8_t *getIcon();
-  std::string getTitleId();
   TabModBrowser* getTabModBrowser(){ return _tabModBrowser_; }
   TabModPresets* getTabModPresets(){ return _tabModPresets_; }
 
@@ -48,7 +47,6 @@ private:
   TabModPlugins* _tabModPlugins_{nullptr};
 
   uint8_t* _icon_{nullptr};
-  std::string _titleId_{};
 
 };
 

@@ -14,6 +14,7 @@
 
 #include <thread>
 #include "string"
+#include <StateAlchemist/controller.h>
 
 
 LoggerInit([]{
@@ -30,7 +31,7 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
 
 	// Set the list
 	auto plugin_nros_list = GenericToolbox::ls(
-      GenericToolbox::joinPath(modManager.getGameFolderPath(), ".plugins")
+      GenericToolbox::joinPath(controller.getGamePath(), ".plugins")
   );
 	plugin_nros_list.erase(std::remove_if(plugin_nros_list.begin(), plugin_nros_list.end(), [this](std::string &x) {
 							   return get_extension(x) != ".smm"; // put your condition here
@@ -40,7 +41,7 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
 	{
 		std::string selected_plugin = remove_extension(plugin_nros_list[i_nro]);
 		std::string selected_plugin_path =
-        modManager.getGameFolderPath() + "/.plugins/" + plugin_nros_list[i_nro];
+        controller.getGamePath() + "/.plugins/" + plugin_nros_list[i_nro];
 		std::string selected_plugin_author;
 		std::string selected_plugin_version;
 		LogDebug("Adding plugin: %s", selected_plugin.c_str());
@@ -115,7 +116,7 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
 	{
 
 		auto *emptyListLabel = new brls::ListItem(
-        "No plugins have been found in " + modManager.getGameFolderPath() + "/.plugins",
+        "No plugins have been found in " + controller.getGamePath() + "/.plugins",
 			"There you need to put your plugins such as: ./<name-of-the-plugin>.smm");
 		emptyListLabel->show([]() {}, false);
 		this->addView(emptyListLabel);

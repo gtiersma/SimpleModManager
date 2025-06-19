@@ -9,6 +9,7 @@
 
 
 #include "Logger.h"
+#include <StateAlchemist/controller.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabModOptions]");
@@ -65,7 +66,6 @@ void TabModOptions::buildFolderInstallPresetItem() {
         _itemConfigPreset_->setValue( this->getModManager().getCurrentPresetName() );
       }
 
-      _owner_->getGuiModManager().checkAllMods( true );
       brls::Application::popView();
       return;
     }; // Callback sequence
@@ -80,43 +80,11 @@ void TabModOptions::buildFolderInstallPresetItem() {
   });
 
 }
-void TabModOptions::buildResetModsCacheItem() {
-
-  _itemResetModsCache_ = new brls::ListItem(
-    "\uE877 Recheck all mods",
-    "\tThis option resets all mods cache status and recheck if each files is properly applied.\n"
-              "\tWhen files where managed without SimpleModManager, the displayed mod status can be wrong. "
-              "This typically happens when you modified some mod files, or other programs override some of the applied files.",
-    ""
-  );
-
-  _itemResetModsCache_->getClickEvent()->subscribe([this](View* view){
-
-    auto* dialog = new brls::Dialog("Do you want to reset mods cache status and recheck all mod files ?");
-
-    dialog->addButton("Yes", [&, dialog](brls::View* view) {
-      // first, close the dialog box before the async routine starts
-      dialog->close();
-
-      // starts the async routine
-      _owner_->getGuiModManager().startCheckAllModsThread();
-    });
-    dialog->addButton("No", [dialog](brls::View* view) {
-      dialog->close();
-    });
-
-    dialog->setCancelable(true);
-    dialog->open();
-
-  });
-
-}
 void TabModOptions::buildDisableAllMods() {
 
   _itemDisableAllMods_ = new brls::ListItem(
     "\uE872 Disable all installed mods",
-    "This option will remove all installed mods files.\n"
-              "Note: to be deleted, installed mod files need to be identical to the one present in this folder.",
+    "This option will disable all installed mods files (useful if you want to delete some from the SD card).",
     ""
   );
 
@@ -152,7 +120,7 @@ void TabModOptions::buildGameIdentificationItem(){
   if( _owner_->getIcon() != nullptr ){
     _itemGameIdentification_->setThumbnail( _owner_->getIcon(), 0x20000 );
     _itemGameIdentification_->setSubLabel(
-        _itemGameIdentification_->getSubLabel() + _owner_->getTitleId()
+        _itemGameIdentification_->getSubLabel() + controller.getHexTitleId()
     );
   }
   else{
@@ -166,13 +134,11 @@ void TabModOptions::buildGameIdentificationItem(){
 void TabModOptions::initialize() {
 
   this->buildFolderInstallPresetItem();
-  this->buildResetModsCacheItem();
   this->buildDisableAllMods();
   this->buildGameIdentificationItem();
 
   // finally add to view
   this->addView(_itemResetModsCache_);
-  this->addView(_itemConfigPreset_);
   this->addView(_itemDisableAllMods_);
   this->addView(_itemGameIdentification_);
 

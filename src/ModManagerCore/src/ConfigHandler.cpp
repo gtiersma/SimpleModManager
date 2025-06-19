@@ -62,14 +62,12 @@ void ConfigHandler::loadConfig(const std::string &configFilePath_) {
     GenericToolbox::trimInputString( elements[0], " " );
     GenericToolbox::trimInputString( elements[1], " " );
 
-    if     ( elements[0] == "use-gui" ){
-      config.useGui = GenericToolbox::toBool( elements[1] );
-    }
-    else if( elements[0] == "sort-game-list-by" ){
+    if( elements[0] == "sort-game-list-by" ){
       config.sortGameList = ConfigHolder::SortGameList::toEnum( elements[1] );
     }
     else if( elements[0] == "stored-mods-base-folder" ){
-      config.baseFolder = elements[1];
+      // TODO: not supported at this time
+      //config.baseFolder = elements[1];
     }
     else if( elements[0] == "last-preset-used" ){
       lastUsedPresetName = elements[1];
@@ -108,8 +106,8 @@ void ConfigHandler::dumpConfigToFile() const {
   ssConfig << "# This is a config file" << std::endl;
   ssConfig << std::endl;
   ssConfig << "# folder where mods are stored" << std::endl;
-  ssConfig << "stored-mods-base-folder = " << _config_.baseFolder << std::endl;
-  ssConfig << "use-gui = " << _config_.useGui << std::endl;
+  // TODO: not supported at this time
+  //ssConfig << "stored-mods-base-folder = " << _config_.baseFolder << std::endl;
   ssConfig << "sort-game-list-by = " << _config_.sortGameList.toString() << std::endl;
   ssConfig << "last-preset-used = " << _config_.getCurrentPresetName() << std::endl;
   ssConfig << std::endl;

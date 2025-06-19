@@ -22,26 +22,14 @@ struct ApplyCache{
 
 struct ModEntry{
   ModEntry() = default;
-  explicit ModEntry(std::string  modName_): modName(std::move(modName_)) {}
+  explicit ModEntry(std::string mod_): mod(std::move(mod_)) {}
 
-  std::string modName;
-  std::map<std::string, ApplyCache> applyCache;
+  std::string mod;
+  std::string source;
+  std::string group;
 
-  [[nodiscard]] const ApplyCache* getCache(const std::string& preset_) const {
-    if( not GenericToolbox::isIn(preset_, applyCache) ){
-      return nullptr;
-    }
-    return &applyCache.at(preset_);
-  }
-  [[nodiscard]] std::string getStatus(const std::string& preset_) const {
-    auto* cache{this->getCache(preset_)};
-    if( cache == nullptr ){ return {}; }
-    return cache->statusStr;
-  }
-  [[nodiscard]] double getStatusFraction(const std::string& preset_) const {
-    auto* cache{this->getCache(preset_)};
-    if( cache == nullptr ){ return 0; }
-    return cache->applyFraction;
+  const std::string getLabel() const {
+    return group + "/" + source + "/" + mod;
   }
 };
 
@@ -61,20 +49,13 @@ public:
   explicit ModManager(GameBrowser* owner_);
 
   // setters
-  void setAllowAbort(bool allowAbort);
-  void setGameName(const std::string &gameName);
-  void setGameFolderPath(const std::string &gameFolderPath_);
-  void setIgnoredFileList(std::vector<std::string>& ignoredFileList_);
+  void setGameId(const u64 &gameId);
 
   // getters
-  [[nodiscard]] const std::string &getGameName() const;
-  [[nodiscard]] const std::string &getGameFolderPath() const;
   const Selector &getSelector() const;
-  [[nodiscard]] const std::vector<std::string> & getIgnoredFileList() const;
   const std::vector<ModEntry> &getModList() const;
 
   std::vector<ModEntry> &getModList();
-  std::vector<std::string> & getIgnoredFileList();
 
   // shortcuts
   const ConfigHolder& getConfig() const;
@@ -82,32 +63,15 @@ public:
 
   // selector related
   void updateModList();
-  void dumpModStatusCache();
-  void reloadModStatusCache();
-  void resetAllModsCacheAndFile();
+  void resetAllMods();
 
   // mod management
-  void resetModCache(int modIndex_);
-  void resetModCache(const std::string &modName_);
-
-  ResultModAction updateModStatus(int modIndex_);
-  ResultModAction updateModStatus(const std::string& modName_);
-  ResultModAction updateAllModStatus();
-
-  ResultModAction applyMod(int modIndex_, bool overrideConflicts_ = false);
-  ResultModAction applyMod(const std::string& modName_, bool overrideConflicts_ = false);
+  ResultModAction applyMod(int modIndex_);
+  ResultModAction applyMod(const std::string& modName_);
   ResultModAction applyModList(const std::vector<std::string> &modNamesList_);
 
   void removeMod(int modIndex_);
   void removeMod(const std::string &modName_);
-
-
-
-  // terminal
-  void scanInputs(u64 kDown, u64 kHeld);
-  void printTerminal();
-  void rebuildSelectorMenu();
-  void displayModFilesStatus(const std::string &modName_);
 
   // utils
   int getModIndex(const std::string& modName_);
@@ -119,15 +83,9 @@ public:
 
   const std::string &getCurrentPresetName() const;
 
-protected:
-  void displayConflictsWithOtherMods(size_t modIndex_);
-
 private:
   GameBrowser* _owner_{nullptr};
 
-  bool _ignoreCacheFiles_{true};
-  bool _allowAbort_{true};
-  std::string _gameFolderPath_{};
   std::string _gameName_{};
   std::vector<std::string> _ignoredFileList_{};
 

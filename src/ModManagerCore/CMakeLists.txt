@@ -10,6 +10,9 @@ set( SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Selector.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Toolbox.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/StateAlchemist/controller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/StateAlchemist/fs_manager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/StateAlchemist/meta_manager.cpp
     )
 
 

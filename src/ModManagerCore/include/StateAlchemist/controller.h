@@ -122,6 +122,11 @@ class Controller {
     void pickMod();
 
     /**
+     * Gets Mod Alchemist's game directory:
+     */
+    std::string getGamePath();
+
+    /**
      * Unmount SD card when destroyed 
      */
     ~Controller();
@@ -134,11 +139,6 @@ class Controller {
      * Essentially the same as deactivating the mod, except this can't be used with the default mod option.
      */
     void returnFiles(const std::string& mod);
-
-    /**
-     * Gets Mod Alchemist's game directory:
-     */
-    std::string getGamePath();
 
     /**
      * Gets the file path for the specified group

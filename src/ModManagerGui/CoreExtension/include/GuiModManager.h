@@ -12,6 +12,7 @@
 #include <borealis.hpp>
 
 #include <string>
+#include <vector>
 #include <future>
 
 
@@ -30,7 +31,6 @@ public:
 
   void startApplyModThread(const std::string& modName_);
   void startRemoveModThread(const std::string& modName_);
-  void startCheckAllModsThread();
   void startRemoveAllModsThread();
   void startApplyModPresetThread(const std::string &modPresetName_);
 
@@ -38,25 +38,22 @@ public:
   void applyModsList(std::vector<std::string>& modsList_);
   void removeMod(const std::string &modName_);
   void removeAllMods();
-  void checkAllMods(bool useCache_ = false);
-  void getModStatus(const std::string &modName_, bool useCache_ = false);
+  std::vector<std::string> getActiveMods();
+  bool isActive(const std::string &modName_);
 
 protected:
-  bool applyModFunction(const std::string& modName_);
-  bool applyModPresetFunction(const std::string& presetName_);
-  bool removeModFunction(const std::string& modName_);
-  bool checkAllModsFunction();
-  bool removeAllModsFunction();
+  void applyModFunction(const std::string& modName_);
+  void applyModPresetFunction(const std::string& presetName_);
+  void removeModFunction(const std::string& modName_);
+  void removeAllModsFunction();
 
-  bool leaveModAction(bool isSuccess_);
+  void leaveModAction();
 
 
 
 private:
   // core
   GameBrowser _gameBrowser_{};
-
-  std::future<bool> _asyncResponse_{};
 
   bool _triggeredOnCancel_{false};
   bool _triggerUpdateModsDisplayedStatus_{false};
