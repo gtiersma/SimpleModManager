@@ -32,8 +32,10 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
   this->setFooterText("SimpleModManager");
 
+  ModManager &modManager = getGameBrowser().getModManager();
+  modManager.updateModList();
 
-  if( not getGameBrowser().getModManager().getModList().empty() ){
+  if( not modManager.getModList().empty() ){
 
     auto* parametersTabList = new brls::List();
 
