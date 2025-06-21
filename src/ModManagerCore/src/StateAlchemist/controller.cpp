@@ -8,13 +8,6 @@
 Controller controller;
 
 
-void Controller::init() {
-  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
-
-  // Create the Atmosphere title ID folder for the current game
-  FsManager::createFolderIfNeeded(this->getAtmospherePath());
-}
-
 /**
  * Formats u64 title ID into a hexidecimal string
  */
@@ -516,11 +509,23 @@ void Controller::pickMod() {
   }
 }
 
+Controller::Controller() {
+  pmdmntInitialize();
+  pminfoInitialize();
+
+  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
+
+  // Create the Atmosphere title ID folder for the current game
+  FsManager::createFolderIfNeeded(this->getAtmospherePath());
+}
+
 /**
  * Unmount SD card when destroyed 
  */
 Controller::~Controller() {
   fsFsClose(&FsManager::sdSystem);
+  pminfoExit();
+  pmdmntExit();
 }
 
 /**

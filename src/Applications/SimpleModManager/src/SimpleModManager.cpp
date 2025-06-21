@@ -27,8 +27,6 @@ LoggerInit([]{
 
 
 int main(int argc, char* argv[]){
-  controller.init();
-
   LogInfo << "SimpleModManager is starting..." << std::endl;
 
   // https://github.com/jbeder/yaml-cpp/wiki/Tutorial
