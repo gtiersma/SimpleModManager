@@ -17,10 +17,12 @@
 #include "sstream"
 #include <StateAlchemist/controller.h>
 #include <ModManager.h>
+#include <AlchemistLogger.h>
 
 
 void ModsPresetHandler::setGameId(const u64 &gameId_) {
   controller.titleId = gameId_;
+  alchemyLogger.log("MODS PRESETER: setting game ID: " + controller.getHexTitleId());
   this->readConfigFile();
 }
 
@@ -113,12 +115,15 @@ void ModsPresetHandler::editPreset( size_t entryIndex_ ) {
   // list mods
   // for now, just combining group names with mod names - will be separated in a future commit
   std::vector<std::string> modsList;
+  alchemyLogger.log("MODS PRESETER: Loading groups... ");
   std::vector<std::string> groups = controller.loadGroups(true);
   for (auto& group : groups) {
     controller.group = group;
+    alchemyLogger.log("MODS PRESETER: Loading sources from group: " + group);
     std::vector<std::string> sources = controller.loadSources(true);
     for (auto& source : sources) {
       controller.source = source;
+      alchemyLogger.log("MODS PRESETER: Loading mods from source: " + source);
       std::vector<std::string> mods = controller.loadMods(true);
       for (auto& mod : mods) {
         ModEntry modEntry(mod);

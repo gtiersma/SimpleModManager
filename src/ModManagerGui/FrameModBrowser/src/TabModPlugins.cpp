@@ -15,6 +15,7 @@
 #include <thread>
 #include "string"
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 
 LoggerInit([]{
@@ -24,6 +25,7 @@ LoggerInit([]{
 
 std::map<std::string, brls::Image *> cached_thumbs;
 TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
+	alchemyLogger.log("TabModPlugins::TabModPlugins();");
 
 	this->frameCounter = -1;
 
@@ -125,6 +127,7 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
 
 std::string TabModPlugins::remove_extension(const std::string &filename)
 {
+	alchemyLogger.log("TabModPlugins::remove_extension();");
 	size_t lastdot = filename.find_last_of(".");
 	if (lastdot == std::string::npos)
 		return filename;
@@ -132,12 +135,14 @@ std::string TabModPlugins::remove_extension(const std::string &filename)
 }
 std::string TabModPlugins::get_extension(const std::string &filename)
 {
+	alchemyLogger.log("TabModPlugins::get_extension();");
 	size_t lastdot = filename.find_last_of(".");
 	if (lastdot == std::string::npos)
 		return filename;
 	return filename.substr(lastdot);
 }
 brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
+	alchemyLogger.log("TabModPlugins::load_image_cache();");
 	LogDebug << "Requesting icon: " << filename << std::endl;
 
 	brls::Image *image = nullptr;
@@ -199,6 +204,7 @@ brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
 }
 std::string TabModPlugins::base64_encode(const std::string &in)
 {
+	alchemyLogger.log("TabModPlugins::base64_encode();");
 	std::string out;
 
 	int val = 0, valb = -6;
@@ -220,6 +226,7 @@ std::string TabModPlugins::base64_encode(const std::string &in)
 }
 std::string TabModPlugins::base64_decode(const std::string &in)
 {
+	alchemyLogger.log("TabModPlugins::base64_decode();");
 	std::string out;
 
 	std::vector<int> T(256, -1);

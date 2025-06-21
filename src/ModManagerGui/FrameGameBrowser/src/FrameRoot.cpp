@@ -12,6 +12,7 @@
 #include "Toolbox.h"
 
 #include "Logger.h"
+#include <AlchemistLogger.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[FrameRoot]");
@@ -19,6 +20,7 @@ LoggerInit([]{
 
 
 FrameRoot::FrameRoot() {
+  alchemyLogger.log("FrameRoot::FrameRoot();");
   LogWarning << "Build root frame..." << std::endl;
 
   this->setTitle("SimpleModManager");
@@ -33,6 +35,7 @@ FrameRoot::FrameRoot() {
 }
 
 bool FrameRoot::onCancel() {
+  alchemyLogger.log("FrameRoot::onCancel();");
   // fetch the current focus
   auto* lastFocus = brls::Application::getCurrentFocus();
 

@@ -12,12 +12,14 @@
 
 #include <sstream>
 #include <StateAlchemist/constants.h>
+#include <AlchemistLogger.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabGames]");
 });
 
 TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
+  alchemyLogger.log("TabGames::TabGames();");
   LogWarning << "Building game tab..." << std::endl;
 
   auto gameList = this->getGameBrowser().getSelector().getEntryList();

@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 #include <borealis.hpp>
+#include <AlchemistLogger.h>
 
 
 
@@ -16,6 +17,7 @@ LoggerInit([]{
 });
 
 TabAbout::TabAbout() {
+  alchemyLogger.log("TabAbout::TabAbout();");
   LogWarning << "Building about tab..." << std::endl;
 
   // Subtitle

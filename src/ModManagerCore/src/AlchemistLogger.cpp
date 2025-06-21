@@ -1,5 +1,7 @@
 #include "AlchemistLogger.h"
 
+AlchemistLogger alchemyLogger;
+
 AlchemistLogger::AlchemistLogger() {
   rawPath = "/The Log of the Alchemist.txt";
   path = FsManager::toPathBuffer(rawPath);

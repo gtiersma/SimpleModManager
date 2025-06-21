@@ -12,6 +12,7 @@
 #include "GenericToolbox.Switch.h"
 #include "Logger.h"
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 
 LoggerInit([]{
@@ -22,6 +23,7 @@ LoggerInit([]{
 FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModManagerPtr_(guiModManagerPtr_) {
 
   // fetch game title
+  alchemyLogger.log("FRAME MOD BROWSER: getting title ID: " + controller.getHexTitleId());
   this->setTitle(controller.getHexTitleId());
 
   std::string gamePath = controller.getGamePath();
@@ -67,6 +69,7 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
 }
 bool FrameModBrowser::onCancel() {
+  alchemyLogger.log("FrameModBrowser::onCancel();");
 
   // Go back to sidebar
   auto* lastFocus = brls::Application::getCurrentFocus();

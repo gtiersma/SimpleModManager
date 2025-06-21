@@ -23,3 +23,5 @@ public:
 
     void log(const std::string& message);
 };
+
+extern AlchemistLogger alchemyLogger;

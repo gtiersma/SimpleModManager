@@ -18,6 +18,7 @@
 #include <StateAlchemist/controller.h>
 #include <StateAlchemist/meta_manager.h>
 #include <StateAlchemist/constants.h>
+#include <AlchemistLogger.h>
 
 
 GameBrowser::GameBrowser(){ this->init(); }
@@ -51,11 +52,14 @@ ModsPresetHandler &GameBrowser::getModPresetHandler(){
 
 // Browse
 void GameBrowser::selectGame(const u64 &titleId_) {
+  alchemyLogger.log("GameBrowser::selectGame();");
   controller.titleId = titleId_;
+  alchemyLogger.log("GAME BROWSER: set title ID: " + controller.getHexTitleId());
   _isGameSelected_ = true;
 }
 
 void GameBrowser::rebuildSelectorMenu(){
+  alchemyLogger.log("GameBrowser::rebuildSelectorMenu();");
   _selector_.clearMenu();
 
   _selector_.getHeader() >> "SimpleModManager v" >> Toolbox::getAppVersion() << std::endl;
@@ -80,6 +84,7 @@ void GameBrowser::rebuildSelectorMenu(){
 }
 
 uint8_t* GameBrowser::getFolderIcon(const std::string& gameFolder_){
+  alchemyLogger.log("GameBrowser::getFolderIcon();");
   if( _isGameSelected_ ){ return nullptr; }
   uint8_t* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(gameFolder_);
   return icon;
@@ -87,11 +92,13 @@ uint8_t* GameBrowser::getFolderIcon(const std::string& gameFolder_){
 
 // protected
 void GameBrowser::init(){
+  alchemyLogger.log("GameBrowser::init();");
   auto gameList = GenericToolbox::lsDirs(ALCHEMIST_PATH);
 
   std::vector<size_t> nGameMod;
   nGameMod.reserve( gameList.size() );
   for( auto& game : gameList ){
+    alchemyLogger.log("GAME BROWSER: Listing games from: " + controller.getGamePath());
     nGameMod.emplace_back(
         GenericToolbox::lsDirs(controller.getGamePath()).size()
         );

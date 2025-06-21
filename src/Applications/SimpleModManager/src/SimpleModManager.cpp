@@ -18,6 +18,7 @@
 #include "iostream"
 
 #include "switch.h"
+#include <AlchemistLogger.h>
 
 
 LoggerInit([]{
@@ -26,6 +27,7 @@ LoggerInit([]{
 
 
 int main(int argc, char* argv[]){
+  alchemyLogger.log("launching...");
   LogInfo << "SimpleModManager is starting..." << std::endl;
 
   // https://github.com/jbeder/yaml-cpp/wiki/Tutorial
@@ -44,6 +46,7 @@ int main(int argc, char* argv[]){
 
 
 void runGui(){
+  alchemyLogger.log("runGui();");
   LogInfo << "Starting GUI..." << std::endl;
   LogThrowIf(R_FAILED(nsInitialize()), "nsInitialize Failed");
 

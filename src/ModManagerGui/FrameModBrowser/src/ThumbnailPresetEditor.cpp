@@ -12,10 +12,12 @@
 
 #include <sstream>
 #include <ranges>
+#include <AlchemistLogger.h>
 
 
 
 ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std::string& presetName_) : _owner_(owner_){
+  alchemyLogger.log("ThumbnailPresetEditor::ThumbnailPresetEditor();");
 
   // fill the item list
   for( auto& availableMod : _owner_->getGameBrowser().getModManager().getModList() ){
@@ -99,6 +101,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 
 
 void ThumbnailPresetEditor::updateTags() {
+  alchemyLogger.log("ThumbnailPresetEditor::updateTags();");
 
   // reset tags
   for( auto & availableMod : _availableModItemList_ ){  availableMod->setValue(""); }
@@ -130,6 +133,7 @@ void ThumbnailPresetEditor::updateTags() {
 
 }
 void ThumbnailPresetEditor::save() {
+  alchemyLogger.log("ThumbnailPresetEditor::save();");
 
   // is it an existing preset?
   int presetIndex{
@@ -161,6 +165,7 @@ void ThumbnailPresetEditor::save() {
   _owner_->getTabModPresets()->setTriggerUpdateItem( true );
 }
 void ThumbnailPresetEditor::autoAssignPresetName() {
+  alchemyLogger.log("ThumbnailPresetEditor::autoAssignPresetName();");
   std::string autoName = "new-preset";
   _bufferPreset_.name = autoName;
   int count{0};
@@ -177,6 +182,7 @@ void ThumbnailPresetEditor::draw(
     NVGcontext *vg, int x, int y,
     unsigned int width, unsigned int height,
     brls::Style *style, brls::FrameContext *ctx) {
+      alchemyLogger.log("ThumbnailPresetEditor::draw();");
 
   if     ( _bufferPreset_.modList.empty() ){
     // save button should be hidden if nothing is selected

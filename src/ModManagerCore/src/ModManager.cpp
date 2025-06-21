@@ -14,12 +14,14 @@
 #include <iostream>
 #include <sstream>
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 
 ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
 
 // setters
 void ModManager::setGameId(const u64 &gameId) {
+  alchemyLogger.log("MOD MANAGER: set game ID: " + controller.getHexTitleId());
   controller.titleId = gameId;
 }
 
@@ -44,6 +46,7 @@ ConfigHolder& ModManager::getConfig(){
 
 void ModManager::updateModList() {
   // list groups
+  alchemyLogger.log("MOD MANAGER: loading groups... ");
   std::vector<std::string> groups = controller.loadGroups(true);
 
   // list mods
@@ -51,9 +54,11 @@ void ModManager::updateModList() {
   std::vector<ModEntry> options;
   for (auto& group : groups) {
     controller.group = group;
+    alchemyLogger.log("MOD MANAGER: loading sources from group: " + group);
     std::vector<std::string> sources = controller.loadSources(true);
     for (auto& source : sources) {
       controller.source = source;
+      alchemyLogger.log("MOD MANAGER: loading mods from source: " + source);
       std::vector<std::string> mods = controller.loadMods(true);
       for (auto& mod : mods) {
         ModEntry modEntry(mod);
@@ -81,18 +86,21 @@ void ModManager::updateModList() {
 }
 
 void ModManager::resetAllMods() {
+  alchemyLogger.log("MOD MANAGER: deactivating all mods... ");
   controller.deactivateAll();
   this->updateModList();
 }
 
 // mod management
 ResultModAction ModManager::applyMod(int modIndex_){
+  alchemyLogger.log("ModManager::applyMod();");
   if( modIndex_ < 0 or modIndex_ >= int( _modList_.size() ) ) return Fail;
   auto* modPtr = &_modList_[modIndex_];
   if( modPtr == nullptr ) return Fail;
 
   controller.group = modPtr->group;
   controller.source = modPtr->source;
+  alchemyLogger.log("MOD MANAGER: activating mod: " + modPtr->mod + " from source: " + modPtr->source + " in group: " + modPtr->group);
   controller.activateMod(modPtr->mod);
 
   return Success;
@@ -110,16 +118,19 @@ ResultModAction ModManager::applyModList(const std::vector<std::string> &modName
 }
 
 void ModManager::removeMod(int modIndex_) {
+  alchemyLogger.log("ModManager::removeMod();");
   if( modIndex_ < 0 or modIndex_ >= int( _modList_.size() ) ) return;
   auto* modPtr = &_modList_[modIndex_];
 
   controller.group = modPtr->group;
 
   // Case: do nothing if this mod is not active
+  alchemyLogger.log("MOD MANAGER: getting active mod of " + modPtr->source + " in group: " + modPtr->group);
   std::string activeMod = controller.getActiveMod(modPtr->source);
   if (activeMod != modPtr->mod) return;
 
   controller.source = modPtr->source;
+  alchemyLogger.log("MOD MANAGER: deactivating mod: " + activeMod);
   controller.deactivateMod();
 }
 
@@ -129,6 +140,7 @@ void ModManager::removeMod(const std::string &modName_) {
 
 // utils
 int ModManager::getModIndex(const std::string& modName_){
+  alchemyLogger.log("ModManager::getModIndex();");
   return GenericToolbox::findElementIndex(
     modName_,
     _modList_,
@@ -138,6 +150,7 @@ int ModManager::getModIndex(const std::string& modName_){
 
 
 void ModManager::reloadCustomPreset(){
+  alchemyLogger.log("ModManager::reloadCustomPreset();");
   std::string configFilePath = controller.getGamePath() + "/this_folder_config.txt";
   if( GenericToolbox::isFile(configFilePath) ){
     _currentPresetName_ = GenericToolbox::dumpFileAsString(configFilePath);
@@ -147,6 +160,7 @@ void ModManager::reloadCustomPreset(){
   }
 }
 void ModManager::setCustomPreset(const std::string &presetName_) {
+  alchemyLogger.log("ModManager::setCustomPreset();");
   std::string configFilePath = controller.getGamePath() + "/this_folder_config.txt";
   GenericToolbox::rm( configFilePath );
   if( not presetName_.empty() ){
@@ -156,6 +170,7 @@ void ModManager::setCustomPreset(const std::string &presetName_) {
 }
 
 const PresetConfig &ModManager::fetchCurrentPreset() const {
+  alchemyLogger.log("ModManager::fetchCurrentPreset();");
   int idx = GenericToolbox::findElementIndex(_currentPresetName_, getConfig().presetList, [](const PresetConfig& p){ return p.name; });
   if( idx != -1 ){ return getConfig().presetList[idx]; }
   return getConfig().getCurrentPreset();

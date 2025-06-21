@@ -14,6 +14,7 @@
 #include <future>
 #include <sstream>
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 
 LoggerInit([]{
@@ -32,6 +33,7 @@ const GameBrowser &GuiModManager::getGameBrowser() const { return _gameBrowser_;
 GameBrowser &GuiModManager::getGameBrowser(){ return _gameBrowser_; }
 
 void GuiModManager::applyMod(const std::string &modName_) {
+  alchemyLogger.log("GuiModManager::applyMod();");
   LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   modApplyMonitor = ModApplyMonitor();
 
@@ -45,10 +47,12 @@ void GuiModManager::applyMod(const std::string &modName_) {
 
   controller.group = modGrouping[0];
   controller.source = modGrouping[1];
+  alchemyLogger.log("GUI MOD MANAGER: Activating mod: " + modGrouping[2] + " from source: " + modGrouping[1] + " in group: " + modGrouping[0]); 
   controller.activateMod(modGrouping[2]);
 }
 
 bool GuiModManager::isActive(const std::string &modName_) {
+  alchemyLogger.log("GuiModManager::isActive();");
   LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   
   // Get the group, source and mod name from the string into a vector --- TEMP CODE
@@ -60,10 +64,12 @@ bool GuiModManager::isActive(const std::string &modName_) {
   }
 
   controller.group = modGrouping[0];
+  alchemyLogger.log("GUI MOD MANAGER: Getting active mod in source: " + modGrouping[1] + " in group: " + modGrouping[0]); 
   return controller.getActiveMod(modGrouping[1]) == modGrouping[2];
 }
 
 void GuiModManager::removeMod(const std::string &modName_){
+  alchemyLogger.log("GuiModManager::removeMod();");
   if (!this->isActive(modName_)) return;
 
   LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
@@ -77,10 +83,12 @@ void GuiModManager::removeMod(const std::string &modName_){
   }
 
   controller.source = modGrouping[1];
+  alchemyLogger.log("GUI MOD MANAGER: Deactivating mod in source: " + modGrouping[1] + " in group: " + controller.group); 
   controller.deactivateMod();
 }
 
 void GuiModManager::removeAllMods() {
+  alchemyLogger.log("GUI MOD MANAGER: Deactivating all mods..."); 
   controller.deactivateAll();
 }
 
@@ -93,12 +101,15 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
 std::vector<std::string> GuiModManager::getActiveMods() {
   std::vector<std::string> activeMods;
   
+  alchemyLogger.log("GUI MOD MANAGER: loading groups..."); 
   std::vector<std::string> groups = controller.loadGroups(false);
 
   for (const std::string& group : groups) {
     controller.group = group;
+    alchemyLogger.log("GUI MOD MANAGER: loading sources in group: " + group); 
     std::vector<std::string> sources = controller.loadSources(false);
     for (const std::string& source : sources) {
+      alchemyLogger.log("GUI MOD MANAGER: getting active mod of source: " + source); 
       ModEntry modEntry(controller.getActiveMod(source));
       modEntry.source = source;
       modEntry.group = group;
@@ -110,6 +121,7 @@ std::vector<std::string> GuiModManager::getActiveMods() {
 }
 
 void GuiModManager::startApplyModThread(const std::string& modName_) {
+  alchemyLogger.log("GuiModManager::startApplyModThread();");
   LogReturnIf(modName_.empty(), "No mod name provided. Can't apply mod.");
 
   this->_triggeredOnCancel_ = false;
@@ -118,6 +130,7 @@ void GuiModManager::startApplyModThread(const std::string& modName_) {
   std::async(&GuiModManager::applyModFunction, this, modName_);
 }
 void GuiModManager::startRemoveModThread(const std::string& modName_){
+  alchemyLogger.log("GuiModManager::startRemoveModThread();");
   LogReturnIf(modName_.empty(), "No mod name provided. Can't remove mod.");
 
   this->_triggeredOnCancel_ = false;
@@ -126,12 +139,14 @@ void GuiModManager::startRemoveModThread(const std::string& modName_){
   std::async(&GuiModManager::removeModFunction, this, modName_);
 }
 void GuiModManager::startRemoveAllModsThread(){
+  alchemyLogger.log("GuiModManager::startRemoveAllModsThread();");
   this->_triggeredOnCancel_ = false;
 
   // start the parallel thread
   std::async(&GuiModManager::removeAllModsFunction, this);
 }
 void GuiModManager::startApplyModPresetThread(const std::string &modPresetName_){
+  alchemyLogger.log("GuiModManager::startApplyModPresetThread();");
   this->_triggeredOnCancel_ = false;
 
   // start the parallel thread
@@ -139,6 +154,7 @@ void GuiModManager::startApplyModPresetThread(const std::string &modPresetName_)
 }
 
 void GuiModManager::applyModFunction(const std::string& modName_){
+  alchemyLogger.log("GuiModManager::applyModFunction();");
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
@@ -154,6 +170,7 @@ void GuiModManager::applyModFunction(const std::string& modName_){
 }
 
 void GuiModManager::applyModPresetFunction(const std::string& presetName_){
+  alchemyLogger.log("GuiModManager::applyModPresetFunction();");
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
@@ -181,6 +198,7 @@ void GuiModManager::applyModPresetFunction(const std::string& presetName_){
   this->leaveModAction();
 }
 void GuiModManager::removeModFunction(const std::string& modName_){
+  alchemyLogger.log("GuiModManager::removeModFunction();");
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
@@ -194,6 +212,7 @@ void GuiModManager::removeModFunction(const std::string& modName_){
   this->leaveModAction();
 }
 void GuiModManager::removeAllModsFunction(){
+  alchemyLogger.log("GuiModManager::removeAllModsFunction();");
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
@@ -210,6 +229,7 @@ void GuiModManager::removeAllModsFunction(){
 
 
 void GuiModManager::leaveModAction(){
+  alchemyLogger.log("GuiModManager::leaveModAction();");
   _triggerUpdateModsDisplayedStatus_ = true;
   _loadingPopup_.popView();
   brls::Application::unblockInputs();

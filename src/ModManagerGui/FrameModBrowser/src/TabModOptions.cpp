@@ -10,6 +10,7 @@
 
 #include "Logger.h"
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabModOptions]");
@@ -19,6 +20,7 @@ LoggerInit([]{
 TabModOptions::TabModOptions(FrameModBrowser* owner_) : _owner_(owner_) {  }
 
 void TabModOptions::buildFolderInstallPresetItem() {
+  alchemyLogger.log("TabModOptions::buildFolderInstallPresetItem();");
 
   _itemConfigPreset_ = new brls::ListItem(
     "\uE255 Config preset",
@@ -81,6 +83,7 @@ void TabModOptions::buildFolderInstallPresetItem() {
 
 }
 void TabModOptions::buildDisableAllMods() {
+  alchemyLogger.log("TabModOptions::buildDisableAllMods();");
 
   _itemDisableAllMods_ = new brls::ListItem(
     "\uE872 Disable all installed mods",
@@ -110,6 +113,7 @@ void TabModOptions::buildDisableAllMods() {
 
 }
 void TabModOptions::buildGameIdentificationItem(){
+  alchemyLogger.log("TabModOptions::buildGameIdentificationItem();");
 
   _itemGameIdentification_ = new brls::ListItem(
     "Associated TitleID",
@@ -119,6 +123,7 @@ void TabModOptions::buildGameIdentificationItem(){
 
   if( _owner_->getIcon() != nullptr ){
     _itemGameIdentification_->setThumbnail( _owner_->getIcon(), 0x20000 );
+    alchemyLogger.log("TAB MOD OPTIONS: getting game ID: " + controller.getHexTitleId());
     _itemGameIdentification_->setSubLabel(
         _itemGameIdentification_->getSubLabel() + controller.getHexTitleId()
     );
@@ -132,6 +137,7 @@ void TabModOptions::buildGameIdentificationItem(){
 }
 
 void TabModOptions::initialize() {
+  alchemyLogger.log("TabModOptions::initialize();");
 
   this->buildFolderInstallPresetItem();
   this->buildDisableAllMods();

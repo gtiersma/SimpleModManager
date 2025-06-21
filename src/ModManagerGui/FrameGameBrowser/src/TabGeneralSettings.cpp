@@ -5,7 +5,7 @@
 #include <TabGeneralSettings.h>
 
 #include "FrameRoot.h"
-
+#include <AlchemistLogger.h>
 
 #include "Logger.h"
 
@@ -14,12 +14,14 @@ LoggerInit([]{
 });
 
 TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {
+  alchemyLogger.log("TabGeneralSettings::TabGeneralSettings();");
   LogWarning << "Building general settings tab..." << std::endl;
   this->rebuildLayout();
   LogInfo << "General settings tab build." << std::endl;
 }
 
 void TabGeneralSettings::rebuildLayout() {
+  alchemyLogger.log("TabGeneralSettings::rebuildLayout();");
 
   // TODO: support this
   /*itemInstallLocationPreset = new brls::ListItem(

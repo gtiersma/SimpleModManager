@@ -10,6 +10,7 @@
 
 #include <borealis.hpp>
 #include "Logger.h"
+#include <AlchemistLogger.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabModPresets]");
@@ -17,6 +18,7 @@ LoggerInit([]{
 
 
 void TabModPresets::draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) {
+	alchemyLogger.log("TabModPresets::draw();");
 
   if( _triggerUpdateItem_ ){
     this->updatePresetItems();
@@ -26,6 +28,7 @@ void TabModPresets::draw(NVGcontext *vg, int x, int y, unsigned width, unsigned 
 }
 
 void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
+  alchemyLogger.log("TabModPresets::assignButtons();");
 
   if( item == nullptr ){
     LogError << "Can't assign buttons to nullptr item" << std::endl;
@@ -145,6 +148,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
 }
 
 void TabModPresets::updatePresetItems() {
+  alchemyLogger.log("TabModPresets::updatePresetItems();");
   LogInfo << "Updating displayed preset items" << std::endl;
 
   _triggerUpdateItem_ = false;

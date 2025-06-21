@@ -13,6 +13,7 @@
 
 #include <future>
 #include <StateAlchemist/controller.h>
+#include <AlchemistLogger.h>
 
 
 LoggerInit([]{
@@ -21,6 +22,7 @@ LoggerInit([]{
 
 
 TabModBrowser::TabModBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
+  alchemyLogger.log("TabModBrowser::TabModBrowser();");
 
   // Fetch the available mods
   auto modList = this->getModManager().getModList();
@@ -58,6 +60,7 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
           controller.group = mod.group;
           controller.source = mod.source;
           
+          alchemyLogger.log("TAB MOD BROWSER: getting active mod of source: " + mod.source);
           ModEntry activeEntry(controller.getActiveMod(mod.source));
           activeEntry.source = mod.source;
           activeEntry.group = mod.group;
@@ -116,6 +119,7 @@ void TabModBrowser::draw(NVGcontext *vg, int x, int y, unsigned int width, unsig
 }
 
 void TabModBrowser::updateDisplayedModsStatus(){
+  alchemyLogger.log("TabModBrowser::updateDisplayedModsStatus();");
   LogInfo << __METHOD_NAME__ << std::endl;
 
   auto& modEntryList = _owner_->getGameBrowser().getModManager().getModList();
@@ -140,11 +144,14 @@ void TabModBrowser::updateDisplayedModsStatus(){
   // TEMP CODE
   // Ordered array of active mods - first match for first index must be the first active mod
   std::vector<std::string> activeMods;
+  alchemyLogger.log("TAB MOD BROWSER: loading groups...");
   std::vector<std::string> groups = controller.loadGroups(true);
   for (auto& group : groups) {
     controller.group = group;
+    alchemyLogger.log("TAB MOD BROWSER: getting sources of group: " + group);
     std::vector<std::string> sources = controller.loadSources(true);
     for (auto& source : sources) {
+      alchemyLogger.log("TAB MOD BROWSER: getting active mod of source: " + source);
       activeMods.push_back(controller.getActiveMod(source));
     }
   }

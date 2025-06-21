@@ -10,9 +10,11 @@
 #include "GenericToolbox.Vector.h"
 
 #include <switch.h>
+#include <AlchemistLogger.h>
 
 // non native setters
 void Selector::setEntryList(const std::vector<std::string>& entryTitleList_) {
+  alchemyLogger.log("Selector::setEntryList();");
   this->invalidatePageCache();
   _cursorPosition_ = 0;
   _entryList_.clear();
@@ -23,11 +25,13 @@ void Selector::setEntryList(const std::vector<std::string>& entryTitleList_) {
   }
 }
 void Selector::setTag(size_t entryIndex_, const std::string &tag_){
+  alchemyLogger.log("Selector::setTag();");
   this->invalidatePageCache();
   if( entryIndex_ >= _entryList_.size() ) return;
   _entryList_[entryIndex_].tag = tag_;
 }
 void Selector::setTagList(const std::vector<std::string>& tagList_){
+  alchemyLogger.log("Selector::setTagList();");
   this->invalidatePageCache();
   if( tagList_.size() != _entryList_.size() ) return;
   for( size_t iEntry = 0 ; iEntry < _entryList_.size() ; iEntry++ ){
@@ -35,6 +39,7 @@ void Selector::setTagList(const std::vector<std::string>& tagList_){
   }
 }
 void Selector::setDescriptionList(const std::vector<std::vector<std::string>> &descriptionList_){
+  alchemyLogger.log("Selector::setDescriptionList();");
   this->invalidatePageCache();
   if(descriptionList_.size() != _entryList_.size()) return;
   for( size_t iEntry = 0 ; iEntry < _entryList_.size() ; iEntry++ ){
@@ -42,10 +47,12 @@ void Selector::setDescriptionList(const std::vector<std::vector<std::string>> &d
   }
 }
 void Selector::clearTags(){
+  alchemyLogger.log("Selector::clearTags();");
   this->invalidatePageCache();
   for( auto& entry : _entryList_ ){ entry.tag = ""; }
 }
 void Selector::clearDescriptions(){
+  alchemyLogger.log("Selector::clearDescriptions();");
   this->invalidatePageCache();
   for( auto& entry : _entryList_ ){ entry.description.clear(); }
 }
@@ -79,6 +86,7 @@ size_t Selector::getNbMenuLines() const{
   return _header_.size() + _footer_.size();
 }
 size_t Selector::getCursorPage() const{
+  alchemyLogger.log("Selector::getCursorPage();");
   this->refillPageEntryCache();
 
   for( size_t iPage = 0 ; iPage < _pageEntryCache_.size() ; iPage++ ){
@@ -100,6 +108,7 @@ bool Selector::isSelectedEntry(const SelectorEntry& entry_) const{
 
 // io
 void Selector::printTerminal() const {
+  alchemyLogger.log("Selector::printTerminal();");
   using namespace GenericToolbox::Switch::Terminal;
 
   // clear console
@@ -142,6 +151,7 @@ void Selector::printTerminal() const {
   consoleUpdate(nullptr);
 }
 void Selector::scanInputs( u64 kDown, u64 kHeld ){
+  alchemyLogger.log("Selector::scanInputs();");
 
   // manage persistence
   if( kHeld != 0 and kHeld == _previousKheld_ ){ _holdingTiks_++; }
@@ -181,6 +191,7 @@ void Selector::clearMenu(){
 
 // move cursor
 void Selector::moveCursorPosition(long cursorPosition_){
+  alchemyLogger.log("Selector::moveCursorPosition();");
   // if no entry, stay at 0
   if( _entryList_.empty() ){ _cursorPosition_ = 0; return; }
 
@@ -192,6 +203,7 @@ void Selector::moveCursorPosition(long cursorPosition_){
   _cursorPosition_ = cursorPosition_;
 }
 void Selector::jumpToPage(long pageIndex_){
+  alchemyLogger.log("Selector::jumpToPage();");
   this->refillPageEntryCache();
 
   // if no page is set, don't do anything
@@ -224,6 +236,7 @@ void Selector::invalidatePageCache() const{
   _isPageEntryCacheValid_ = false;
 }
 void Selector::refillPageEntryCache() const {
+  alchemyLogger.log("Selector::refillPageEntryCache();");
   if( _isPageEntryCacheValid_ ) return;
 
   // reset the cache
@@ -258,6 +271,7 @@ void Selector::refillPageEntryCache() const {
 
 // static
 void Selector::printMenu(const MenuLineList& menu_){
+  alchemyLogger.log("Selector::printMenu();");
   for( auto& menuLine : menu_.lineList ){
     // if is last but empty, skip. It's just a trailing std::endl
     if( &menuLine == &menu_.lineList.back() and menuLine.empty() ){ break; }
@@ -268,6 +282,7 @@ void Selector::printMenu(const MenuLineList& menu_){
 }
 std::string Selector::askQuestion(const std::string& question_, const std::vector<std::string>& answers_,
                                   const std::vector<std::vector<std::string>>& descriptions_ ) {
+  alchemyLogger.log("Selector::askQuestion();");
 
   std::string answer;
   Selector sel;
