@@ -8,6 +8,16 @@
 Controller controller;
 
 
+void Controller::init() {
+  pmdmntInitialize();
+  pminfoInitialize();
+
+  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
+
+  // Create the Atmosphere title ID folder for the current game
+  FsManager::createFolderIfNeeded(this->getAtmospherePath());
+}
+
 /**
  * Formats u64 title ID into a hexidecimal string
  */
@@ -507,16 +517,6 @@ void Controller::pickMod() {
       randomChoice -= rating;
     }
   }
-}
-
-Controller::Controller() {
-  pmdmntInitialize();
-  pminfoInitialize();
-
-  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
-
-  // Create the Atmosphere title ID folder for the current game
-  FsManager::createFolderIfNeeded(this->getAtmospherePath());
 }
 
 /**

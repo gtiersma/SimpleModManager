@@ -1,8 +1,11 @@
 #include "AlchemistLogger.h"
+#include <StateAlchemist/controller.h>
 
 AlchemistLogger alchemyLogger;
 
 AlchemistLogger::AlchemistLogger() {
+  controller.init();
+
   rawPath = "/The Log of the Alchemist.txt";
   path = FsManager::toPathBuffer(rawPath);
 
