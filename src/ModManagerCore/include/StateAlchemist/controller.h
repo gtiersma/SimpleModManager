@@ -13,8 +13,6 @@ class Controller {
     std::string group;
     std::string source;
 
-    void init();
-
     /**
      * Formats u64 title ID into a hexidecimal string
      */
@@ -125,6 +123,8 @@ class Controller {
      * Gets Mod Alchemist's game directory:
      */
     std::string getGamePath();
+
+    Controller();
 
     /**
      * Unmount SD card when destroyed 
