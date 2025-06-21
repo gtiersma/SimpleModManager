@@ -18,6 +18,7 @@
 #include "iostream"
 
 #include "switch.h"
+#include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
 
 
@@ -27,6 +28,8 @@ LoggerInit([]{
 
 
 int main(int argc, char* argv[]){
+  controller.init();
+
   alchemyLogger.log("launching...");
   LogInfo << "SimpleModManager is starting..." << std::endl;
 
