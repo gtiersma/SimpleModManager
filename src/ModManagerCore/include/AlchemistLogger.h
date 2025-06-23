@@ -21,7 +21,7 @@ public:
     AlchemistLogger();
     ~AlchemistLogger();
 
-    void log(const std::string& message);
+    void log(std::string& message);
 };
 
 extern AlchemistLogger alchemyLogger;
