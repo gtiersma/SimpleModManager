@@ -23,6 +23,7 @@ AlchemistLogger::~AlchemistLogger() {
 }
 
 void AlchemistLogger::log(const std::string& message) {
-  fsFileWrite(&file, offset, message.c_str(), message.size(), FsWriteOption_Flush);
-  offset += message.size();
+  std::string linedMessage = message + "\n";
+  fsFileWrite(&file, offset, linedMessage.c_str(), linedMessage.size(), FsWriteOption_Flush);
+  offset += linedMessage.size();
 }
