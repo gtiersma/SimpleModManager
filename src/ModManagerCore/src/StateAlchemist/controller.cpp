@@ -8,6 +8,13 @@
 Controller controller;
 
 
+void Controller::setTitleId(const u64& titleId) {
+  this->titleId = titleId;
+
+  // Create the Atmosphere title ID folder for the current game
+  FsManager::createFolderIfNeeded(this->getAtmospherePath());
+}
+
 /**
  * Formats u64 title ID into a hexidecimal string
  */
@@ -514,9 +521,6 @@ Controller::Controller() {
   pminfoInitialize();
 
   FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
-
-  // Create the Atmosphere title ID folder for the current game
-  FsManager::createFolderIfNeeded(this->getAtmospherePath());
 }
 
 /**

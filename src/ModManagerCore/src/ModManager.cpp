@@ -20,7 +20,7 @@ ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
 
 // setters
 void ModManager::setGameId(const u64 &gameId) {
-  controller.titleId = gameId;
+  controller.setTitleId(gameId);
 }
 
 // getters

@@ -9,9 +9,10 @@
 
 class Controller {
   public:
-    u64 titleId; // The current Game's Title ID
     std::string group;
     std::string source;
+
+    void setTitleId(const u64& titleId);
 
     /**
      * Formats u64 title ID into a hexidecimal string
@@ -132,6 +133,7 @@ class Controller {
     ~Controller();
 
   private:
+    u64 titleId; // The current Game's Title ID
 
     /**
      * Returns all files belonging to a mod from the atmosphere active mods folder to their original location

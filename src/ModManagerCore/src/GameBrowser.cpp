@@ -51,7 +51,7 @@ ModsPresetHandler &GameBrowser::getModPresetHandler(){
 
 // Browse
 void GameBrowser::selectGame(const u64 &titleId_) {
-  controller.titleId = titleId_;
+  controller.setTitleId(titleId_);
   _isGameSelected_ = true;
 }
 

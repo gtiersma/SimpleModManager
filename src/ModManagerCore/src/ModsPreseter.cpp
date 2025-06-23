@@ -20,7 +20,7 @@
 
 
 void ModsPresetHandler::setGameId(const u64 &gameId_) {
-  controller.titleId = gameId_;
+  controller.setTitleId(gameId_);
   this->readConfigFile();
 }
 
