@@ -21,7 +21,7 @@
 
 
 void ModsPresetHandler::setGameId(const u64 &gameId_) {
-  controller.titleId = gameId_;
+  controller.setTitleId(gameId_);
   alchemyLogger.log("MODS PRESETER: setting game ID: " + controller.getHexTitleId());
   this->readConfigFile();
 }

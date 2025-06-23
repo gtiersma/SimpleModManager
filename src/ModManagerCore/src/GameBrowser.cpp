@@ -53,7 +53,7 @@ ModsPresetHandler &GameBrowser::getModPresetHandler(){
 // Browse
 void GameBrowser::selectGame(const u64 &titleId_) {
   alchemyLogger.log("GameBrowser::selectGame();");
-  controller.titleId = titleId_;
+  controller.setTitleId(titleId_);
   alchemyLogger.log("GAME BROWSER: set title ID: " + controller.getHexTitleId());
   _isGameSelected_ = true;
 }
