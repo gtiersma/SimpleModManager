@@ -36,7 +36,6 @@ private:
 
   // memory handled by brls
   brls::ListItem* _itemConfigPreset_{nullptr};
-  brls::ListItem* _itemResetModsCache_{nullptr};
   brls::ListItem* _itemDisableAllMods_{nullptr};
   brls::ListItem* _itemGameIdentification_{nullptr};
 

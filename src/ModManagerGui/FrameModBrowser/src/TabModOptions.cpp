@@ -144,7 +144,6 @@ void TabModOptions::initialize() {
   this->buildGameIdentificationItem();
 
   // finally add to view
-  this->addView(_itemResetModsCache_);
   this->addView(_itemDisableAllMods_);
   this->addView(_itemGameIdentification_);
 

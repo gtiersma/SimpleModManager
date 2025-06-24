@@ -34,9 +34,6 @@ std::string MetaManager::getHexTitleId(const u64& titleId) {
 u64 MetaManager::getNumericTitleId(const std::string& titleId) {
   std::string idCopy = titleId;
 
-  // Remove leading 0s
-  idCopy.erase(0, titleId.find_first_not_of('0') + 1);
-
   u64 numericId = 0;
   for (char c : idCopy) {
     numericId <<= 4;
