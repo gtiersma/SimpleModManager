@@ -19,10 +19,6 @@
 #include <ModManager.h>
 
 
-void ModsPresetHandler::setGameId(const u64 &gameId_) {
-  controller.setTitleId(gameId_);
-  this->readConfigFile();
-}
 
 const std::vector<PresetData> &ModsPresetHandler::getPresetList() const {
   return _presetList_;

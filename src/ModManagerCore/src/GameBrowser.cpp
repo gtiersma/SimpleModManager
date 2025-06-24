@@ -87,25 +87,20 @@ uint8_t* GameBrowser::getFolderIcon(const std::string& gameFolder_){
 
 // protected
 void GameBrowser::init(){
-  auto gameList = GenericToolbox::lsDirs(ALCHEMIST_PATH);
-
-  std::vector<size_t> nGameMod;
-  nGameMod.reserve( gameList.size() );
-  for( auto& game : gameList ){
-    nGameMod.emplace_back(
-        GenericToolbox::lsDirs(controller.getGamePath()).size()
-        );
+  auto folderList = GenericToolbox::lsDirs(ALCHEMIST_PATH);
+  
+  // Filter out any folders that are definitely no Switch Title ID:
+  std::vector<std::string> gameList;
+  for (auto& folder : folderList) {
+    if (MetaManager::isTitleId(folder)) {
+      gameList.push_back(folder);
+    }
   }
-
-  auto ordering = GenericToolbox::getSortPermutation(nGameMod, [](size_t a_, size_t b_){ return a_ > b_; });
-  GenericToolbox::applyPermutation(gameList, ordering);
-  GenericToolbox::applyPermutation(nGameMod, ordering);
 
   _selector_.getEntryList().reserve( gameList.size() );
   for( size_t iGame = 0 ; iGame < gameList.size() ; iGame++ ){
     _selector_.getEntryList().emplace_back();
     _selector_.getEntryList().back().title = gameList[iGame];
-    _selector_.getEntryList().back().tag = "(" + std::to_string(nGameMod[iGame]) + " mods)";
   }
 }
 

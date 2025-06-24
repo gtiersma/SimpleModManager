@@ -48,9 +48,6 @@ class ModManager {
 public:
   explicit ModManager(GameBrowser* owner_);
 
-  // setters
-  void setGameId(const u64 &gameId);
-
   // getters
   const Selector &getSelector() const;
   const std::vector<ModEntry> &getModList() const;

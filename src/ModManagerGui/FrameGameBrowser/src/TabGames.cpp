@@ -12,6 +12,7 @@
 
 #include <sstream>
 #include <StateAlchemist/constants.h>
+#include <StateAlchemist/meta_manager.h>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabGames]");
@@ -55,7 +56,7 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       if(icon != nullptr){ item->setThumbnail(icon, 0x20000); }
       item->getClickEvent()->subscribe([&, gameEntry](View* view) {
         LogWarning << "Opening \"" << gameEntry.title << "\"" << std::endl;
-        getGameBrowser().selectGame(std::stoi(gameEntry.title));
+        getGameBrowser().selectGame(MetaManager::getNumericTitleId(gameEntry.title));
         auto* modsBrowser = new FrameModBrowser( &_owner_->getGuiModManager() );
         brls::Application::pushView(modsBrowser, brls::ViewAnimation::SLIDE_LEFT);
         modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
