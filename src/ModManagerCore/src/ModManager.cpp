@@ -19,12 +19,6 @@
 
 ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
 
-// setters
-void ModManager::setGameId(const u64 &gameId) {
-  alchemyLogger.log("MOD MANAGER: set game ID: " + controller.getHexTitleId());
-  controller.setTitleId(gameId);
-}
-
 // getters
 const Selector &ModManager::getSelector() const {
   return _selector_;

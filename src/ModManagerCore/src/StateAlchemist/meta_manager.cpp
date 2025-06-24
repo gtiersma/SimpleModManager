@@ -29,6 +29,45 @@ std::string MetaManager::getHexTitleId(const u64& titleId) {
 }
 
 /**
+ * Reverse of getHexTitleId
+ */
+u64 MetaManager::getNumericTitleId(const std::string& titleId) {
+  std::string idCopy = titleId;
+
+  // Remove leading 0s
+  idCopy.erase(0, titleId.find_first_not_of('0') + 1);
+
+  u64 numericId = 0;
+  for (char c : idCopy) {
+    numericId <<= 4;
+    if (c >= 'A' && c <= 'F') {
+      numericId |= (c - 'A' + 10);
+    } else if (c >= 'a' && c <= 'f') {
+      numericId |= (c - 'a' + 10);
+    } else {
+      numericId |= (c - '0');
+    }
+  }
+
+  return numericId;
+}
+
+bool MetaManager::isTitleId(const std::string& titleId) {
+
+  // If length is not 16, it's not a title ID
+  if (titleId.size() != 16) {
+    return false;
+  }
+
+  // If there are any non-hex characters, it's not a title ID
+  if (titleId.find_first_not_of("0123456789abcdefABCDEF") != std::string::npos) {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Parses the name of an entity from a folder name
  */
 std::string MetaManager::parseName(const std::string& folderName) {

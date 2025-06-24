@@ -23,8 +23,6 @@ public:
 
   ModsPresetHandler() = default;
 
-  void setGameId(const u64 &gameId_);
-
   [[nodiscard]] const std::vector<PresetData> &getPresetList() const;
   std::vector<PresetData> &getPresetList();
 

@@ -12,6 +12,16 @@ namespace MetaManager {
   std::string getHexTitleId(const u64& titleId);
 
   /**
+   * Reverse of getHexTitleId
+   */
+  u64 getNumericTitleId(const std::string& titleId);
+
+  /**
+   * Checks if a string is capable of being an actual title ID
+   */
+  bool isTitleId(const std::string& titleId);
+
+  /**
    * Parses the name of an entity from a folder name
    */
   std::string parseName(const std::string& folderName);

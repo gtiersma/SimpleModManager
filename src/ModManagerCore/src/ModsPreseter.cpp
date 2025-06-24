@@ -20,11 +20,6 @@
 #include <AlchemistLogger.h>
 
 
-void ModsPresetHandler::setGameId(const u64 &gameId_) {
-  controller.setTitleId(gameId_);
-  alchemyLogger.log("MODS PRESETER: setting game ID: " + controller.getHexTitleId());
-  this->readConfigFile();
-}
 
 const std::vector<PresetData> &ModsPresetHandler::getPresetList() const {
   return _presetList_;
