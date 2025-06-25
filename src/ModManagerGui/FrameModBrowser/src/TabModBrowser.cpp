@@ -53,7 +53,7 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
         defaultEntry.group = mod.group;
         
         // memory allocation
-        auto* item = new brls::ListItem(mod.getLabel() + " DEFAULT", "", "");
+        auto* item = new brls::ListItem(defaultEntry.getLabel() + " DEFAULT", "", "");
 
         // initialization
         item->getClickEvent()->subscribe([&, this, mod](View* view) {
