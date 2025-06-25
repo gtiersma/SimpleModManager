@@ -39,7 +39,7 @@ void GuiModManager::applyMod(const std::string &modName_) {
   std::istringstream iss(modName_);
   std::vector<std::string> modGrouping;
   std::string individualModGrouping;
-  while (std::getline(iss, individualModGrouping, ',')) {
+  while (std::getline(iss, individualModGrouping, '/')) {
     modGrouping.push_back(individualModGrouping);
   }
 
