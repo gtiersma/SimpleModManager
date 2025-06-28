@@ -36,12 +36,13 @@ SubtabFrame::SubtabFrame()
 {
     //Create sidebar
     this->sidebar = new Sidebar();
+    this->sidebar->setWidth(this->SIDE_BAR_WIDTH);
 
     // Setup content view
-    this->layout = new BoxLayout(BoxLayoutOrientation::HORIZONTAL);
-    layout->addView(sidebar);
+    this->boxLayout = new BoxLayout(BoxLayoutOrientation::HORIZONTAL);
+    boxLayout->addView(sidebar);
 
-    this->setContentView(layout);
+    this->setContentView(boxLayout);
 
     this->registerAction("brls/hints/back"_i18n, Key::B, [this] { return this->onCancel(); });
 }
@@ -64,16 +65,16 @@ void SubtabFrame::switchToView(View* view)
     if (this->rightPane == view)
         return;
 
-    if (this->layout->getViewsCount() > 1)
+    if (this->boxLayout->getViewsCount() > 1)
     {
         if (this->rightPane)
             this->rightPane->willDisappear(true);
-        this->layout->removeView(1, false);
+        this->boxLayout->removeView(1, false);
     }
 
     this->rightPane = view;
     if (this->rightPane != nullptr)
-        this->layout->addView(this->rightPane, true, true); // addView() calls willAppear()
+        this->boxLayout->addView(this->rightPane, true, true); // addView() calls willAppear()
 }
 
 void SubtabFrame::addTab(std::string label, View* view)
@@ -100,7 +101,7 @@ void SubtabFrame::addSeparator()
 View* SubtabFrame::getDefaultFocus()
 {
     // Try to focus the right pane
-    if (this->layout->getViewsCount() > 1)
+    if (this->boxLayout->getViewsCount() > 1)
     {
         View* newFocus = this->rightPane->getDefaultFocus();
 
@@ -125,14 +126,9 @@ void SubtabFrame::setContentView(View* view)
     this->invalidate();
 }
 
-void AppletFrame::layout(NVGcontext* vg, Style* style, FontStash* stash)
+void SubtabFrame::layout(NVGcontext* vg, Style* style, FontStash* stash)
 {
-    this->contentView->setBoundaries(
-        this->x,
-        this->y + style->AppletFrame.headerHeightRegular,
-        this->width,
-        this->height - style->AppletFrame.footerHeight - style->AppletFrame.headerHeightRegular
-    );
+    this->contentView->setBoundaries(this->x, this->y, this->width, this->height);
     this->contentView->invalidate();
 }
 
