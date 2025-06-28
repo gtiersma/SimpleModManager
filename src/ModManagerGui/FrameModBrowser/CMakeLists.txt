@@ -25,6 +25,7 @@ target_include_directories( FrameModBrowser PUBLIC
 
 target_link_libraries( FrameModBrowser PUBLIC
     Borealis
+    CommonUi
     CoreExtension
     switch::libnx
     -L/opt/devkitpro/portlibs/switch/lib
