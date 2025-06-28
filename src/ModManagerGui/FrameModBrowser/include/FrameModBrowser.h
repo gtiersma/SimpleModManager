@@ -5,7 +5,6 @@
 #ifndef SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 #define SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 
-#include <TabModBrowser.h>
 #include <TabModPlugins.h>
 #include <TabModOptions.h>
 #include <TabModPresets.h>
@@ -16,6 +15,7 @@
 #include <borealis.hpp>
 
 #include "string"
+#include "TabGroupBrowser.h"
 
 
 class FrameModBrowser : public brls::TabFrame {
@@ -25,7 +25,7 @@ public:
   bool onCancel() override;
 
   uint8_t *getIcon();
-  TabModBrowser* getTabModBrowser(){ return _tabModBrowser_; }
+  TabGroupBrowser* getTabGroupBrowser(){ return _tabGroupBrowser_; }
   TabModPresets* getTabModPresets(){ return _tabModPresets_; }
 
 
@@ -41,7 +41,7 @@ private:
   GuiModManager* _guiModManagerPtr_{};
 
   // memory handled by brls
-  TabModBrowser* _tabModBrowser_{nullptr};
+  TabGroupBrowser* _tabGroupBrowser_{nullptr};
   TabModOptions* _tabModOptions_{nullptr};
   TabModPresets* _tabModPresets_{nullptr};
   TabModPlugins* _tabModPlugins_{nullptr};

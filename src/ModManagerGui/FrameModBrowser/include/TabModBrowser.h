@@ -15,31 +15,24 @@
 #include "string"
 
 
-struct ModItem;
 class FrameModBrowser;
 
 class TabModBrowser : public brls::List {
 
 public:
-  explicit TabModBrowser(FrameModBrowser* owner_);
-
-  void updateDisplayedModsStatus();
+  explicit TabModBrowser(FrameModBrowser* owner_, std::string group_);
 
   void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
-  [[nodiscard]] const ModManager& getModManager() const;
+  ModManager& getModManager();
 
 private:
+  ~TabModBrowser();
   FrameModBrowser* _owner_{nullptr};
-  std::vector<ModItem> _modItemList_{};
-};
+  std::vector<ModSource> _mods_;
 
-
-struct ModItem{
-  int modIndex{-1};
-
-  // memory is handled by brls -> could be lost in the wild but handy to keep somewhere
-  brls::ListItem* item{nullptr}; // deleted in BoxLayout::~BoxLayout()
+  // Label used for the setting to turn a mod off
+  const std::string _DEFAULT_LABEL_{"UNMODIFIED"}; 
 };
 
 

@@ -17,8 +17,9 @@
 
 ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std::string& presetName_) : _owner_(owner_){
 
+  // TODO: BROKEN
   // fill the item list
-  for( auto& availableMod : _owner_->getGameBrowser().getModManager().getModList() ){
+  /*for( auto& availableMod : _owner_->getGameBrowser().getModManager().getModList() ){
     auto* item = new brls::ListItem( availableMod.getLabel(), "", "" );
 
     // add mod
@@ -55,7 +56,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 
     // keep the pointer of the list in order to update the tags
     _availableModItemList_.emplace_back( item );
-  }
+  }*/
 
   // the list that will appear
   auto* modViewList = new brls::List();

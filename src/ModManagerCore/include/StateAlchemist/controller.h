@@ -125,6 +125,11 @@ class Controller {
      */
     std::string getGamePath();
 
+    /**
+     * Gets the file path for the specified group
+     */
+    std::string getGroupPath();
+
     Controller();
 
     /**
@@ -141,11 +146,6 @@ class Controller {
      * Essentially the same as deactivating the mod, except this can't be used with the default mod option.
      */
     void returnFiles(const std::string& mod);
-
-    /**
-     * Gets the file path for the specified group
-     */
-    std::string getGroupPath();
 
     /**
      * Gets the file path for the specified source within the group

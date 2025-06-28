@@ -14,45 +14,51 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <borealis/list.hpp>
 
 struct ApplyCache{
   std::string statusStr{"UNCHECKED"};
   double applyFraction{0};
 };
 
-struct ModEntry{
-  ModEntry() = default;
-  explicit ModEntry(std::string mod_): mod(std::move(mod_)) {}
+/**
+ * Object containing data related to a "source" (something moddable in a game)
+ */
+struct ModSource{
+  ModSource() = default;
 
-  std::string mod;
+  /**
+   * @param source_ String label of the name of the moddable thing
+   * @param mods_ List of available mods for the moddable thing
+   */
+  explicit ModSource(std::string source_, std::vector<std::string> mods_): source(std::move(source_)), mods(std::move(mods_)) {}
+
   std::string source;
-  std::string group;
+  std::vector<std::string> mods;
 
-  const std::string getLabel() const {
-    return group + "/" + source + "/" + mod;
-  }
+  // UI control for changing this source's active mod
+  brls::SelectListItem* item;
 };
-
-ENUM_EXPANDER(
-    ResultModAction, 0,
-    Success,
-    Fail,
-    Abort
-);
 
 
 class GameBrowser;
 
+/**
+ * Class for interacting with mods
+ * 
+ * Originally part of vanilla SimpleModManager. Now uses StateAlchemist as a backend.
+ * 
+ * Set the group in controller.group; all interactions in this class are scoped to that group.
+ */
 class ModManager {
 
 public:
   explicit ModManager(GameBrowser* owner_);
 
-  // getters
-  const Selector &getSelector() const;
-  const std::vector<ModEntry> &getModList() const;
-
-  std::vector<ModEntry> &getModList();
+  /**
+   * Gets a list of all ModSources that belong to the current group
+   */
+  const std::vector<ModSource> &getGroupedModList() const;
 
   // shortcuts
   const ConfigHolder& getConfig() const;
@@ -60,18 +66,13 @@ public:
 
   // selector related
   void updateModList();
-  void resetAllMods();
 
   // mod management
-  ResultModAction applyMod(int modIndex_);
-  ResultModAction applyMod(const std::string& modName_);
-  ResultModAction applyModList(const std::vector<std::string> &modNamesList_);
+  unsigned getActiveIndex(const ModSource& source_);
 
-  void removeMod(int modIndex_);
-  void removeMod(const std::string &modName_);
+  void applyMod(const std::string& source_, const std::string& modName_);
 
-  // utils
-  int getModIndex(const std::string& modName_);
+  void removeMod(const std::string& source_);
 
   // preset
   void reloadCustomPreset();
@@ -86,8 +87,11 @@ private:
   std::string _gameName_{};
   std::vector<std::string> _ignoredFileList_{};
 
-  Selector _selector_;
-  std::vector<ModEntry> _modList_{};
+  /**
+   * List of mods only belonging to group that is current when constructed.
+   * Can always be reconstructed by calling updateModList if the group changes.
+   */
+  std::vector<ModSource> _groupedModList_{};
 
   std::string _currentPresetName_{};
 };
