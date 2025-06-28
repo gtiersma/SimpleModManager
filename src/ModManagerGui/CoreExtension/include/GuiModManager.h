@@ -38,7 +38,6 @@ public:
   void applyModsList(std::vector<std::string>& modsList_);
   void removeMod(const std::string &modName_);
   void removeAllMods();
-  std::vector<std::string> getActiveMods();
   bool isActive(const std::string &modName_);
 
 protected:

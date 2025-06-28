@@ -90,25 +90,6 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
   }
 }
 
-std::vector<std::string> GuiModManager::getActiveMods() {
-  std::vector<std::string> activeMods;
-  
-  std::vector<std::string> groups = controller.loadGroups(false);
-
-  for (const std::string& group : groups) {
-    controller.group = group;
-    std::vector<std::string> sources = controller.loadSources(false);
-    for (const std::string& source : sources) {
-      ModEntry modEntry(controller.getActiveMod(source));
-      modEntry.source = source;
-      modEntry.group = group;
-      activeMods.push_back(modEntry.getLabel());
-    }
-  }
-
-  return activeMods;
-}
-
 void GuiModManager::startApplyModThread(const std::string& modName_) {
   LogReturnIf(modName_.empty(), "No mod name provided. Can't apply mod.");
 

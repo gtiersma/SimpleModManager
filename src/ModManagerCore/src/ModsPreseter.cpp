@@ -117,10 +117,7 @@ void ModsPresetHandler::editPreset( size_t entryIndex_ ) {
       controller.source = source;
       std::vector<std::string> mods = controller.loadMods(true);
       for (auto& mod : mods) {
-        ModEntry modEntry(mod);
-        modEntry.source = source;
-        modEntry.group = group;
-        modsList.push_back(modEntry.getLabel());
+        modsList.push_back(group + "/" + source + "/" + mod);
       }
     }
   }
