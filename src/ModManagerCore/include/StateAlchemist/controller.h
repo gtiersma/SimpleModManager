@@ -132,7 +132,7 @@ class Controller {
      */
     std::string getGroupPath();
 
-    Controller();
+    Controller() = default;
 
     /**
      * Unmount SD card when destroyed 
