@@ -8,8 +8,7 @@
 
 #include <GuiModManager.h>
 #include "ModManager.h"
-
-#include <borealis.hpp>
+#include "subtab_frame.hpp"
 
 #include "map"
 #include "string"
@@ -17,7 +16,7 @@
 
 class FrameModBrowser;
 
-class TabGroupBrowser : public brls::TabFrame {
+class TabGroupBrowser : public brls::SubtabFrame {
 
 public:
   explicit TabGroupBrowser(FrameModBrowser* owner_);
