@@ -325,8 +325,6 @@ void Controller::activateMod(const std::string& mod) {
   // Path to the "mod" folder in alchemy's directory:
   std::string modPath = this->getModPath(mod);
 
-  LogInfo << "Installing files in: " << modPath << std::endl;
-
   // The txt file for the active mod:
   FsFile movedFilesFile = FsManager::initFile(this->getMovedFilesListFilePath(mod));
 

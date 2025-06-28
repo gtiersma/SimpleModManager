@@ -4,7 +4,6 @@
 
 #include "FrameModBrowser.h"
 
-#include <TabModBrowser.h>
 #include <TabModPlugins.h>
 #include <TabModPresets.h>
 #include <TabModOptions.h>
@@ -34,39 +33,24 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
   this->setFooterText("SimpleModManager");
 
-  ModManager &modManager = getGameBrowser().getModManager();
-  modManager.updateModList();
+  auto* parametersTabList = new brls::List();
 
-  if( not modManager.getModList().empty() ){
+  auto* presetParameter = new brls::ListItem("Config preset", "", "");
+  presetParameter->setValue( getGameBrowser().getConfigHandler().getConfig().getCurrentPresetName() );
+  parametersTabList->addView(presetParameter);
 
-    auto* parametersTabList = new brls::List();
+  _tabGroupBrowser_ = new TabGroupBrowser( this );
+  _tabModPresets_ = new TabModPresets( this );
+  _tabModOptions_ = new TabModOptions( this );
+  _tabModPlugins_ = new TabModPlugins( this );
 
-    auto* presetParameter = new brls::ListItem("Config preset", "", "");
-    presetParameter->setValue( getGameBrowser().getConfigHandler().getConfig().getCurrentPresetName() );
-    parametersTabList->addView(presetParameter);
+  _tabModOptions_->initialize();
 
-    _tabModBrowser_ = new TabModBrowser( this );
-    _tabModPresets_ = new TabModPresets( this );
-    _tabModOptions_ = new TabModOptions( this );
-    _tabModPlugins_ = new TabModPlugins( this );
-
-    _tabModOptions_->initialize();
-
-    this->addTab("Mod Browser", _tabModBrowser_);
-    this->addSeparator();
-    this->addTab("Mod Presets", _tabModPresets_);
-    this->addTab("Options", _tabModOptions_);
-    this->addTab("Plugins", _tabModPlugins_);
-
-  }
-  else{
-    auto* list = new brls::List();
-    LogError("Can't open: %s", gamePath.c_str());
-    auto* item = new brls::ListItem("Error: Can't open " + gamePath , "", "");
-    list->addView(item);
-    this->addTab("Mod Browser", list);
-  }
-
+  this->addTab("Mod Browser", _tabGroupBrowser_);
+  this->addSeparator();
+  this->addTab("Mod Presets", _tabModPresets_);
+  this->addTab("Options", _tabModOptions_);
+  this->addTab("Plugins", _tabModPlugins_);
 }
 bool FrameModBrowser::onCancel() {
   alchemyLogger.log("FrameModBrowser::onCancel();");
