@@ -98,28 +98,6 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
   }
 }
 
-std::vector<std::string> GuiModManager::getActiveMods() {
-  std::vector<std::string> activeMods;
-  
-  alchemyLogger.log("GUI MOD MANAGER: loading groups..."); 
-  std::vector<std::string> groups = controller.loadGroups(false);
-
-  for (const std::string& group : groups) {
-    controller.group = group;
-    alchemyLogger.log("GUI MOD MANAGER: loading sources in group: " + group); 
-    std::vector<std::string> sources = controller.loadSources(false);
-    for (const std::string& source : sources) {
-      alchemyLogger.log("GUI MOD MANAGER: getting active mod of source: " + source); 
-      ModEntry modEntry(controller.getActiveMod(source));
-      modEntry.source = source;
-      modEntry.group = group;
-      activeMods.push_back(modEntry.getLabel());
-    }
-  }
-
-  return activeMods;
-}
-
 void GuiModManager::startApplyModThread(const std::string& modName_) {
   alchemyLogger.log("GuiModManager::startApplyModThread();");
   LogReturnIf(modName_.empty(), "No mod name provided. Can't apply mod.");

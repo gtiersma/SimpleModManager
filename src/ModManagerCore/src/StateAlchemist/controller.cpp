@@ -3,7 +3,6 @@
 #include "StateAlchemist/constants.h"
 #include "StateAlchemist/fs_manager.h"
 #include "StateAlchemist/meta_manager.h"
-#include <Logger.h>
 
 Controller controller;
 

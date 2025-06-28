@@ -15,7 +15,7 @@
 #include "string"
 
 
-class FrameGroupBrowser;
+class FrameModBrowser;
 
 class TabGroupBrowser : public brls::TabFrame {
 

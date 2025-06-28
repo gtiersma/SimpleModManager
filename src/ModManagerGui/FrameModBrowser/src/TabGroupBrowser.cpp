@@ -29,7 +29,7 @@ TabGroupBrowser::TabGroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
   }
 }
 
-bool FrameModBrowser::onCancel() {
+bool TabGroupBrowser::onCancel() {
 
   // Go back to sidebar
   auto* lastFocus = brls::Application::getCurrentFocus();

@@ -25,6 +25,7 @@ target_include_directories( ModManagerCore PUBLIC
     )
 
 target_link_libraries( ModManagerCore PUBLIC
+    Borealis
     switch::libnx
     -L/opt/devkitpro/portlibs/switch/lib
     -L/opt/devkitpro/libnx/lib
