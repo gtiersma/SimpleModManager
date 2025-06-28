@@ -14,7 +14,6 @@
 #include <vector>
 #include <string>
 #include <utility>
-#include <borealis.hpp>
 
 struct ApplyCache{
   std::string statusStr{"UNCHECKED"};
@@ -35,9 +34,6 @@ struct ModSource{
 
   std::string source;
   std::vector<std::string> mods;
-
-  // UI control for changing this source's active mod
-  brls::SelectListItem* item;
 };
 
 

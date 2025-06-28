@@ -27,7 +27,6 @@ public:
   ModManager& getModManager();
 
 private:
-  ~TabModBrowser();
   FrameModBrowser* _owner_{nullptr};
   std::vector<ModSource> _mods_;
 

@@ -35,26 +35,25 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_) : _own
     std::vector<std::string> options = mod.mods;
     options.push_back(_DEFAULT_LABEL_);
 
-    mod.item = new brls::SelectListItem(mod.source, options, modManager.getActiveIndex(mod) + 1, "");
-    this->addView(mod.item);
-  }
-}
+    brls::SelectListItem* item = new brls::SelectListItem(mod.source, options, modManager.getActiveIndex(mod) + 1, "");
 
-// Apply any changes made once the class is destroyed
-TabModBrowser::~TabModBrowser() {
-  for (auto& mod : _mods_) {
-    controller.source = mod.source;
+    item->getValueSelectedEvent()->subscribe([&, mod](size_t selection) {
+      controller.source = mod.source;
 
-    // getSelectedValue counts the default mod at index 0 which isn't a mod, so subtract 1 from it to get the real mod index
-    unsigned activeIndex = mod.item->getSelectedValue() - 1;
+      // Index 0 is the default option
+      if (selection == 0) {
+        controller.deactivateMod();
+      } else {
+        // mod.mods doesn't have the default option at the begin, so index must be offset by -1:
+        std::string activeMod(mod.mods[selection - 1]);
+        
+        if (controller.getActiveMod(mod.source) != activeMod) {
+          controller.activateMod(activeMod);
+        }
+      }
+    });
 
-    // Because of the subtraction of 1, it will be -1 if there is no active mod, so remove the active mod if that's the case
-    if (activeIndex == -1) {
-      controller.deactivateMod();
-    } else if (controller.getActiveMod(mod.source) != mod.mods[activeIndex]) {
-      // If the active mod was changed in the UI, update it in the filesystem:
-      controller.activateMod(mod.mods[activeIndex]);
-    }
+    this->addView(item);
   }
 }
 
