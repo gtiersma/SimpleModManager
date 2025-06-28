@@ -32,7 +32,10 @@
 namespace brls
 {
 
-// An applet frame containing a sidebar on the left with multiple tabs
+/**
+ * Same as TabFrame except it's spacing is more suitable for being within another view.
+ * No header/footer spacing and smaller tab list width, for instance.
+ */
 class SubtabFrame : public View
 {
   public:
@@ -62,11 +65,13 @@ class SubtabFrame : public View
 
     Sidebar* sidebar;
 
+    static const int SIDE_BAR_WIDTH = 300;
+
   protected:
     void layout(NVGcontext* vg, Style* style, FontStash* stash) override;
 
   private:
-    BoxLayout* layout;
+    BoxLayout* boxLayout;
     View* rightPane = nullptr;
 
     View* contentView = nullptr;
