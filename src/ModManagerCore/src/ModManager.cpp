@@ -56,14 +56,16 @@ void ModManager::updateModList() {
  * 
  * Returns -1 if no mod is active
  */
-unsigned ModManager::getActiveIndex(const ModSource& source_) {
+int ModManager::getActiveIndex(const ModSource& source_) {
   alchemyLogger.log("MOD MANAGER: getting active index of source: " + source_.source);
   unsigned activeIndex = -1;
   std::string activeMod = controller.getActiveMod(source_.source);
 
+  if (activeMod.empty()) { return activeIndex; }
+
   for (auto& mod : source_.mods) {
-    if (mod == activeMod) { break; }
     activeIndex++;
+    if (mod == activeMod) { break; }
   }
   alchemyLogger.log("MOD MANAGER: active index: " + std::to_string(activeIndex));
 

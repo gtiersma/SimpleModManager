@@ -36,24 +36,31 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_) : _own
 
   for (auto& mod : _mods_) {
     std::vector<std::string> options = mod.mods;
-    options.push_back(_DEFAULT_LABEL_);
+    options.insert(options.begin(), _DEFAULT_LABEL_);
 
     brls::SelectListItem* item = new brls::SelectListItem(mod.source, options, modManager.getActiveIndex(mod) + 1, "");
 
-    item->getValueSelectedEvent()->subscribe([&, mod](size_t selection) {
+    item->getValueSelectedEvent()->subscribe([&](size_t selection) {
+
+      // Note: selection is -1 if backed out of selecting
+      if (selection == -1) { return; }
+
       controller.source = mod.source;
 
-      // Index 0 is the default option
       if (selection == 0) {
+        // If the default option was chosen, deactivate whatever mod is active:
         alchemyLogger.log("TAB MOD BROWSER: Applying mod " + controller.source + " deactivation");
         controller.deactivateMod();
       } else {
-        // mod.mods doesn't have the default option at the begin, so index must be offset by -1:
-        std::string activeMod(mod.mods[selection - 1]);
-        
-        if (controller.getActiveMod(mod.source) != activeMod) {
+
+        // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
+        std::string modToActivate(mod.mods[selection - 1]);
+
+        // If the mod was changed, deactivate the old one and activate the new one:
+        if (controller.getActiveMod(mod.source) != modToActivate) {
           alchemyLogger.log("TAB MOD BROWSER: Applying mod " + activeMod + " activation");
-          controller.activateMod(activeMod);
+          controller.deactivateMod();
+          controller.activateMod(modToActivate);
         }
       }
     });

@@ -64,7 +64,7 @@ public:
   void updateModList();
 
   // mod management
-  unsigned getActiveIndex(const ModSource& source_);
+  int getActiveIndex(const ModSource& source_);
 
   void applyMod(const std::string& source_, const std::string& modName_);
 
