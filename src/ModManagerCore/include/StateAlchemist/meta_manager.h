@@ -50,5 +50,5 @@ namespace MetaManager {
    */
   bool namesMatch(char* folderName, const std::string& entityName);
 
-  void MetaManager::tryResult(Result result);
+  void tryResult(Result result);
 }
