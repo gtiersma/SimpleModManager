@@ -11,7 +11,7 @@ void Controller::init() {
   pmdmntInitialize();
   pminfoInitialize();
 
-  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
+  MetaManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
 }
 
 void Controller::setTitleId(const u64& titleId) {
