@@ -1,6 +1,7 @@
 #include "StateAlchemist/meta_manager.h"
 #include "StateAlchemist/constants.h"
 #include <string.h>
+#include <AlchemistLogger.h>
 
 /**
  * Formats a u64 title ID into a hexidecimal string
@@ -70,6 +71,7 @@ bool MetaManager::isTitleId(const std::string& titleId) {
  * @return map of title IDs to names
  */
 std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64>& titleIds) {
+  alchemyLogger.log("MetaManager::listTitles();");
   std::map<std::string, std::string> titles;
 
   size_t totalBufferSize = TITLE_BUFFER_SIZE * titleIds.size();
@@ -86,14 +88,18 @@ std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64
       totalBufferSize
     )
   );
+  alchemyLogger.log("MetaManager::listTitles: nsListApplicationTitle pass: " + std::to_string(!hasFailed));
 
   // Fail soft - instead of throwing error, just skip continuing to gather data if something ever fails:
   hasFailed = hasFailed || R_FAILED(asyncValueWait(&asyncValue, 1'000'000'000));
+  alchemyLogger.log("MetaManager::listTitles: asyncValueWait pass: " + std::to_string(!hasFailed));
 
   s32 offset;
   size_t dataSize;
   hasFailed = hasFailed || R_FAILED(asyncValueGet(&asyncValue, &offset, sizeof(offset)));
+  alchemyLogger.log("MetaManager::listTitles: asyncValueGet pass: " + std::to_string(!hasFailed));
   hasFailed = hasFailed || R_FAILED(asyncValueGetSize(&asyncValue, &dataSize));
+  alchemyLogger.log("MetaManager::listTitles: asyncValueGetSize pass: " + std::to_string(!hasFailed));
 
   // If something failed, just use the title IDs as the names
   // We don't want to crash the entire app just because we can't get the names
@@ -111,6 +117,7 @@ std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64
   }
 
   delete[] buffer;
+  alchemyLogger.log("MetaManager::listTitles: done");
 
   return titles;
 }
