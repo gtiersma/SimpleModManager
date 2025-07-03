@@ -12,6 +12,7 @@
 
 #include <switch.h>
 
+#include <map>
 #include <string>
 
 
@@ -25,18 +26,16 @@ public:
   // getters
   bool isGameSelected() const;
   const ConfigHandler &getConfigHandler() const;
-  const Selector &getSelector() const;
-  Selector &getSelector();
   ModManager &getModManager();
   ModsPresetHandler &getModPresetHandler();
   ConfigHandler &getConfigHandler();
+  std::map<std::string, std::string> &getGameList();
 
   // browse
   void selectGame(const u64 &gameName_);
 
   // IO
   void scanInputs(u64 kDown, u64 kHeld);
-  void rebuildSelectorMenu();
 
   // utils -> move to gui lib??
   uint8_t* getFolderIcon(const std::string& gameFolder_);
@@ -51,6 +50,8 @@ private:
   ModManager _modManager_{this};
   ConfigHandler _configHandler_;
   ModsPresetHandler _modPresetHandler_;
+
+  std::map<std::string, std::string> _gameList_;
 
 };
 

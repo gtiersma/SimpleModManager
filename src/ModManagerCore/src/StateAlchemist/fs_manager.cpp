@@ -23,7 +23,7 @@ FsDir FsManager::openFolder(const std::string& path, const u32& mode) {
 void FsManager::changeFolder(FsDir& dir, const std::string& path, const u32& mode) {
   fsDirClose(&dir);
 
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsOpenDirectory(&sdSystem, toPathBuffer(path).get(), mode, &dir)
   );
 }
@@ -31,7 +31,7 @@ void FsManager::changeFolder(FsDir& dir, const std::string& path, const u32& mod
 void FsManager::createFolderIfNeeded(const std::string& path) {
   if (doesFolderExist(path)) { return; }
 
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsCreateDirectory(&sdSystem, toPathBuffer(path).get())
   );
 }
@@ -51,7 +51,7 @@ bool FsManager::doesFolderExist(const std::string& path) {
   } else if (result == 0x202) {
     return false; // File does not exist
   } else {
-    FsManager::tryResult(result); // Handle other exceptions
+    MetaManager::tryResult(result); // Handle other exceptions
     return false; // This line will never be reached, but added for completeness
   }
 }
@@ -71,7 +71,7 @@ bool FsManager::doesFileExist(const std::string& path) {
   } else if (result == 0x202) {
     return false; // File does not exist
   } else {
-    FsManager::tryResult(result); // Handle other exceptions
+    MetaManager::tryResult(result); // Handle other exceptions
     return false; // This line will never be reached, but added for completeness
   }
 }
@@ -136,14 +136,14 @@ FsFile FsManager::initFile(const std::string& path) {
 
   // If the file hasn't been created yet, create it:
   if (!doesFileExist(path)) {
-    FsManager::tryResult(
+    MetaManager::tryResult(
       fsFsCreateFile(&sdSystem, charPath.get(), 0, 0)
     );
   }
 
   // Open the file:
   FsFile file;
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsOpenFile( &sdSystem, charPath.get(), FsOpenMode_Write | FsOpenMode_Append, &file)
   );
 
@@ -159,7 +159,7 @@ FsFile FsManager::initFile(const std::string& path) {
 void FsManager::write(FsFile& file, const std::string& text, s64& offset) {
 
   // Write the path to the end of the list:
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFileWrite(&file, offset, text.c_str(), text.size(), FsWriteOption_Flush)
   );
 
@@ -171,7 +171,7 @@ void FsManager::write(FsFile& file, const std::string& text, s64& offset) {
  * Changes the fromPath file parameter's location to what's specified as the toPath parameter
  */
 void FsManager::moveFile(const std::string& fromPath, const std::string& toPath) {
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsRenameFile(&sdSystem, toPathBuffer(fromPath).get(), toPathBuffer(toPath).get())
   );
 }
@@ -190,13 +190,4 @@ std::unique_ptr<char[]> FsManager::toPathBuffer(const std::string& path) {
 
   // Return the unique_ptr which will handle garbage collection automatically
   return pathBuffer;
-}
-
-/**
- * Throws an error if the Result fails
- */
-void FsManager::tryResult(Result result) {
-  if (R_FAILED(result)) {
-    fatalThrow(result);
-  }
 }

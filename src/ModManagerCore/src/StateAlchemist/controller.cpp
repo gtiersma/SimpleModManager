@@ -136,7 +136,7 @@ void Controller::lockSource(const std::string& source) {
   std::string currentPath = this->getGroupPath() + "/" + MetaManager::buildFolderName(source, rating, false);
   std::string newPath = this->getGroupPath() + "/" + MetaManager::buildFolderName(source, rating, true);
 
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsRenameDirectory(
       &FsManager::sdSystem,
       FsManager::toPathBuffer(currentPath).get(),
@@ -157,7 +157,7 @@ void Controller::unlockSource(const std::string& source) {
   std::string currentPath = this->getGroupPath() + "/" + MetaManager::buildFolderName(source, rating, true);
   std::string newPath = this->getGroupPath() + "/" + MetaManager::buildFolderName(source, rating, false);
 
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsRenameDirectory(
       &FsManager::sdSystem,
       FsManager::toPathBuffer(currentPath).get(),
@@ -237,7 +237,7 @@ void Controller::saveRatings(const std::map<std::string, u8>& ratings) {
     std::string currentPath = this->getModPath(mod);
     std::string newPath = this->getSourcePath() + "/" + MetaManager::buildFolderName(mod, rating, false);
 
-    FsManager::tryResult(
+    MetaManager::tryResult(
       fsFsRenameDirectory(
         &FsManager::sdSystem,
         FsManager::toPathBuffer(currentPath).get(),
@@ -254,7 +254,7 @@ void Controller::saveDefaultRating(const u8& rating) {
   bool isLocked = this->isSourceLocked(this->source);
   std::string newPath = this->getGroupPath() + "/" + MetaManager::buildFolderName(this->source, rating, isLocked);
 
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsRenameDirectory(
       &FsManager::sdSystem,
       FsManager::toPathBuffer(this->getSourcePath()).get(),
@@ -517,7 +517,7 @@ Controller::Controller() {
   pmdmntInitialize();
   pminfoInitialize();
 
-  FsManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
+  MetaManager::tryResult(fsOpenSdCardFileSystem(&FsManager::sdSystem));
 }
 
 /**
@@ -541,14 +541,12 @@ void Controller::returnFiles(const std::string& mod) {
 
   // Try to open the active mod's txt file to get the list of files that were moved to atmosphere's folder:
   FsFile movedFilesList;
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsOpenFile(&FsManager::sdSystem, movedFilesListPath.get(), FsOpenMode_Read, &movedFilesList)
   );
 
   s64 fileSize;
-  FsManager::tryResult(
-    fsFileGetSize(&movedFilesList, &fileSize)
-  );
+  MetaManager::tryResult(fsFileGetSize(&movedFilesList, &fileSize));
 
   // Initialize buffer and path builder:
   s64 offset = 0;
@@ -559,7 +557,7 @@ void Controller::returnFiles(const std::string& mod) {
   while (offset < fileSize) {
 
     // Read some of the text into our buffer:
-    FsManager::tryResult(
+    MetaManager::tryResult(
       fsFileRead(&movedFilesList, offset, buffer, FILE_LIST_BUFFER_SIZE, FsReadOption_None, nullptr)
     );
 
@@ -583,7 +581,7 @@ void Controller::returnFiles(const std::string& mod) {
 
       // Not sure why, but the file needs to be re-opened after each time a file moved:
       fsFileClose(&movedFilesList);
-      FsManager::tryResult(
+      MetaManager::tryResult(
         fsFsOpenFile(&FsManager::sdSystem, movedFilesListPath.get(), FsOpenMode_Read, &movedFilesList)
       );
     }
@@ -596,7 +594,7 @@ void Controller::returnFiles(const std::string& mod) {
   fsFileClose(&movedFilesList);
 
   // Once all the files have been returned, delete the txt list:
-  FsManager::tryResult(
+  MetaManager::tryResult(
     fsFsDeleteFile(&FsManager::sdSystem, movedFilesListPath.get())
   );
 }

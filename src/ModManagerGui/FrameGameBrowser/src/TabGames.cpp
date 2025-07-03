@@ -21,7 +21,7 @@ LoggerInit([]{
 TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
   LogWarning << "Building game tab..." << std::endl;
 
-  auto gameList = this->getGameBrowser().getSelector().getEntryList();
+  std::map<std::string, std::string> gameList = this->getGameBrowser().getGameList();
 
   if( gameList.empty() ){
     LogInfo << "No game found." << std::endl;
@@ -43,20 +43,23 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
 
     _gameList_.reserve( gameList.size() );
     for( auto& gameEntry : gameList ){
-      LogScopeIndent;
-      LogInfo << "Adding game folder: \"" << gameEntry.title << "\"" << std::endl;
+      std::string titleId(gameEntry.first);
+      std::string name(gameEntry.second);
 
-      std::string gamePath{GenericToolbox::joinPath(ALCHEMIST_FOLDER, gameEntry.title)};
+      LogScopeIndent;
+      LogInfo << "Adding game folder: \"" << titleId << "\"" << std::endl;
+
+      std::string gamePath{GenericToolbox::joinPath(ALCHEMIST_FOLDER, titleId)};
 
       // memory allocation
-      // TODO: Game ID being used instead of name
-      auto* item = new brls::ListItem(gameEntry.title, "", "");
+      auto* item = new brls::ListItem(name, "", "");
 
-      auto* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(gameEntry.title);
+      auto* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(titleId);
       if(icon != nullptr){ item->setThumbnail(icon, 0x20000); }
-      item->getClickEvent()->subscribe([&, gameEntry](View* view) {
-        LogWarning << "Opening \"" << gameEntry.title << "\"" << std::endl;
-        getGameBrowser().selectGame(MetaManager::getNumericTitleId(gameEntry.title));
+
+      item->getClickEvent()->subscribe([&, titleId](View* view) {
+        LogWarning << "Opening \"" << titleId << "\"" << std::endl;
+        getGameBrowser().selectGame(MetaManager::getNumericTitleId(titleId));
         auto* modsBrowser = new FrameModBrowser( &_owner_->getGuiModManager() );
         brls::Application::pushView(modsBrowser, brls::ViewAnimation::SLIDE_LEFT);
         modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
@@ -66,7 +69,7 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
 
 
       _gameList_.emplace_back();
-      _gameList_.back().title = gameEntry.title;
+      _gameList_.back().title = name;
       _gameList_.back().item = item;
 
     }

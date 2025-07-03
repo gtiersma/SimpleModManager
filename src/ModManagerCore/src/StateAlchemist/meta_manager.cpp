@@ -65,6 +65,57 @@ bool MetaManager::isTitleId(const std::string& titleId) {
 }
 
 /**
+ * Lists the names of the games given the vector of title IDs
+ * 
+ * @return map of title IDs to names
+ */
+std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64>& titleIds) {
+  std::map<std::string, std::string> titles;
+
+  size_t totalBufferSize = TITLE_BUFFER_SIZE * titleIds.size();
+  void* buffer = new (std::align_val_t(0x1000)) u8[totalBufferSize]();
+
+  AsyncValue asyncValue;
+  bool hasFailed = R_FAILED(
+    nsListApplicationTitle(
+      &asyncValue,
+      NsApplicationControlSource_Storage,
+      titleIds.data(),
+      titleIds.size(),
+      buffer,
+      totalBufferSize
+    )
+  );
+
+  // Fail soft - instead of throwing error, just skip continuing to gather data if something ever fails:
+  hasFailed = hasFailed || R_FAILED(asyncValueWait(&asyncValue, 1'000'000'000));
+
+  s32 offset;
+  size_t dataSize;
+  hasFailed = hasFailed || R_FAILED(asyncValueGet(&asyncValue, &offset, sizeof(offset)));
+  hasFailed = hasFailed || R_FAILED(asyncValueGetSize(&asyncValue, &dataSize));
+
+  // If something failed, just use the title IDs as the names
+  // We don't want to crash the entire app just because we can't get the names
+  if (hasFailed) {
+    for (size_t i = 0; i < titleIds.size(); i++) {
+      std::string hexTitleId = getHexTitleId(titleIds[i]);
+      titles[hexTitleId] = hexTitleId;
+    }
+  } else {
+    // Gather names from the buffer
+    NacpLanguageEntry* nacpTitles = (NacpLanguageEntry*)((u8*)buffer + offset);
+    for (size_t i = 0; i < dataSize / sizeof(NacpLanguageEntry); i++) {
+      titles[getHexTitleId(titleIds[i])] = std::string(nacpTitles[i].name);
+    }
+  }
+
+  delete[] buffer;
+
+  return titles;
+}
+
+/**
  * Parses the name of an entity from a folder name
  */
 std::string MetaManager::parseName(const std::string& folderName) {
@@ -146,4 +197,13 @@ std::string MetaManager::buildFolderName(const std::string& modName, const u8& r
 bool MetaManager::namesMatch(char* folderName, const std::string& entityName) {
   std::string folderNameStr(folderName);
   return parseName(folderNameStr) == entityName;
+}
+
+/**
+ * Throws an error if the Result fails
+ */
+void MetaManager::tryResult(Result result) {
+  if (R_FAILED(result)) {
+    fatalThrow(result);
+  }
 }

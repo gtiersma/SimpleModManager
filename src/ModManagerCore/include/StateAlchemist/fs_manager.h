@@ -68,9 +68,4 @@ namespace FsManager {
    * Use `get()` when passing it to a libnx function
    */
   std::unique_ptr<char[]> toPathBuffer(const std::string& path);
-
-  /**
-   * Throws an error if the Result fails
-   */
-  void tryResult(Result result);
 }

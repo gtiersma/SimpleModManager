@@ -33,12 +33,6 @@ bool GameBrowser::isGameSelected() const {
 const ConfigHandler &GameBrowser::getConfigHandler() const {
   return _configHandler_;
 }
-const Selector &GameBrowser::getSelector() const{
-  return _selector_;
-}
-Selector &GameBrowser::getSelector(){
-  return _selector_;
-}
 ModManager &GameBrowser::getModManager(){
   return _modManager_;
 }
@@ -48,35 +42,14 @@ ConfigHandler &GameBrowser::getConfigHandler(){
 ModsPresetHandler &GameBrowser::getModPresetHandler(){
   return _modPresetHandler_;
 }
+std::map<std::string, std::string> &GameBrowser::getGameList(){
+  return _gameList_;
+}
 
 // Browse
 void GameBrowser::selectGame(const u64 &titleId_) {
   controller.setTitleId(titleId_);
   _isGameSelected_ = true;
-}
-
-void GameBrowser::rebuildSelectorMenu(){
-  _selector_.clearMenu();
-
-  _selector_.getHeader() >> "SimpleModManager v" >> Toolbox::getAppVersion() << std::endl;
-  _selector_.getHeader() << GenericToolbox::ColorCodes::redBackground << "Current Folder : ";
-  _selector_.getHeader() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-
-  _selector_.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-  _selector_.getFooter() << "  Page (" << _selector_.getCursorPage() + 1 << "/" << _selector_.getNbPages() << ")" << std::endl;
-  _selector_.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-  _selector_.getFooter() << "Configuration preset : " << GenericToolbox::ColorCodes::greenBackground;
-  _selector_.getFooter() << _configHandler_.getConfig().getCurrentPresetName() << GenericToolbox::ColorCodes::resetColor << std::endl;
-  _selector_.getFooter() << "install-mods-base-folder = " + _configHandler_.getConfig().getCurrentPreset().installBaseFolder << std::endl;
-  _selector_.getFooter() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
-  _selector_.getFooter() << " A : Select folder" >> "Y : Change config preset " << std::endl;
-  _selector_.getFooter() << " B : Quit" << std::endl;
-  _selector_.getFooter() << std::endl;
-  _selector_.getFooter() << std::endl;
-  _selector_.getFooter() << std::endl;
-
-  _selector_.invalidatePageCache();
-  _selector_.refillPageEntryCache();
 }
 
 uint8_t* GameBrowser::getFolderIcon(const std::string& gameFolder_){
@@ -90,17 +63,13 @@ void GameBrowser::init(){
   auto folderList = GenericToolbox::lsDirs(ALCHEMIST_PATH);
   
   // Filter out any folders that are definitely no Switch Title ID:
-  std::vector<std::string> gameList;
+  std::vector<u64> idList;
   for (auto& folder : folderList) {
     if (MetaManager::isTitleId(folder)) {
-      gameList.push_back(folder);
+      idList.push_back(MetaManager::getNumericTitleId(folder));
     }
   }
 
-  _selector_.getEntryList().reserve( gameList.size() );
-  for( size_t iGame = 0 ; iGame < gameList.size() ; iGame++ ){
-    _selector_.getEntryList().emplace_back();
-    _selector_.getEntryList().back().title = gameList[iGame];
-  }
+  _gameList_ = MetaManager::listTitles(idList);
 }
 
