@@ -88,12 +88,15 @@ std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64
       totalBufferSize
     )
   );
+  alchemyLogger.log("MetaManager::listTitles: nsListApplicationTitle");
 
   // Fail soft - instead of throwing error, just skip continuing to gather data if something ever fails:
   tryResult(asyncValueWait(&asyncValue, 1'000'000'000));
+  alchemyLogger.log("MetaManager::listTitles: WAIT");
 
   u8 refBuffer[sizeof(s32) + sizeof(size_t)];
   tryResult(asyncValueGet(&asyncValue, refBuffer, sizeof(refBuffer)));
+  alchemyLogger.log("MetaManager::listTitles: GET");
   
   // Copy data in memory
   s32 offset;
