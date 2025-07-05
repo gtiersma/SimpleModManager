@@ -92,10 +92,14 @@ std::map<std::string, std::string> MetaManager::listTitles(const std::vector<u64
   // Fail soft - instead of throwing error, just skip continuing to gather data if something ever fails:
   tryResult(asyncValueWait(&asyncValue, 1'000'000'000));
 
+  u8 refBuffer[sizeof(s32) + sizeof(size_t)];
+  tryResult(asyncValueGet(&asyncValue, refBuffer, sizeof(refBuffer)));
+  
+  // Copy data in memory
   s32 offset;
   size_t dataSize;
-  tryResult(asyncValueGet(&asyncValue, &offset, sizeof(offset)));
-  tryResult(asyncValueGetSize(&asyncValue, &dataSize));
+  memcpy(&offset, refBuffer, sizeof(offset));
+  memcpy(&dataSize, refBuffer + sizeof(offset), sizeof(dataSize));
 
   // If something failed, just use the title IDs as the names
   // We don't want to crash the entire app just because we can't get the names

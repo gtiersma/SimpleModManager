@@ -17,7 +17,7 @@ const std::string ALCHEMIST_FOLDER = "mod_alchemy";
 const std::string ALCHEMIST_PATH = "/" + ALCHEMIST_FOLDER;
 const std::string ATMOSPHERE_PATH = "/atmosphere/contents/";
 
-// Size in memory to reserve for storing a game's title
-const size_t TITLE_BUFFER_SIZE = sizeof(NacpLanguageEntry) + sizeof(u64) + sizeof(NsApplicationControlData);
+// Size in bytes to reserve for storing a singlegame's title
+const size_t TITLE_BUFFER_SIZE = 407;
 
 #endif
