@@ -18,6 +18,6 @@ const std::string ALCHEMIST_PATH = "/" + ALCHEMIST_FOLDER;
 const std::string ATMOSPHERE_PATH = "/atmosphere/contents/";
 
 // Size in bytes to reserve for storing a singlegame's title
-const size_t TITLE_BUFFER_SIZE = 407;
+const size_t TITLE_BUFFER_SIZE = 4096;
 
 #endif
