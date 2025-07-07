@@ -59,11 +59,14 @@ void runGui(){
   LogInfo << "Creating root frame..." << std::endl;
   auto* mainFrame = new FrameRoot();
 
+  alchemyLogger.log("runGui: pushing view");
   LogInfo << "Pushing to view" << std::endl;
   brls::Application::pushView( mainFrame );
+  alchemyLogger.log("runGui: regist acts");
   mainFrame->registerAction( "", brls::Key::PLUS, []{return true;}, true );
   mainFrame->updateActionHint( brls::Key::PLUS, "" ); // make the change visible
 
+  alchemyLogger.log("runGui: main loop");
   while( brls::Application::mainLoop() ){  }
 
   nsExit();
