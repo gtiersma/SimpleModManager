@@ -7,6 +7,7 @@
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
 #include "GenericToolbox.Misc.h"
+#include "Logger.h"
 
 #include <string>
 #include <vector>
@@ -14,6 +15,11 @@
 #include <sstream>
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
+
+
+LoggerInit([]{
+  Logger::setUserHeaderStr("[GuiModManager]");
+});
 
 
 void GuiModManager::setTriggerUpdateModsDisplayedStatus(bool triggerUpdateModsDisplayedStatus) {
@@ -28,6 +34,7 @@ GameBrowser &GuiModManager::getGameBrowser(){ return _gameBrowser_; }
 
 void GuiModManager::applyMod(const std::string &modName_) {
   alchemyLogger.log("GuiModManager::applyMod();");
+  LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   modApplyMonitor = ModApplyMonitor();
 
   // Get the group, source and mod name from the string into a vector --- TEMP CODE
@@ -46,6 +53,7 @@ void GuiModManager::applyMod(const std::string &modName_) {
 
 bool GuiModManager::isActive(const std::string &modName_) {
   alchemyLogger.log("GuiModManager::isActive();");
+  LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   
   // Get the group, source and mod name from the string into a vector --- TEMP CODE
   std::istringstream iss(modName_);
@@ -63,6 +71,8 @@ bool GuiModManager::isActive(const std::string &modName_) {
 void GuiModManager::removeMod(const std::string &modName_){
   alchemyLogger.log("GuiModManager::removeMod();");
   if (!this->isActive(modName_)) return;
+
+  LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   
   // Get the group, source and mod name from the string into a vector --- TEMP CODE
   std::istringstream iss(modName_);
@@ -90,6 +100,7 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
 
 void GuiModManager::startApplyModThread(const std::string& modName_) {
   alchemyLogger.log("GuiModManager::startApplyModThread();");
+  LogReturnIf(modName_.empty(), "No mod name provided. Can't apply mod.");
 
   this->_triggeredOnCancel_ = false;
 
@@ -98,6 +109,7 @@ void GuiModManager::startApplyModThread(const std::string& modName_) {
 }
 void GuiModManager::startRemoveModThread(const std::string& modName_){
   alchemyLogger.log("GuiModManager::startRemoveModThread();");
+  LogReturnIf(modName_.empty(), "No mod name provided. Can't remove mod.");
 
   this->_triggeredOnCancel_ = false;
 
@@ -124,6 +136,7 @@ void GuiModManager::applyModFunction(const std::string& modName_){
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
+  LogWarning << "Applying: " << modName_ << std::endl;
   _loadingPopup_.getMonitorView()->setHeaderTitle("Applying mod...");
   _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::greenNvgColor);
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
@@ -139,6 +152,7 @@ void GuiModManager::applyModPresetFunction(const std::string& presetName_){
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
+  LogInfo << "Removing all installed mods..." << std::endl;
   _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::redNvgColor);
   _loadingPopup_.getMonitorView()->setHeaderTitle("Removing all installed mods...");
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
@@ -146,6 +160,7 @@ void GuiModManager::applyModPresetFunction(const std::string& presetName_){
   _loadingPopup_.getMonitorView()->setSubTitlePtr( &modRemoveMonitor.currentFile );
   this->removeAllMods();
 
+  LogInfo("Applying Mod Preset");
   _loadingPopup_.getMonitorView()->setHeaderTitle("Applying mod preset...");
   _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::greenNvgColor);
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
@@ -165,6 +180,7 @@ void GuiModManager::removeModFunction(const std::string& modName_){
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
+  LogWarning << "Removing: " << modName_ << std::endl;
   _loadingPopup_.getMonitorView()->setHeaderTitle("Removing mod...");
   _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::redNvgColor);
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
@@ -178,6 +194,7 @@ void GuiModManager::removeAllModsFunction(){
   // push the progress bar to the view
   _loadingPopup_.pushView();
 
+  LogInfo("Removing all installed mods...");
   _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::redNvgColor);
   _loadingPopup_.getMonitorView()->setHeaderTitle("Removing all installed mods...");
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();

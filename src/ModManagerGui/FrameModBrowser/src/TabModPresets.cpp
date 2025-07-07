@@ -9,7 +9,12 @@
 #include <ThumbnailPresetEditor.h>
 
 #include <borealis.hpp>
+#include "Logger.h"
 #include <AlchemistLogger.h>
+
+LoggerInit([]{
+  Logger::setUserHeaderStr("[TabModPresets]");
+});
 
 
 void TabModPresets::draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) {
@@ -26,6 +31,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
   alchemyLogger.log("TabModPresets::assignButtons();");
 
   if( item == nullptr ){
+    LogError << "Can't assign buttons to nullptr item" << std::endl;
     return;
   }
 
@@ -143,6 +149,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
 
 void TabModPresets::updatePresetItems() {
   alchemyLogger.log("TabModPresets::updatePresetItems();");
+  LogInfo << "Updating displayed preset items" << std::endl;
 
   _triggerUpdateItem_ = false;
 
@@ -155,7 +162,10 @@ void TabModPresets::updatePresetItems() {
   // keep the index out of the for loop
   size_t iPreset = 0;
 
+  LogInfo << "Adding " << presetList.size() << " presets..." << std::endl;
   for( ; iPreset < presetList.size() ; iPreset++ ){
+    LogScopeIndent;
+    LogInfo << "Adding mod preset: " << presetList[iPreset].name << std::endl;
     if( iPreset+1 > _itemList_.size() ){
       // missing slot
       _itemList_.emplace_back( new brls::ListItem( presetList[iPreset].name ) );
@@ -171,6 +181,7 @@ void TabModPresets::updatePresetItems() {
 
   // need one more slot for create new preset
   if( iPreset+1 > _itemList_.size() ){
+    LogInfo << "(re)-Creating add button" << std::endl;
     _itemList_.emplace_back( new brls::ListItem( "\uE402 Create a new mod preset" ) );
 
     this->addView( _itemList_[ iPreset ] );
@@ -186,6 +197,9 @@ void TabModPresets::updatePresetItems() {
     _itemList_[iPreset]->collapse();
   }
 
+  LogTrace << GET_VAR_NAME_VALUE(getViewsCount()) << std::endl;
+  LogTrace << GET_VAR_NAME_VALUE(_itemList_.size()) << std::endl;
+
   // focus is lost as the list has been cleared
 //  brls::Application::giveFocus( this->getDefaultFocus() );
 
@@ -196,6 +210,7 @@ void TabModPresets::updatePresetItems() {
 //  }
 
   brls::Application::unblockInputs();
+  LogInfo << "Leaving update..." << std::endl;
 }
 
 

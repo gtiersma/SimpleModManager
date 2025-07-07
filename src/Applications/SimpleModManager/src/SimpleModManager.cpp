@@ -9,6 +9,8 @@
 
 #include "ConfigHandler.h"
 
+#include "Logger.h"
+
 #include <borealis.hpp>
 
 #include <string>
@@ -19,8 +21,15 @@
 #include <AlchemistLogger.h>
 
 
+LoggerInit([]{
+  Logger::setUserHeaderStr("[SimpleModManager.nro]");
+});
+
+
 int main(int argc, char* argv[]){
   alchemyLogger.log("launching...");
+
+  LogInfo << "SimpleModManager is starting..." << std::endl;
 
   // https://github.com/jbeder/yaml-cpp/wiki/Tutorial
 //  YAML::Node config = YAML::LoadFile("config.yaml");
@@ -39,14 +48,19 @@ int main(int argc, char* argv[]){
 
 void runGui(){
   alchemyLogger.log("runGui();");
+  LogInfo << "Starting GUI..." << std::endl;
+  LogThrowIf(R_FAILED(nsInitialize()), "nsInitialize Failed");
+
+  brls::Logger::setLogLevel(brls::LogLevel::ERROR);
 
   brls::i18n::loadTranslations("en-US");
+  LogThrowIf(not brls::Application::init("SimpleModManager"), "Unable to init Borealis application");
 
+  LogInfo << "Creating root frame..." << std::endl;
   auto* mainFrame = new FrameRoot();
 
-  alchemyLogger.log("runGui: about to push the view");
+  LogInfo << "Pushing to view" << std::endl;
   brls::Application::pushView( mainFrame );
-  alchemyLogger.log("runGui: the view was pushed");
   mainFrame->registerAction( "", brls::Key::PLUS, []{return true;}, true );
   mainFrame->updateActionHint( brls::Key::PLUS, "" ); // make the change visible
 

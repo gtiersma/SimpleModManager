@@ -8,8 +8,13 @@
 
 
 
+#include "Logger.h"
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
+
+LoggerInit([]{
+  Logger::setUserHeaderStr("[TabModOptions]");
+});
 
 
 TabModOptions::TabModOptions(FrameModBrowser* owner_) : _owner_(owner_) {  }
@@ -30,6 +35,7 @@ void TabModOptions::buildFolderInstallPresetItem() {
 
   // On click : show scrolling up menu
   _itemConfigPreset_->getClickEvent()->subscribe([this](View* view) {
+    LogInfo << "Opening config preset selector..." << std::endl;
 
     // build the choice list + preselection
     int preSelection{0};
@@ -46,15 +52,18 @@ void TabModOptions::buildFolderInstallPresetItem() {
     // function that will set the config preset from the Dropdown menu selection (int result)
     brls::ValueSelectedEvent::Callback valueCallback = [this](int result) {
       if( result == -1 ){
+        LogDebug << "Not selected. Return." << std::endl;
         // auto pop view
         return;
       }
 
       if( result == 0 ){
+        LogDebug << "Same as config selected. Deleting file..." << std::endl;
         this->getModManager().setCustomPreset("");
         _itemConfigPreset_->setValue( "Inherited from the main menu" );
       }
       else{
+        LogDebug << "Selected " << result - 1 << std::endl;
         this->getModManager().setCustomPreset( this->getModManager().getConfig().presetList[result - 1].name );
         _itemConfigPreset_->setValue( this->getModManager().getCurrentPresetName() );
       }

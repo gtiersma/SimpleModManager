@@ -8,6 +8,7 @@
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
+#include "Logger.h"
 
 #include <sstream>
 #include <StateAlchemist/constants.h>
@@ -37,7 +38,6 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       std::string gamePath { GenericToolbox::joinPath(ALCHEMIST_FOLDER, MetaManager::getHexTitleId(gameEntry.titleId)) };
 
       // memory allocation
-      alchemyLogger.log("TabGames: game will have name " + gameEntry.name + " in ui");
       auto* item = new brls::ListItem(gameEntry.name, "", "");
 
       if (gameEntry.icon != nullptr) {
