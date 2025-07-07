@@ -74,16 +74,17 @@ void GameBrowser::init(){
       u64 titleId = MetaManager::getNumericTitleId(folder);
       Game game(titleId, folder);
 
+      alchemyLogger.log("nsGetApplicationControlData!!!");
       NsApplicationControlData gameData;
-      if (R_SUCCEEDED(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr))) {
-        memcpy(game.icon, gameData.icon, 0x20000);
-      }
+      MetaManager::tryResult(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr));
+      memcpy(game.icon, gameData.icon, 0x20000);
 
+      alchemyLogger.log("nsGetApplicationDesiredLanguage!!!");
       NacpLanguageEntry* nameData;
-      if (R_SUCCEEDED(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData))) {
-        game.name = nameData->name;
-      }
+      MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData));
+      game.name = nameData->name;
 
+      alchemyLogger.log("done!!!");
       _gameList_.push_back(game);
     }
   }
