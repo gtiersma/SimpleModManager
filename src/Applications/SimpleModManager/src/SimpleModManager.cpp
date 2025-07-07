@@ -43,7 +43,7 @@ void runGui() {
   alchemyLogger.log("runGui();");
 
   brls::i18n::loadTranslations("en-US");
-  MetaManager::tryResult(brls::Application::init("SimpleModManager"));
+  brls::Application::init("SimpleModManager");
 
   auto* mainFrame = new FrameRoot();
 
