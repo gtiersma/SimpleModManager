@@ -7,17 +7,9 @@
 #include "FrameRoot.h"
 #include <AlchemistLogger.h>
 
-#include "Logger.h"
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabGeneralSettings]");
-});
-
 TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {
   alchemyLogger.log("TabGeneralSettings::TabGeneralSettings();");
-  LogWarning << "Building general settings tab..." << std::endl;
   this->rebuildLayout();
-  LogInfo << "General settings tab build." << std::endl;
 }
 
 void TabGeneralSettings::rebuildLayout() {
@@ -41,7 +33,6 @@ void TabGeneralSettings::rebuildLayout() {
 
       this->getConfig().setSelectedPresetIndex( result );
       _owner_->getGuiModManager().getGameBrowser().getConfigHandler().dumpConfigToFile();
-      LogInfo << "Selected: " << this->getConfig().getCurrentPreset().name << " -> " << this->getConfig().getCurrentPreset().installBaseFolder << std::endl;
       this->itemInstallLocationPreset->setValue(this->getConfig().getCurrentPresetName() );
     };
 

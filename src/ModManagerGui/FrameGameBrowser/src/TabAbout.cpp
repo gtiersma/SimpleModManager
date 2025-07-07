@@ -5,20 +5,13 @@
 #include "TabAbout.h"
 #include <Toolbox.h>
 
-#include "Logger.h"
-
 #include <borealis.hpp>
 #include <AlchemistLogger.h>
 
 
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabAbout]");
-});
-
 TabAbout::TabAbout() {
   alchemyLogger.log("TabAbout::TabAbout();");
-  LogWarning << "Building about tab..." << std::endl;
 
   // Subtitle
   auto* shortDescription = new brls::Label(
@@ -86,6 +79,4 @@ TabAbout::TabAbout() {
     true
   );
   this->addView(links);
-
-  LogInfo << "About tab built." << std::endl;
 }

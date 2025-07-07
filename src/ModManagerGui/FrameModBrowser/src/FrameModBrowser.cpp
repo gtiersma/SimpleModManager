@@ -9,14 +9,8 @@
 #include <TabModOptions.h>
 
 #include "GenericToolbox.Switch.h"
-#include "Logger.h"
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
-
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[FrameModBrowser]");
-});
 
 
 FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModManagerPtr_(guiModManagerPtr_) {
@@ -61,7 +55,6 @@ bool FrameModBrowser::onCancel() {
 
   // If the sidebar was already there, the focus has not changed
   if(lastFocus == brls::Application::getCurrentFocus()){
-    LogInfo("Back on games screen...");
     brls::Application::popView(brls::ViewAnimation::SLIDE_RIGHT);
   }
   return true;

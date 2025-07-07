@@ -11,17 +11,11 @@
 
 #include "Toolbox.h"
 
-#include "Logger.h"
 #include <AlchemistLogger.h>
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[FrameRoot]");
-});
 
 
 FrameRoot::FrameRoot() {
   alchemyLogger.log("FrameRoot::FrameRoot();");
-  LogWarning << "Build root frame..." << std::endl;
 
   this->setTitle("SimpleModManager");
   this->setFooterText( "v" + Toolbox::getAppVersion() );
@@ -31,7 +25,6 @@ FrameRoot::FrameRoot() {
   this->addTab( "Settings", new TabGeneralSettings(this) );
   this->addTab( "About", new TabAbout() );
 
-  LogInfo << "Root frame built." << std::endl;
 }
 
 bool FrameRoot::onCancel() {

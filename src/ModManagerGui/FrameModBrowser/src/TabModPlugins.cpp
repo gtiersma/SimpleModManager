@@ -7,8 +7,6 @@
 
 #include "FrameModBrowser.h"
 
-#include "Logger.h"
-
 
 #include <switch.h>
 
@@ -16,11 +14,6 @@
 #include "string"
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
-
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabModPlugins]");
-});
 
 
 std::map<std::string, brls::Image *> cached_thumbs;
@@ -46,7 +39,6 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
         controller.getGamePath() + "/.plugins/" + plugin_nros_list[i_nro];
 		std::string selected_plugin_author;
 		std::string selected_plugin_version;
-		LogDebug("Adding plugin: %s", selected_plugin.c_str());
 		FILE *file = fopen(selected_plugin_path.c_str(), "rb");
 		if (file)
 		{
@@ -88,7 +80,6 @@ TabModPlugins::TabModPlugins(FrameModBrowser* owner_) : _owner_(owner_) {
 		auto *item = new brls::ListItem(selected_plugin, "", selected_plugin_author);
 		item->setValue(selected_plugin_version);
 		item->getClickEvent()->subscribe([this, selected_plugin, selected_plugin_path](View *view) {
-      LogDebug << "selected_plugin_path = " << selected_plugin_path << std::endl;
 			auto *dialog = new brls::Dialog("Do you want to start \"" + selected_plugin + "\" ?");
 
 			dialog->addButton("Yes", [selected_plugin_path, dialog](brls::View *view) {
@@ -143,7 +134,6 @@ std::string TabModPlugins::get_extension(const std::string &filename)
 }
 brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
 	alchemyLogger.log("TabModPlugins::load_image_cache();");
-	LogDebug << "Requesting icon: " << filename << std::endl;
 
 	brls::Image *image = nullptr;
 
@@ -155,14 +145,11 @@ brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
 	// found
 	if (it != cached_thumbs.end())
 	{
-		LogDebug << "Icon Already Cached: " << filename << std::endl;
 		image = cached_thumbs[filename_enc];
 	}
 	else
 	// not found
 	{
-		LogDebug << "Icon Not Yet Cached: " << filename << std::endl;
-
 		FILE *file = fopen(filename.c_str(), "rb");
 		if (file)
 		{
@@ -181,8 +168,6 @@ brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
 				fseek(file, header.size + asset_header.icon.offset, SEEK_SET);
 				fread(icon, icon_size, 1, file);
 
-				LogDebug << "Caching New Icon: " << filename << std::endl;;
-
 				image = new brls::Image(icon, icon_size);
 
 				cached_thumbs[filename_enc] = image;
@@ -195,7 +180,6 @@ brls::Image *TabModPlugins::load_image_cache(const std::string& filename) {
 		}
 		else
 		{
-			LogDebug << "Using Unknown Icon For: " << filename << std::endl;
 			image = new brls::Image("romfs:/images/unknown.png");
 		}
 	}

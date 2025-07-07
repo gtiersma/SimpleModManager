@@ -88,7 +88,6 @@ void SubtabFrame::addTab(std::string label, View* view)
     // Switch to first one as soon as we add it
     if (!this->rightPane)
     {
-        Logger::debug("Switching to the first tab");
         this->switchToView(view);
     }
 }
