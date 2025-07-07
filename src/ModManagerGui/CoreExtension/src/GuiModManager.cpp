@@ -90,7 +90,6 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
 
 void GuiModManager::startApplyModThread(const std::string& modName_) {
   alchemyLogger.log("GuiModManager::startApplyModThread();");
-  if (modName_.empty()) return;
 
   this->_triggeredOnCancel_ = false;
 
@@ -99,7 +98,6 @@ void GuiModManager::startApplyModThread(const std::string& modName_) {
 }
 void GuiModManager::startRemoveModThread(const std::string& modName_){
   alchemyLogger.log("GuiModManager::startRemoveModThread();");
-  if (modName_.empty()) return;
 
   this->_triggeredOnCancel_ = false;
 
