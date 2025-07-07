@@ -32,7 +32,7 @@ public:
 
 private:
   FrameRoot* _owner_{};
-  std::vector<GameItem> _gameList_;
+  std::vector<GameItem> _gameItems_;
 
 };
 

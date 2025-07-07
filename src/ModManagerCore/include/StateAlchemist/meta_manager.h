@@ -3,8 +3,6 @@
 #include <switch.h>
 
 #include <string>
-#include <vector>
-#include <map>
 
 namespace MetaManager {
   
@@ -22,8 +20,6 @@ namespace MetaManager {
    * Checks if a string is capable of being an actual title ID
    */
   bool isTitleId(const std::string& titleId);
-
-  std::map<std::string, std::string> listTitles(const std::vector<u64>& titleIds);
 
   /**
    * Parses the name of an entity from a folder name

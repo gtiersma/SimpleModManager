@@ -43,7 +43,7 @@ ConfigHandler &GameBrowser::getConfigHandler(){
 ModsPresetHandler &GameBrowser::getModPresetHandler(){
   return _modPresetHandler_;
 }
-std::map<std::string, std::string> &GameBrowser::getGameList(){
+std::vector<Game> &GameBrowser::getGameList(){
   return _gameList_;
 }
 
@@ -69,13 +69,23 @@ void GameBrowser::init(){
   auto folderList = GenericToolbox::lsDirs(ALCHEMIST_PATH);
   
   // Filter out any folders that are definitely no Switch Title ID:
-  std::vector<u64> idList;
   for (auto& folder : folderList) {
     if (MetaManager::isTitleId(folder)) {
-      idList.push_back(MetaManager::getNumericTitleId(folder));
+      u64 titleId = MetaManager::getNumericTitleId(folder);
+      Game game(titleId, folder);
+
+      NsApplicationControlData gameData;
+      if (R_SUCCEEDED(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr))) {
+        memcpy(game.icon, gameData.icon, 0x20000);
+      }
+
+      NacpLanguageEntry* nameData;
+      if (R_SUCCEEDED(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData))) {
+        game.name = nameData->name;
+      }
+
+      _gameList_.push_back(game);
     }
   }
-
-  _gameList_ = MetaManager::listTitles(idList);
 }
 

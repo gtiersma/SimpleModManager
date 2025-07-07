@@ -12,8 +12,31 @@
 
 #include <switch.h>
 
-#include <map>
+#include <vector>
 #include <string>
+
+struct Game {
+  Game() = default;
+
+  /**
+   * titleId_ & titleIdLabel_ are the same thing, just in different formats
+   * 
+   * By default, name is initialized to just the title ID and icon is null
+   */
+  explicit Game(u64 titleId_, std::string titleIdLabel_) {
+    titleId = titleId_;
+    icon = new uint8_t[0x20000];
+    name = titleIdLabel_;
+  }
+
+  ~Game() {
+    delete[] icon;
+  }
+
+  u64 titleId;
+  uint8_t* icon;
+  std::string name;
+};
 
 
 class GameBrowser{
@@ -29,7 +52,7 @@ public:
   ModManager &getModManager();
   ModsPresetHandler &getModPresetHandler();
   ConfigHandler &getConfigHandler();
-  std::map<std::string, std::string> &getGameList();
+  std::vector<Game> &getGameList();
 
   // browse
   void selectGame(const u64 &gameName_);
@@ -51,7 +74,7 @@ private:
   ConfigHandler _configHandler_;
   ModsPresetHandler _modPresetHandler_;
 
-  std::map<std::string, std::string> _gameList_;
+  std::vector<Game> _gameList_;
 
 };
 

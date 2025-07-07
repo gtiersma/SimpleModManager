@@ -15,19 +15,11 @@
 #include <StateAlchemist/meta_manager.h>
 #include <AlchemistLogger.h>
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabGames]");
-});
-
 TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
   alchemyLogger.log("TabGames::TabGames();");
-  LogWarning << "Building game tab..." << std::endl;
+  std::vector<Game> gameList = this->getGameBrowser().getGameList();
 
-  std::map<std::string, std::string> gameList = this->getGameBrowser().getGameList();
-
-  if( gameList.empty() ){
-    LogInfo << "No game found." << std::endl;
-
+  if (gameList.empty()) {
     std::stringstream ssTitle;
     std::stringstream ssSubTitle;
 
@@ -36,32 +28,24 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
     ssSubTitle << "- To add mods, you need to copy them such as: ";
     ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<name-of-the-mod>/<mods-files-and-folders>." << std::endl;
 
-    _gameList_.emplace_back();
-    _gameList_.back().item = new brls::ListItem( ssTitle.str(), ssSubTitle.str() );
-    _gameList_.back().item->show([](){}, false);
-  }
-  else{
-    LogInfo << "Adding " << gameList.size() << " game folders..." << std::endl;
+    _gameItems_.emplace_back();
+    _gameItems_.back().item = new brls::ListItem( ssTitle.str(), ssSubTitle.str() );
+    _gameItems_.back().item->show([](){}, false);
+  } else {
+    _gameItems_.reserve(gameList.size());
 
-    _gameList_.reserve( gameList.size() );
-    for( auto& gameEntry : gameList ){
-      std::string titleId(gameEntry.first);
-      std::string name(gameEntry.second);
-
-      LogScopeIndent;
-      LogInfo << "Adding game folder: \"" << titleId << "\"" << std::endl;
-
-      std::string gamePath{GenericToolbox::joinPath(ALCHEMIST_FOLDER, titleId)};
+    for(auto& gameEntry : gameList) {
+      std::string gamePath { GenericToolbox::joinPath(ALCHEMIST_FOLDER, MetaManager::getHexTitleId(gameEntry.titleId)) };
 
       // memory allocation
-      auto* item = new brls::ListItem(name, "", "");
+      auto* item = new brls::ListItem(gameEntry.name, "", "");
 
-      auto* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(titleId);
-      if(icon != nullptr){ item->setThumbnail(icon, 0x20000); }
+      if (gameEntry.icon != nullptr) {
+        item->setThumbnail(gameEntry.icon, 0x20000);
+      }
 
-      item->getClickEvent()->subscribe([&, titleId](View* view) {
-        LogWarning << "Opening \"" << titleId << "\"" << std::endl;
-        getGameBrowser().selectGame(MetaManager::getNumericTitleId(titleId));
+      item->getClickEvent()->subscribe([&, gameEntry](View* view) {
+        getGameBrowser().selectGame(gameEntry.titleId);
         auto* modsBrowser = new FrameModBrowser( &_owner_->getGuiModManager() );
         brls::Application::pushView(modsBrowser, brls::ViewAnimation::SLIDE_LEFT);
         modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
@@ -70,23 +54,18 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       item->updateActionHint(brls::Key::A, "Open");
 
 
-      _gameList_.emplace_back();
-      _gameList_.back().title = name;
-      _gameList_.back().item = item;
-
+      _gameItems_.emplace_back();
+      _gameItems_.back().title = gameEntry.name;
+      _gameItems_.back().item = item;
     }
   }
 
-  LogInfo << "Sorting games wrt nb of mods..." << std::endl;
-  GenericToolbox::sortVector(_gameList_, [](const GameItem& a_, const GameItem& b_){
-    return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title); // if true, then a_ goes first
+  GenericToolbox::sortVector(_gameItems_, [](const GameItem& a_, const GameItem& b_){
+    return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title);
   });
-  LogDebug << "Sort done." << std::endl;
 
   // add to the view
-  for( auto& game : _gameList_ ){ this->addView( game.item ); }
-
-  LogInfo << "Game tab build." << std::endl;
+  for (auto& game : _gameItems_) { this->addView( game.item ); }
 }
 
 const GameBrowser& TabGames::getGameBrowser() const{
