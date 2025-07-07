@@ -75,14 +75,12 @@ void GameBrowser::init(){
       Game game(titleId, folder);
 
       NsApplicationControlData gameData;
-      if (R_SUCCEEDED(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr))) {
-        memcpy(game.icon, gameData.icon, 0x20000);
-      }
+      MetaManager::tryResult(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr));
+      memcpy(game.icon, gameData.icon, 0x20000);
 
       NacpLanguageEntry* nameData;
-      if (R_SUCCEEDED(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData))) {
-        game.name = nameData->name;
-      }
+      MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData));
+      game.name = nameData->name;
 
       _gameList_.push_back(game);
     }
