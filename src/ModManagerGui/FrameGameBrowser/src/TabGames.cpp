@@ -13,6 +13,7 @@
 #include <sstream>
 #include <StateAlchemist/constants.h>
 #include <StateAlchemist/meta_manager.h>
+#include <Game.h>
 #include <AlchemistLogger.h>
 
 TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
@@ -40,8 +41,8 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       // memory allocation
       auto* item = new brls::ListItem(gameEntry.name, "", "");
 
-      if (gameEntry.icon != nullptr) {
-        item->setThumbnail(gameEntry.icon, 0x20000);
+      if (gameEntry.getIcon() != nullptr) {
+        item->setThumbnail(gameEntry.getIcon(), 0x20000);
       }
 
       item->getClickEvent()->subscribe([&, gameEntry](View* view) {

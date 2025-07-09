@@ -19,6 +19,7 @@
 #include <StateAlchemist/meta_manager.h>
 #include <StateAlchemist/constants.h>
 #include <AlchemistLogger.h>
+#include <Game.h>
 
 
 GameBrowser::GameBrowser(){ this->init(); }
@@ -74,13 +75,17 @@ void GameBrowser::init(){
       u64 titleId = MetaManager::getNumericTitleId(folder);
       Game game(titleId, folder);
 
+      size_t iconSize = 0;
       NsApplicationControlData gameData;
-      MetaManager::tryResult(nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), nullptr));
-      memcpy(game.icon, gameData.icon, 0x20000);
+      MetaManager::tryResult(
+        nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), &iconSize)
+      );
+      game.setIcon(gameData.icon, iconSize - sizeof(gameData.nacp));
 
       NacpLanguageEntry* nameData;
       MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData));
       game.name = nameData->name;
+      delete[] nameData;
 
       _gameList_.push_back(game);
     }
