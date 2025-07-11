@@ -73,21 +73,30 @@ void GameBrowser::init(){
   for (auto& folder : folderList) {
     if (MetaManager::isTitleId(folder)) {
       u64 titleId = MetaManager::getNumericTitleId(folder);
-      Game game(titleId, folder);
+      auto game = std::make_unique<Game>(titleId, folder);
 
-      size_t iconSize = 0;
-      NsApplicationControlData gameData;
+      // Load the icon for the game:
+      u64 gameDataSize {};
+      auto gameData = std::make_unique<NsApplicationControlData>();
       MetaManager::tryResult(
-        nsGetApplicationControlData(NsApplicationControlSource_Storage, titleId, &gameData, sizeof(gameData), &iconSize)
+        nsGetApplicationControlData(
+          NsApplicationControlSource_Storage,
+          titleId,
+          gameData.get(),
+          sizeof(NsApplicationControlData),
+          &gameDataSize
+        )
       );
-      game.setIcon(gameData.icon, iconSize - sizeof(gameData.nacp));
+      const auto iconSize = gameDataSize - sizeof(NacpStruct);
+      game->icon.resize(iconSize);
+      std::memcpy(game->icon.data(), gameData->icon, game->icon.size());
 
+      // Load the title of the game:
       NacpLanguageEntry* nameData;
-      MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData.nacp, &nameData));
-      game.name = nameData->name;
-      delete[] nameData;
+      MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData->nacp, &nameData));
+      game->name = nameData->name;
 
-      _gameList_.push_back(game);
+      _gameList_.push_back(std::move(*game));
     }
   }
 }

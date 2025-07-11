@@ -9,6 +9,7 @@
 #include <ModManager.h>
 #include <ConfigHandler.h>
 #include <ModsPresetHandler.h>
+#include <Game.h>
 
 #include <switch.h>
 
