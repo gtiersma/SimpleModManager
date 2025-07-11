@@ -39,8 +39,8 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       // memory allocation
       auto* item = new brls::ListItem(gameEntry.name, "", "");
 
-      if (gameEntry.getIcon() != nullptr) {
-        item->setThumbnail(gameEntry.getIcon(), 0x20000);
+      if (gameEntry.icon.size() > 0) {
+        item->setThumbnail(gameEntry.icon.data(), 0x20000);
       }
 
       item->getClickEvent()->subscribe([&, gameEntry](View* view) {
