@@ -5,7 +5,6 @@
 #ifndef SWITCHTEMPLATE_BROWSER_H
 #define SWITCHTEMPLATE_BROWSER_H
 
-#include <Selector.h>
 #include <ModManager.h>
 #include <ConfigHandler.h>
 #include <ModsPresetHandler.h>
@@ -15,6 +14,7 @@
 
 #include <vector>
 #include <string>
+#include <optional>
 
 
 class GameBrowser{
@@ -32,6 +32,8 @@ public:
   ConfigHandler &getConfigHandler();
   std::vector<Game> &getGameList();
 
+  std::optional<Game> getGame(const u64 &titleId_);
+
   // browse
   void selectGame(const u64 &gameName_);
 
@@ -47,7 +49,6 @@ protected:
 private:
   bool _isGameSelected_{false};
 
-  Selector _selector_;
   ModManager _modManager_{this};
   ConfigHandler _configHandler_;
   ModsPresetHandler _modPresetHandler_;

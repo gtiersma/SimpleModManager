@@ -6,7 +6,6 @@
 #define MODAPPLIER_MOD_MANAGER_H
 
 #include <ConfigHandler.h>
-#include "Selector.h"
 
 #include "GenericToolbox.Map.h"
 
