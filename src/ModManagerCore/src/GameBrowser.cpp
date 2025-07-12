@@ -48,6 +48,16 @@ std::vector<Game> &GameBrowser::getGameList(){
   return _gameList_;
 }
 
+std::optional<Game> GameBrowser::getGame(const u64 &titleId_) {
+  for (auto& game : _gameList_) {
+    if (game.titleId == titleId_) {
+      return game;
+    }
+  }
+  
+  return std::nullopt;
+}
+
 // Browse
 void GameBrowser::selectGame(const u64 &titleId_) {
   alchemyLogger.log("GameBrowser::selectGame();");

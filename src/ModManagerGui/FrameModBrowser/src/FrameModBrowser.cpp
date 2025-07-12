@@ -21,22 +21,23 @@ LoggerInit([]{
 
 FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModManagerPtr_(guiModManagerPtr_) {
 
+  GameBrowser& gameBrowser = getGameBrowser();
+  Game game = gameBrowser.getGame(controller.titleId).value();
+
   // fetch game title
-  alchemyLogger.log("FRAME MOD BROWSER: getting title ID: " + controller.getHexTitleId());
-  this->setTitle(controller.getHexTitleId());
+  this->setTitle(game.name);
 
   std::string gamePath = controller.getGamePath();
 
-  _icon_ = GenericToolbox::Switch::Utils::getIconFromTitleId(controller.getHexTitleId());
-  if(_icon_ != nullptr){ this->setIcon(_icon_, 0x20000); }
-  else{ this->setIcon("romfs:/images/icon_corner.png"); }
+  if (game.icon.size() > 0) { this->setIcon(game.icon.data(), 0x20000); }
+  else { this->setIcon("romfs:/images/icon_corner.png"); }
 
   this->setFooterText("SimpleModManager");
 
   auto* parametersTabList = new brls::List();
 
   auto* presetParameter = new brls::ListItem("Config preset", "", "");
-  presetParameter->setValue( getGameBrowser().getConfigHandler().getConfig().getCurrentPresetName() );
+  presetParameter->setValue(gameBrowser.getConfigHandler().getConfig().getCurrentPresetName());
   parametersTabList->addView(presetParameter);
 
   _tabGroupBrowser_ = new TabGroupBrowser( this );

@@ -9,6 +9,7 @@
 
 class Controller {
   public:
+    u64 titleId; // The current Game's Title ID
     std::string group;
     std::string source;
 
@@ -140,7 +141,6 @@ class Controller {
     ~Controller();
 
   private:
-    u64 titleId; // The current Game's Title ID
 
     /**
      * Returns all files belonging to a mod from the atmosphere active mods folder to their original location
