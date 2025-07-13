@@ -8,6 +8,7 @@ set( SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/GameBrowser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Game.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ModManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ModMigrator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ModsPreseter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigHandler.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Selector.cpp

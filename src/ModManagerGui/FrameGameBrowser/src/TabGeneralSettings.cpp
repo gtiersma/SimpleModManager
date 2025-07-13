@@ -3,6 +3,7 @@
 //
 
 #include <TabGeneralSettings.h>
+#include <ModMigrator.h>
 
 #include "FrameRoot.h"
 #include <AlchemistLogger.h>
@@ -22,6 +23,25 @@ TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {
 
 void TabGeneralSettings::rebuildLayout() {
   alchemyLogger.log("TabGeneralSettings::rebuildLayout();");
+
+  auto* migrationItem = new brls::ListItem(
+    "Bring over old SimpleModManager mods",
+    "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager.\n"\
+    "After running this, all old mods should immediately appear and be usable in this app.\n"\
+    "Those mods will be grouped as \"uncategorized\". "\
+    "It's recommended to reorganize them into group folders on your pc to make them easy to use, but you don't have to."
+  );
+
+  migrationItem->getClickEvent()->subscribe([](View* view) {
+    auto* dialog = new brls::Dialog(new brls::ProgressSpinner());
+    dialog->open();
+
+    ModMigrator().begin();
+
+    dialog->close();
+  });
+
+  this->addView(migrationItem);
 
   // TODO: support this
   /*itemInstallLocationPreset = new brls::ListItem(
