@@ -27,6 +27,10 @@ public:
 private:
   FrameRoot* _owner_{};
 
+  brls::Dialog* buildMigrateConfirmDialog();
+  brls::Dialog* buildMigrateLoadingDialog();
+  brls::Dialog* buildMigrateFinishedDialog();
+
 };
 
 

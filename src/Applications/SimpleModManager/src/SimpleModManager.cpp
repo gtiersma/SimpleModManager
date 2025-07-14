@@ -19,6 +19,8 @@
 
 #include "switch.h"
 #include <AlchemistLogger.h>
+#include "StateAlchemist/constants.h"
+#include "StateAlchemist/fs_manager.h"
 
 
 LoggerInit([]{
@@ -55,6 +57,9 @@ void runGui(){
 
   brls::i18n::loadTranslations("en-US");
   LogThrowIf(not brls::Application::init("SimpleModManager"), "Unable to init Borealis application");
+
+  // Create the app's folder in the SD Root if not yet created:
+  FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 
   LogInfo << "Creating root frame..." << std::endl;
   auto* mainFrame = new FrameRoot();
