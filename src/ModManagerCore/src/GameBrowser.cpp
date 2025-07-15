@@ -3,18 +3,9 @@
 //
 
 #include <GameBrowser.h>
-#include <Toolbox.h>
-
-
-#include "GenericToolbox.Switch.h"
-#include "GenericToolbox.Vector.h"
 
 #include <switch.h>
 
-#include <iostream>
-#include <algorithm>
-#include <utility>
-#include <cstring>
 #include <StateAlchemist/controller.h>
 #include <StateAlchemist/meta_manager.h>
 #include <StateAlchemist/constants.h>
@@ -24,14 +15,7 @@
 
 GameBrowser::GameBrowser(){ this->init(); }
 
-void GameBrowser::setIsGameSelected(bool isGameSelected) {
-  _isGameSelected_ = isGameSelected;
-}
-
 // getters
-bool GameBrowser::isGameSelected() const {
-  return _isGameSelected_;
-}
 const ConfigHandler &GameBrowser::getConfigHandler() const {
   return _configHandler_;
 }
@@ -63,14 +47,6 @@ void GameBrowser::selectGame(const u64 &titleId_) {
   alchemyLogger.log("GameBrowser::selectGame();");
   controller.setTitleId(titleId_);
   alchemyLogger.log("GAME BROWSER: set title ID: " + controller.getHexTitleId());
-  _isGameSelected_ = true;
-}
-
-uint8_t* GameBrowser::getFolderIcon(const std::string& gameFolder_){
-  alchemyLogger.log("GameBrowser::getFolderIcon();");
-  if( _isGameSelected_ ){ return nullptr; }
-  uint8_t* icon = GenericToolbox::Switch::Utils::getIconFromTitleId(gameFolder_);
-  return icon;
 }
 
 // protected

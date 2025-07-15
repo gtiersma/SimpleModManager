@@ -112,40 +112,15 @@ void TabModOptions::buildDisableAllMods() {
   });
 
 }
-void TabModOptions::buildGameIdentificationItem(){
-  alchemyLogger.log("TabModOptions::buildGameIdentificationItem();");
-
-  _itemGameIdentification_ = new brls::ListItem(
-    "Associated TitleID",
-    "",
-    "Current value: "
-  );
-
-  if( _owner_->getIcon() != nullptr ){
-    _itemGameIdentification_->setThumbnail( _owner_->getIcon(), 0x20000 );
-    alchemyLogger.log("TAB MOD OPTIONS: getting game ID: " + controller.getHexTitleId());
-    _itemGameIdentification_->setSubLabel(
-        _itemGameIdentification_->getSubLabel() + controller.getHexTitleId()
-    );
-  }
-  else{
-    _itemGameIdentification_->setSubLabel(
-        _itemGameIdentification_->getSubLabel() + "Not found."
-    );
-  }
-
-}
 
 void TabModOptions::initialize() {
   alchemyLogger.log("TabModOptions::initialize();");
 
   this->buildFolderInstallPresetItem();
   this->buildDisableAllMods();
-  this->buildGameIdentificationItem();
 
   // finally add to view
   this->addView(_itemDisableAllMods_);
-  this->addView(_itemGameIdentification_);
 
 }
 

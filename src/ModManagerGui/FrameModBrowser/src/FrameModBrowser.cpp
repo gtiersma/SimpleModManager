@@ -32,7 +32,7 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
   if (game.icon.size() > 0) { this->setIcon(game.icon.data(), 0x20000); }
   else { this->setIcon("romfs:/images/icon_corner.png"); }
 
-  this->setFooterText("SimpleModManager");
+  this->setFooterText("Simple Mod Alchemist");
 
   auto* parametersTabList = new brls::List();
 

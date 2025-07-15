@@ -23,13 +23,13 @@ FrameRoot::FrameRoot() {
   alchemyLogger.log("FrameRoot::FrameRoot();");
   LogWarning << "Build root frame..." << std::endl;
 
-  this->setTitle("SimpleModManager");
-  this->setFooterText( "v" + Toolbox::getAppVersion() );
+  this->setTitle("Simple Mod Alchemist");
+  this->setFooterText("v" + Toolbox::getAppVersion());
   this->setIcon("romfs:/images/icon_corner.png");
-  this->addTab( "Game Browser", new TabGames(this) );
+  this->addTab("Game Browser", new TabGames(this));
   this->addSeparator();
-  this->addTab( "Settings", new TabGeneralSettings(this) );
-  this->addTab( "About", new TabAbout() );
+  this->addTab("Options", new TabGeneralSettings(this));
+  this->addTab("About", new TabAbout());
 
   LogInfo << "Root frame built." << std::endl;
 }

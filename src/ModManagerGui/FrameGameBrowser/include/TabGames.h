@@ -6,9 +6,7 @@
 #define SIMPLEMODMANAGER_TABGAMES_H
 
 
-#include "ConfigHandler.h"
 #include "GameBrowser.h"
-#include "Selector.h"
 
 #include "borealis.hpp"
 
@@ -25,10 +23,8 @@ public:
 
   // non native getters
   [[nodiscard]] const GameBrowser& getGameBrowser() const;
-  [[nodiscard]] const ConfigHolder& getConfig() const;
 
   GameBrowser& getGameBrowser();
-  ConfigHolder& getConfig();
 
 private:
   FrameRoot* _owner_{};

@@ -23,7 +23,8 @@ TabAbout::TabAbout() {
   // Subtitle
   auto* shortDescription = new brls::Label(
     brls::LabelStyle::REGULAR,
-    "SimpleModManager is an Nintendo Switch homebrew app that helps you to manage mods and config files on your SD card.",
+    "Simple Mod Alchemist is an Nintendo Switch homebrew app for managing mods on the SD card.\n"\
+    "It originated by merging the code of two homebrew apps together: SimpleModManager and State Alchemist.\n",
     true
   );
   shortDescription->setHorizontalAlign(NVG_ALIGN_CENTER);
@@ -41,7 +42,10 @@ TabAbout::TabAbout() {
   leftBox->addView(new brls::Header("Version " + Toolbox::getAppVersion() + " - What's new ?"));
   auto *changelog = new brls::Label(
     brls::LabelStyle::DESCRIPTION,
-    " - Fixing per game install preset\n - Stability improvements\n",
+    " - Mods are now grouped\n"\
+    " - Major performance improvements with large files\n"\
+    " - Improved how mods are organized in folders\n"\
+    " - The best part: General stability improvements\n",
     true
   );
   changelog->setHorizontalAlign(NVG_ALIGN_LEFT);
@@ -50,8 +54,9 @@ TabAbout::TabAbout() {
   leftBox->addView(new brls::Header("Copyright"));
   auto *copyright = new brls::Label(
     brls::LabelStyle::DESCRIPTION,
-    "SimpleModManager is licensed under GPL-v3.0\n" \
-        "\u00A9 2019 - 2023 Nadrino",
+    "Simple Mod Alchemist is licensed under GPL-v3.0\n" \
+        "\u00A9 SimpleModManager 2019 - 2023 Nadrino"\
+        "\u00A9 Simple Mod Alchemist 2025 gtiersma",
     true
   );
   copyright->setHorizontalAlign(NVG_ALIGN_CENTER);
@@ -69,7 +74,11 @@ TabAbout::TabAbout() {
   portrait->setHeight(200);
   portrait->setParent(rightBox);
   rightBox->addView(portrait);
-  auto* portraitText = new brls::Label(brls::LabelStyle::SMALL, "Author: Nadrino", true);
+  auto* portraitText = new brls::Label(
+    brls::LabelStyle::SMALL,
+    "SimpleModManager Original Author: Nadrino",
+    true
+  );
   portraitText->setHorizontalAlign(NVG_ALIGN_CENTER);
   rightBox->addView(portraitText);
 
@@ -78,11 +87,15 @@ TabAbout::TabAbout() {
 
   this->addView(table);
 
-  this->addView(new brls::Header("Remerciements"));
+  this->addView(new brls::Header("Credits"));
   auto *links = new brls::Label(
     brls::LabelStyle::SMALL,
-    "\uE017  SimpleModManager is powered by Borealis, an hardware accelerated UI library\n" \
-         "\uE017  Special thanks to the RetroNX team for their support with Borealis\n",
+    "\uE017  Maintained by gtiersma.\n"\
+    "\uE017  Built upon SimpleModManager, developed by Nadrino.\n"\
+    "\uE017  Powered by Borealis, provided by the RetroNX team.\n"\
+    "\uE017  Special thanks to RetroNX, devkitPro,"\
+    " the ethical homebrew development community in general, and Nintendo.\n"\
+    "\uE017  This software is NOT licensed by Nintendo.\n",
     true
   );
   this->addView(links);

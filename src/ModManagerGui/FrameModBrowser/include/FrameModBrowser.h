@@ -14,7 +14,6 @@
 
 #include <borealis.hpp>
 
-#include "string"
 #include "TabGroupBrowser.h"
 
 
@@ -25,11 +24,9 @@ public:
   bool onCancel() override;
 
   uint8_t *getIcon();
-  TabGroupBrowser* getTabGroupBrowser(){ return _tabGroupBrowser_; }
   TabModPresets* getTabModPresets(){ return _tabModPresets_; }
 
 
-  [[nodiscard]] const ConfigHolder& getConfig() const{ return _guiModManagerPtr_->getGameBrowser().getConfigHandler().getConfig(); }
   [[nodiscard]] const GuiModManager& getGuiModManager() const{ return *_guiModManagerPtr_; }
   [[nodiscard]] const GameBrowser& getGameBrowser() const{ return _guiModManagerPtr_->getGameBrowser(); }
 

@@ -4,9 +4,7 @@
 
 #include "TabModBrowser.h"
 #include "FrameModBrowser.h"
-#include "GenericToolbox.Macro.h"
 
-#include <future>
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
 

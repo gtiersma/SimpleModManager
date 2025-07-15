@@ -6,12 +6,7 @@
 #define SIMPLEMODMANAGER_TABGROUPBROWSER_H
 
 
-#include <GuiModManager.h>
-#include "ModManager.h"
 #include "subtab_frame.hpp"
-
-#include "map"
-#include "string"
 
 
 class FrameModBrowser;

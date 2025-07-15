@@ -20,8 +20,8 @@ TabGroupBrowser::TabGroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
 
   if (groupList.empty()) {
     auto dialog = new brls::Dialog(
-      "No mods have been found in " + controller.getGamePath() +
-      ". There you need to put your mods such as: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
+      "No mod groups have been found in " + controller.getGamePath() +
+      ". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
     dialog->open();
     return;

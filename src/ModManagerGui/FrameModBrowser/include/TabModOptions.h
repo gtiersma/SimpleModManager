@@ -25,9 +25,7 @@ public:
   void initialize();
 
   void buildFolderInstallPresetItem();
-  void buildResetModsCacheItem();
   void buildDisableAllMods();
-  void buildGameIdentificationItem();
 
   void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
@@ -37,7 +35,6 @@ private:
   // memory handled by brls
   brls::ListItem* _itemConfigPreset_{nullptr};
   brls::ListItem* _itemDisableAllMods_{nullptr};
-  brls::ListItem* _itemGameIdentification_{nullptr};
 
 };
 

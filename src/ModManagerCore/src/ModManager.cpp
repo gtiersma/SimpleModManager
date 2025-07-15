@@ -11,8 +11,6 @@
 
 #include <switch.h>
 
-#include <iostream>
-#include <sstream>
 #include <StateAlchemist/controller.h>
 #include <AlchemistLogger.h>
 
@@ -70,17 +68,6 @@ int ModManager::getActiveIndex(const ModSource& source_) {
   alchemyLogger.log("MOD MANAGER: active index: " + std::to_string(activeIndex));
 
   return activeIndex;
-}
-
-void ModManager::applyMod(const std::string& source_, const std::string& modName_) {
-  controller.source = source_;
-  controller.activateMod(modName_);
-}
-
-void ModManager::removeMod(const std::string &source_) {
-  alchemyLogger.log("ModManager::removeMod();");
-  controller.source = source_;
-  controller.deactivateMod();
 }
 
 
