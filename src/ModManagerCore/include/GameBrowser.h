@@ -13,7 +13,6 @@
 #include <switch.h>
 
 #include <vector>
-#include <string>
 #include <optional>
 
 
@@ -22,10 +21,7 @@ class GameBrowser{
 public:
   GameBrowser();
 
-  void setIsGameSelected(bool isGameSelected);
-
   // getters
-  bool isGameSelected() const;
   const ConfigHandler &getConfigHandler() const;
   ModManager &getModManager();
   ModsPresetHandler &getModPresetHandler();
@@ -40,15 +36,10 @@ public:
   // IO
   void scanInputs(u64 kDown, u64 kHeld);
 
-  // utils -> move to gui lib??
-  uint8_t* getFolderIcon(const std::string& gameFolder_);
-
 protected:
   void init();
 
 private:
-  bool _isGameSelected_{false};
-
   ModManager _modManager_{this};
   ConfigHandler _configHandler_;
   ModsPresetHandler _modPresetHandler_;

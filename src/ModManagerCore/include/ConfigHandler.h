@@ -76,8 +76,6 @@ public:
   // change preset
   void setCurrentConfigPresetId(int selectedPresetId_);
   void selectPresetWithName(const std::string &presetName_);
-  void selectNextPreset();
-  void selectPreviousPreset();
 
 private:
   ConfigHolder _config_{};

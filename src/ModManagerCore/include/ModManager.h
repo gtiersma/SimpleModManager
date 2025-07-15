@@ -7,17 +7,11 @@
 
 #include <ConfigHandler.h>
 
-#include "GenericToolbox.Map.h"
-
 #include <map>
 #include <vector>
 #include <string>
 #include <utility>
 
-struct ApplyCache{
-  std::string statusStr{"UNCHECKED"};
-  double applyFraction{0};
-};
 
 /**
  * Object containing data related to a "source" (something moddable in a game)
@@ -65,10 +59,6 @@ public:
   // mod management
   int getActiveIndex(const ModSource& source_);
 
-  void applyMod(const std::string& source_, const std::string& modName_);
-
-  void removeMod(const std::string& source_);
-
   // preset
   void reloadCustomPreset();
   void setCustomPreset(const std::string &presetName_);
@@ -78,9 +68,6 @@ public:
 
 private:
   GameBrowser* _owner_{nullptr};
-
-  std::string _gameName_{};
-  std::vector<std::string> _ignoredFileList_{};
 
   /**
    * List of mods only belonging to group that is current when constructed.

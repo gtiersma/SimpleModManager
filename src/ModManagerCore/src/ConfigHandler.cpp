@@ -144,12 +144,6 @@ void ConfigHandler::selectPresetWithName(const std::string &presetName_){
     }
   }
 }
-void ConfigHandler::selectNextPreset(){
-  _config_.setSelectedPresetIndex( _config_.selectedPresetIndex + 1 );
-}
-void ConfigHandler::selectPreviousPreset(){
-  _config_.setSelectedPresetIndex( _config_.selectedPresetIndex - 1 );
-}
 
 
 

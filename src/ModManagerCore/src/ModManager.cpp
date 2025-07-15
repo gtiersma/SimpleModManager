@@ -11,8 +11,6 @@
 
 #include <switch.h>
 
-#include <iostream>
-#include <sstream>
 #include <StateAlchemist/controller.h>
 
 
@@ -65,16 +63,6 @@ int ModManager::getActiveIndex(const ModSource& source_) {
   }
 
   return activeIndex;
-}
-
-void ModManager::applyMod(const std::string& source_, const std::string& modName_) {
-  controller.source = source_;
-  controller.activateMod(modName_);
-}
-
-void ModManager::removeMod(const std::string &source_) {
-  controller.source = source_;
-  controller.deactivateMod();
 }
 
 

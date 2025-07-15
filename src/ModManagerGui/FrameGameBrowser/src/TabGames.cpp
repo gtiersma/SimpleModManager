@@ -24,8 +24,8 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
 
     ssTitle << "No game folders have been found.";
 
-    ssSubTitle << "- To add mods, you need to copy them such as: ";
-    ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<name-of-the-mod>/<mods-files-and-folders>." << std::endl;
+    ssSubTitle << "- To add mods, put them on the SD card in this manner: ";
+    ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-is-replacing>/<mod-name>/<mods-files-and-folders>." << std::endl;
 
     _gameItems_.emplace_back();
     _gameItems_.back().item = new brls::ListItem( ssTitle.str(), ssSubTitle.str() );
@@ -70,13 +70,7 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
 const GameBrowser& TabGames::getGameBrowser() const{
   return _owner_->getGuiModManager().getGameBrowser();
 }
-const ConfigHolder& TabGames::getConfig() const{
-  return getGameBrowser().getConfigHandler().getConfig();
-}
 
 GameBrowser& TabGames::getGameBrowser(){
   return _owner_->getGuiModManager().getGameBrowser();
-}
-ConfigHolder& TabGames::getConfig(){
-  return getGameBrowser().getConfigHandler().getConfig();
 }
