@@ -66,35 +66,6 @@ int ModManager::getActiveIndex(const ModSource& source_) {
 }
 
 
-void ModManager::reloadCustomPreset(){
-  std::string configFilePath = controller.getGamePath() + "/this_folder_config.txt";
-  if( GenericToolbox::isFile(configFilePath) ){
-    _currentPresetName_ = GenericToolbox::dumpFileAsString(configFilePath);
-  }
-  else{
-    _currentPresetName_ = "";
-  }
-}
-void ModManager::setCustomPreset(const std::string &presetName_) {
-  std::string configFilePath = controller.getGamePath() + "/this_folder_config.txt";
-  GenericToolbox::rm( configFilePath );
-  if( not presetName_.empty() ){
-    GenericToolbox::dumpStringInFile( configFilePath, presetName_ );
-  }
-  this->reloadCustomPreset();
-}
-
-const PresetConfig &ModManager::fetchCurrentPreset() const {
-  int idx = GenericToolbox::findElementIndex(_currentPresetName_, getConfig().presetList, [](const PresetConfig& p){ return p.name; });
-  if( idx != -1 ){ return getConfig().presetList[idx]; }
-  return getConfig().getCurrentPreset();
-}
-
-const std::string &ModManager::getCurrentPresetName() const {
-  return _currentPresetName_;
-}
-
-
 
 
 
