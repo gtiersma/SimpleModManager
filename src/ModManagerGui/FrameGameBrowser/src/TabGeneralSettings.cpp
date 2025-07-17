@@ -9,6 +9,7 @@
 #include <AlchemistLogger.h>
 
 #include "Logger.h"
+#include <dialog_util.hpp>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabGeneralSettings]");
@@ -34,44 +35,6 @@ void TabGeneralSettings::rebuildLayout() {
   });
 
   this->addView(migrationItem);
-
-  // TODO: support this
-  /*itemInstallLocationPreset = new brls::ListItem(
-    "\uE255 Install location:",
-    "Specify from which base folder mods will be installed.\n"\
-    "- If you are using Atmosphere, mods have to be installed in /atmosphere/. "\
-    "This corresponds to the \"default\" preset. You need to take this path into account in your mod tree structure.\n"\
-    "- If you want to set a specific install folder for a given game, please refer to its Option tab and go to \"Attribute a config preset\".",
-    ""
-  );
-  itemInstallLocationPreset->setValue(this->getConfig().getCurrentPresetName() );
-  itemInstallLocationPreset->getClickEvent()->subscribe([this](View* view) {
-    brls::ValueSelectedEvent::Callback valueCallback = [this](int result) {
-      if (result == -1) {
-        return;
-      }
-
-      this->getConfig().setSelectedPresetIndex( result );
-      _owner_->getGuiModManager().getGameBrowser().getConfigHandler().dumpConfigToFile();
-      LogInfo << "Selected: " << this->getConfig().getCurrentPreset().name << " -> " << this->getConfig().getCurrentPreset().installBaseFolder << std::endl;
-      this->itemInstallLocationPreset->setValue(this->getConfig().getCurrentPresetName() );
-    };
-
-    std::vector<std::string> presetNameList;
-    presetNameList.reserve( this->getConfig().presetList.size() );
-    for( auto& preset : this->getConfig().presetList ){
-      presetNameList.emplace_back( preset.name + " \uE090 \"" + preset.installBaseFolder + "\"" );
-    }
-
-    brls::Dropdown::open(
-      "Current install preset:",
-      presetNameList,
-      valueCallback,
-      this->getConfig().selectedPresetIndex
-    );
-  });
-  this->addView(itemInstallLocationPreset);*/
-
 }
 
 /**
@@ -80,13 +43,15 @@ void TabGeneralSettings::rebuildLayout() {
 brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   auto* label = new brls::Label(
     brls::LabelStyle::DIALOG,
-    "Migrate the mods from SimpleModManager?\n\nThis action cannot easily be undone.",
+    "Migrate the mods from SimpleModManager?\n\n"\
+    "This action cannot easily be undone.\n"\
+    "Turn all the mods off in SimpleModManager first to clear them out before running this.",
     true
   );
   auto* confirmDialog = new brls::Dialog(label);
 
   confirmDialog->addButton("Yes", [this, confirmDialog](brls::View* view) {
-    auto* loadingDialog = buildMigrateLoadingDialog();
+    auto* loadingDialog = DialogUtil::buildLoadingDialog("Moving mods from the old SimpleModManager to this app. Please wait");
     loadingDialog->open();
 
     // Must run remainder code in new thread so the loading dialog visually appears as the work is being done.
@@ -116,23 +81,6 @@ brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   });
 
   return confirmDialog;
-}
-
-/**
- * Builds a dialog to show for while the migration is occurring
- */
-brls::Dialog* TabGeneralSettings::buildMigrateLoadingDialog() {
-  auto* layout = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  auto* label = new brls::Label(brls::LabelStyle::DIALOG, "Migrating mods...");
-  auto* progress = new brls::ProgressSpinner();
-  progress->willAppear(); // TODO: no progress spinner :(
-  layout->addView(label);
-  layout->addView(progress);
-
-  auto* dialog = new brls::Dialog(layout);
-  dialog->setCancelable(false);
-
-  return dialog;
 }
 
  /**

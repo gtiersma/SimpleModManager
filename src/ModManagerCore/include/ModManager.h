@@ -59,13 +59,6 @@ public:
   // mod management
   int getActiveIndex(const ModSource& source_);
 
-  // preset
-  void reloadCustomPreset();
-  void setCustomPreset(const std::string &presetName_);
-  const PresetConfig& fetchCurrentPreset() const;
-
-  const std::string &getCurrentPresetName() const;
-
 private:
   GameBrowser* _owner_{nullptr};
 
@@ -74,8 +67,6 @@ private:
    * Can always be reconstructed by calling updateModList if the group changes.
    */
   std::vector<ModSource> _groupedModList_{};
-
-  std::string _currentPresetName_{};
 };
 
 

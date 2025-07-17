@@ -34,12 +34,6 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
   this->setFooterText("Simple Mod Alchemist");
 
-  auto* parametersTabList = new brls::List();
-
-  auto* presetParameter = new brls::ListItem("Config preset", "", "");
-  presetParameter->setValue(gameBrowser.getConfigHandler().getConfig().getCurrentPresetName());
-  parametersTabList->addView(presetParameter);
-
   _tabGroupBrowser_ = new TabGroupBrowser( this );
   _tabModPresets_ = new TabModPresets( this );
   _tabModOptions_ = new TabModOptions( this );
