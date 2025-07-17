@@ -35,7 +35,8 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_) : _own
 
     brls::SelectListItem* item = new brls::SelectListItem(mod.source, options, modManager.getActiveIndex(mod) + 1, "");
 
-    item->getValueSelectedEvent()->subscribe([&](size_t selection) {
+    item->getValueSelectedEvent()->subscribe([mod](size_t selection) {
+      controller.source = mod.source;
 
       // Note: selection is -1 if backed out of selecting
       if (selection == -1) { return; }
