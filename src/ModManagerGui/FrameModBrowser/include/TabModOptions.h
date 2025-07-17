@@ -32,7 +32,6 @@ private:
   FrameModBrowser* _owner_{nullptr};
 
   // memory handled by brls
-  brls::ListItem* _itemConfigPreset_{nullptr};
   brls::ListItem* _itemDisableAllMods_{nullptr};
 
 };

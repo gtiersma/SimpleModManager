@@ -24,7 +24,7 @@ void TabModOptions::buildDisableAllMods() {
   alchemyLogger.log("TabModOptions::buildDisableAllMods();");
 
   _itemDisableAllMods_ = new brls::ListItem(
-    "\uE872 Disable all mods",
+    "\uE088 Disable all mods",
     "Turn all mods off for this game, returning all files to under the \"" + ALCHEMIST_FOLDER + "\" folder. "\
     "This is useful if you want to delete some of them from the SD card.",
     ""
@@ -34,16 +34,13 @@ void TabModOptions::buildDisableAllMods() {
 
     auto* dialog = new brls::Dialog("Disable all mods? Are you sure?");
 
-    dialog->addButton("Yes", [&, dialog](brls::View* view) {
-      // first, close the dialog box before the async routine starts
-      dialog->close();
-
+    dialog->addButton("Yes", [dialog](brls::View* view) {
       auto* loadingDialog = DialogUtil::buildLoadingDialog("Disabling all mods. Please wait");
       loadingDialog->open();
 
-      new std::thread([this, loadingDialog]() {
+      new std::thread([dialog, loadingDialog]() {
         controller.deactivateAll();
-        loadingDialog->close();
+        loadingDialog->close([dialog]() { dialog->close(); });
       });
     });
     dialog->addButton("No", [dialog](brls::View* view) {
