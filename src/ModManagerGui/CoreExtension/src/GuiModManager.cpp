@@ -49,12 +49,6 @@ void GuiModManager::applyModsList(std::vector<std::string>& modsList_){
   }
 }
 
-void GuiModManager::startRemoveAllModsThread(){
-  this->_triggeredOnCancel_ = false;
-
-  // start the parallel thread
-  std::async(&GuiModManager::removeAllModsFunction, this);
-}
 void GuiModManager::startApplyModPresetThread(const std::string &modPresetName_){
   this->_triggeredOnCancel_ = false;
 
@@ -86,20 +80,6 @@ void GuiModManager::applyModPresetFunction(const std::string& presetName_){
     if( preset.name == presetName_ ){ modsList = preset.modList; break; }
   }
   this->applyModsList(modsList);
-
-  this->leaveModAction();
-}
-void GuiModManager::removeAllModsFunction(){
-  // push the progress bar to the view
-  _loadingPopup_.pushView();
-
-  LogInfo("Removing all installed mods...");
-  _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::redNvgColor);
-  _loadingPopup_.getMonitorView()->setHeaderTitle("Removing all installed mods...");
-  _loadingPopup_.getMonitorView()->resetMonitorAddresses();
-  _loadingPopup_.getMonitorView()->setTitlePtr( &modRemoveAllMonitor.currentMod );
-  _loadingPopup_.getMonitorView()->setSubTitlePtr( &modRemoveMonitor.currentFile );
-  this->removeAllMods();
 
   this->leaveModAction();
 }

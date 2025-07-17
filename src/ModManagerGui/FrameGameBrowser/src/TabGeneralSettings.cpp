@@ -9,6 +9,7 @@
 
 
 #include "Logger.h"
+#include <dialog_util.hpp>
 
 LoggerInit([]{
   Logger::setUserHeaderStr("[TabGeneralSettings]");
@@ -40,13 +41,15 @@ void TabGeneralSettings::rebuildLayout() {
 brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   auto* label = new brls::Label(
     brls::LabelStyle::DIALOG,
-    "Migrate the mods from SimpleModManager?\n\nThis action cannot easily be undone.",
+    "Migrate the mods from SimpleModManager?\n\n"\
+    "This action cannot easily be undone.\n"\
+    "Turn all the mods off in SimpleModManager first to clear them out before running this.",
     true
   );
   auto* confirmDialog = new brls::Dialog(label);
 
   confirmDialog->addButton("Yes", [this, confirmDialog](brls::View* view) {
-    auto* loadingDialog = buildMigrateLoadingDialog();
+    auto* loadingDialog = DialogUtil::buildLoadingDialog("Moving mods from the old SimpleModManager to this app. Please wait");
     loadingDialog->open();
 
     // Must run remainder code in new thread so the loading dialog visually appears as the work is being done.
@@ -76,23 +79,6 @@ brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   });
 
   return confirmDialog;
-}
-
-/**
- * Builds a dialog to show for while the migration is occurring
- */
-brls::Dialog* TabGeneralSettings::buildMigrateLoadingDialog() {
-  auto* layout = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  auto* label = new brls::Label(brls::LabelStyle::DIALOG, "Migrating mods...");
-  auto* progress = new brls::ProgressSpinner();
-  progress->willAppear(); // TODO: no progress spinner :(
-  layout->addView(label);
-  layout->addView(progress);
-
-  auto* dialog = new brls::Dialog(layout);
-  dialog->setCancelable(false);
-
-  return dialog;
 }
 
  /**

@@ -25,7 +25,6 @@ public:
   const GameBrowser &getGameBrowser() const;
   GameBrowser &getGameBrowser();
 
-  void startRemoveAllModsThread();
   void startApplyModPresetThread(const std::string &modPresetName_);
 
   void applyMod(const std::string &modName_);
@@ -34,7 +33,6 @@ public:
 
 protected:
   void applyModPresetFunction(const std::string& presetName_);
-  void removeAllModsFunction();
 
   void leaveModAction();
 
