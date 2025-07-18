@@ -19,7 +19,7 @@
 struct ConfigHolder{
   std::string lastSmmVersion{};
 
-  std::string configFilePath{ALCHEMIST_PATH +"/parameters.ini"};
+  std::string configFilePath{"/config/SimpleModAlchemist/parameters.ini"};
 
   [[nodiscard]] std::string getSummary() const {
     std::stringstream ss;

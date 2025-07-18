@@ -5,7 +5,6 @@
 #ifndef SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 #define SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 
-#include <TabModPlugins.h>
 #include <TabModOptions.h>
 #include <TabModPresets.h>
 
@@ -41,7 +40,6 @@ private:
   TabGroupBrowser* _tabGroupBrowser_{nullptr};
   TabModOptions* _tabModOptions_{nullptr};
   TabModPresets* _tabModPresets_{nullptr};
-  TabModPlugins* _tabModPlugins_{nullptr};
 
   uint8_t* _icon_{nullptr};
 
