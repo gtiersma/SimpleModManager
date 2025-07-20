@@ -84,13 +84,6 @@ void SubtabFrame::addTab(std::string label, View* view)
         if (SidebarItem* item = dynamic_cast<SidebarItem*>(view))
             this->switchToView(item->getAssociatedView());
     });
-
-    // Switch to first one as soon as we add it
-    if (!this->rightPane)
-    {
-        Logger::debug("Switching to the first tab");
-        this->switchToView(view);
-    }
 }
 
 void SubtabFrame::addSeparator()
