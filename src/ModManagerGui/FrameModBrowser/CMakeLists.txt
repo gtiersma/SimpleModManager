@@ -8,7 +8,6 @@ set( SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/TabGroupBrowser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/TabModBrowser.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/TabModOptions.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/TabModPlugins.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/TabModPresets.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ThumbnailPresetEditor.cpp
     )

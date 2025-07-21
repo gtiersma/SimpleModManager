@@ -9,8 +9,10 @@
 #include <AlchemistLogger.h>
 
 
-TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_) : _owner_(owner_) {
-  controller.group = group_;
+bool TabModBrowser::_shouldReloadActiveMods_ = false;
+
+TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_): _owner_(owner_), _group_(group_) {
+  controller.group = _group_;
 
   alchemyLogger.log("TabModBrowser::TabModBrowser();");
 
@@ -67,12 +69,27 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_) : _own
       }
     });
 
+    this->_items_.push_back(item);
     this->addView(item);
+  }
+}
+
+void TabModBrowser::reloadActiveMods() {
+  ModManager& modManager = this->getModManager();
+
+  for (int i = 0; i < this->_items_.size(); i++) {
+    _items_[i]->setSelectedValue(modManager.getActiveIndex(_mods_[i]) + 1);
   }
 }
 
 void TabModBrowser::draw(NVGcontext *vg, int x, int y, unsigned int width, unsigned int height, brls::Style *style,
                          brls::FrameContext *ctx) {
+
+  if (_shouldReloadActiveMods_) {
+    this->reloadActiveMods();
+    _shouldReloadActiveMods_ = false;
+  }
+
   ScrollView::draw(vg, x, y, width, height, style, ctx);
 }
 

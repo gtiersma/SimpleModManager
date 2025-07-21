@@ -25,8 +25,14 @@ public:
 
   ModManager& getModManager();
 
+  void reloadActiveMods();
+
+  static bool _shouldReloadActiveMods_;
+
 private:
   FrameModBrowser* _owner_{nullptr};
+  std::string _group_;
+  std::vector<brls::SelectListItem*> _items_;
   std::vector<ModSource> _mods_;
 
   // Label used for the setting to turn a mod off

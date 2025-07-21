@@ -4,9 +4,7 @@
 
 #include "TabGroupBrowser.h"
 #include "FrameModBrowser.h"
-#include "GenericToolbox.Macro.h"
 
-#include <future>
 #include <StateAlchemist/controller.h>
 
 
