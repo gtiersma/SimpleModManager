@@ -33,14 +33,14 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
   this->setFooterText("Simple Mod Alchemist");
 
   _tabGroupBrowser_ = new TabGroupBrowser(this);
-  _tabModPresets_ = new TabModPresets(this);
+  //_tabModPresets_ = new TabModPresets(this);
   _tabModOptions_ = new TabModOptions(this);
 
   _tabModOptions_->initialize();
 
   this->addTab("Mod Browser", _tabGroupBrowser_);
   this->addSeparator();
-  this->addTab("Mod Presets", _tabModPresets_);
+  //this->addTab("Mod Presets", _tabModPresets_);
   this->addTab("Options", _tabModOptions_);
 
   this->onCancel();
