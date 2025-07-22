@@ -12,6 +12,10 @@
 bool TabModBrowser::_shouldReloadActiveMods_ = false;
 
 TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_): _owner_(owner_), _group_(group_) {
+  _shouldReloadActiveMods_ = true;
+}
+
+void TabModBrowser::loadMods() {
   controller.group = _group_;
 
   alchemyLogger.log("TabModBrowser::TabModBrowser();");
@@ -74,19 +78,11 @@ TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_): _owne
   }
 }
 
-void TabModBrowser::reloadActiveMods() {
-  ModManager& modManager = this->getModManager();
-
-  for (int i = 0; i < this->_items_.size(); i++) {
-    _items_[i]->setSelectedValue(modManager.getActiveIndex(_mods_[i]) + 1);
-  }
-}
-
 void TabModBrowser::draw(NVGcontext *vg, int x, int y, unsigned int width, unsigned int height, brls::Style *style,
                          brls::FrameContext *ctx) {
 
   if (_shouldReloadActiveMods_) {
-    this->reloadActiveMods();
+    this->loadMods();
     _shouldReloadActiveMods_ = false;
   }
 
