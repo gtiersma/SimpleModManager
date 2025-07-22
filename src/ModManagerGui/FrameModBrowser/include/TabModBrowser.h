@@ -25,7 +25,7 @@ public:
 
   ModManager& getModManager();
 
-  void reloadActiveMods();
+  void loadMods();
 
   static bool _shouldReloadActiveMods_;
 

@@ -42,8 +42,6 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
   this->addSeparator();
   //this->addTab("Mod Presets", _tabModPresets_);
   this->addTab("Options", _tabModOptions_);
-
-  this->onCancel();
 }
 
 bool FrameModBrowser::onCancel() {

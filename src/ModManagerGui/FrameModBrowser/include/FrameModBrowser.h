@@ -11,12 +11,12 @@
 #include "GuiModManager.h"
 #include "GameBrowser.h"
 
-#include <borealis.hpp>
+#include "autofocusless_tab_frame.hpp"
 
 #include "TabGroupBrowser.h"
 
 
-class FrameModBrowser : public brls::TabFrame {
+class FrameModBrowser : public brls::AutofocuslessTabFrame {
 
 public:
   explicit FrameModBrowser(GuiModManager* guiModManagerPtr_);

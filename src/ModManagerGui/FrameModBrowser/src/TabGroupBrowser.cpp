@@ -10,9 +10,6 @@
 
 TabGroupBrowser::TabGroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
 
-  // Use subtab-sized sidebar to leave more room for mods
-  this->sidebar->setWidth(SubtabFrame::SIDE_BAR_WIDTH);
-
   // Fetch the available groups
   auto groupList = controller.loadGroups(true);
 
