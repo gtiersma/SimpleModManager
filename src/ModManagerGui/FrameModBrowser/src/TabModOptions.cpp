@@ -3,7 +3,6 @@
 //
 
 #include "TabModOptions.h"
-#include "TabModBrowser.h"
 #include "FrameModBrowser.h"
 
 #include "Logger.h"
@@ -39,7 +38,6 @@ void TabModOptions::buildDisableAllMods() {
       new std::thread([dialog, loadingDialog]() {
         controller.deactivateAll();
         loadingDialog->close([dialog]() { dialog->close(); });
-        TabModBrowser::_shouldReloadActiveMods_ = true;
         brls::Application::unblockInputs();
       });
     });

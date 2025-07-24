@@ -2,8 +2,8 @@
 // Created by Adrien BLANCHET on 21/06/2020.
 //
 
-#ifndef SIMPLEMODMANAGER_TABMODBROWSER_H
-#define SIMPLEMODMANAGER_TABMODBROWSER_H
+#ifndef SIMPLEMODMANAGER_MODBROWSER_H
+#define SIMPLEMODMANAGER_MODBROWSER_H
 
 
 #include <GuiModManager.h>
@@ -16,28 +16,23 @@
 
 class FrameModBrowser;
 
-class TabModBrowser : public brls::List {
+class ModBrowser : public brls::List {
 
 public:
-  explicit TabModBrowser(FrameModBrowser* owner_, std::string group_);
+  explicit ModBrowser(FrameModBrowser* owner_);
 
   void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
   ModManager& getModManager();
 
-  void loadMods();
-
-  static bool _shouldReloadActiveMods_;
+  void loadMods(std::string group);
 
 private:
   FrameModBrowser* _owner_{nullptr};
-  std::string _group_;
-  std::vector<brls::SelectListItem*> _items_;
-  std::vector<ModSource> _mods_;
 
   // Label used for the setting to turn a mod off
   const std::string _DEFAULT_LABEL_{"UNMODIFIED"}; 
 };
 
 
-#endif //SIMPLEMODMANAGER_TABMODBROWSER_H
+#endif //SIMPLEMODMANAGER_MODBROWSER_H
