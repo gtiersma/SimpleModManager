@@ -32,16 +32,26 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
   this->setFooterText("Simple Mod Alchemist");
 
-  _tabGroupBrowser_ = new TabGroupBrowser(this);
+  _groupBrowser_ = new GroupBrowser(this);
+  _modBrowser_ = new ModBrowser(this);
+
+  _tabModBrowser_ = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
+  _tabModBrowser_->addView(_groupBrowser_);
+  _tabModBrowser_->addView(_modBrowser_, true);
+
   //_tabModPresets_ = new TabModPresets(this);
   _tabModOptions_ = new TabModOptions(this);
 
   _tabModOptions_->initialize();
 
-  this->addTab("Mod Browser", _tabGroupBrowser_);
+  this->addTab("Mod Browser", _tabModBrowser_);
   this->addSeparator();
   //this->addTab("Mod Presets", _tabModPresets_);
   this->addTab("Options", _tabModOptions_);
+}
+
+void FrameModBrowser::handleGroupSelect(std::string group) {
+  _modBrowser_->loadMods(group);
 }
 
 bool FrameModBrowser::onCancel() {

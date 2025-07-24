@@ -2,28 +2,27 @@
 // Created by Adrien BLANCHET on 21/06/2020.
 //
 
-#include "TabModBrowser.h"
+#include "ModBrowser.h"
 #include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
 
 
-bool TabModBrowser::_shouldReloadActiveMods_ = false;
 
-TabModBrowser::TabModBrowser(FrameModBrowser* owner_, std::string group_): _owner_(owner_), _group_(group_) {
-  _shouldReloadActiveMods_ = true;
-}
+ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {}
 
-void TabModBrowser::loadMods() {
-  controller.group = _group_;
+void ModBrowser::loadMods(std::string group) {
+  this->clear();
+
+  controller.group = group;
 
   ModManager& modManager = this->getModManager();
 
   // Fetch the available mods
   modManager.updateModList();
-  _mods_ = modManager.getGroupedModList();
+  std::vector<ModSource> mods = modManager.getGroupedModList();
 
-  if (_mods_.empty()) {
+  if (mods.empty()) {
     brls::ListItem* item = new brls::ListItem(
       "No mods have been found in " + controller.getGroupPath(),
       "Put mods within that folder like this: ./<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
@@ -35,7 +34,7 @@ void TabModBrowser::loadMods() {
     return;
   }
 
-  for (auto& mod : _mods_) {
+  for (auto& mod : mods) {
     std::vector<std::string> options = mod.mods;
     options.insert(options.begin(), _DEFAULT_LABEL_);
 
@@ -65,22 +64,22 @@ void TabModBrowser::loadMods() {
       }
     });
 
-    this->_items_.push_back(item);
     this->addView(item);
   }
 }
 
-void TabModBrowser::draw(NVGcontext *vg, int x, int y, unsigned int width, unsigned int height, brls::Style *style,
-                         brls::FrameContext *ctx) {
-
-  if (_shouldReloadActiveMods_) {
-    this->loadMods();
-    _shouldReloadActiveMods_ = false;
-  }
-
+void ModBrowser::draw(
+  NVGcontext *vg,
+  int x,
+  int y,
+  unsigned int width,
+  unsigned int height,
+  brls::Style *style,
+  brls::FrameContext *ctx
+) {
   ScrollView::draw(vg, x, y, width, height, style, ctx);
 }
 
-ModManager& TabModBrowser::getModManager() {
+ModManager& ModBrowser::getModManager() {
   return _owner_->getGameBrowser().getModManager();
 }

@@ -13,7 +13,7 @@
 
 #include "autofocusless_tab_frame.hpp"
 
-#include "TabGroupBrowser.h"
+#include "GroupBrowser.h"
 
 
 class FrameModBrowser : public brls::AutofocuslessTabFrame {
@@ -32,14 +32,18 @@ public:
   GuiModManager& getGuiModManager() { return *_guiModManagerPtr_; }
   GameBrowser& getGameBrowser(){ return _guiModManagerPtr_->getGameBrowser(); }
 
+  void handleGroupSelect(std::string group);
+
 
 private:
   GuiModManager* _guiModManagerPtr_{};
 
-  // memory handled by brls
-  TabGroupBrowser* _tabGroupBrowser_{nullptr};
+  brls::BoxLayout* _tabModBrowser_{nullptr};
   TabModOptions* _tabModOptions_{nullptr};
   TabModPresets* _tabModPresets_{nullptr};
+
+  GroupBrowser* _groupBrowser_{nullptr};
+  ModBrowser* _modBrowser_{nullptr};
 
   uint8_t* _icon_{nullptr};
 

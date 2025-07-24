@@ -5,7 +5,7 @@
 #ifndef SIMPLEMODMANAGER_TABMODOPTIONS_H
 #define SIMPLEMODMANAGER_TABMODOPTIONS_H
 
-#include <TabModBrowser.h>
+#include <ModBrowser.h>
 
 #include "ModManager.h"
 
