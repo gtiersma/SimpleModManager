@@ -6,6 +6,7 @@
 #include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
+#include <StateAlchemist/meta_manager.h>
 
 
 
@@ -31,6 +32,7 @@ void ModBrowser::loadMods(std::string group) {
     item->show([](){}, false);
 
     this->addView(item);
+    this->willAppear(true);
     return;
   }
 
@@ -38,7 +40,12 @@ void ModBrowser::loadMods(std::string group) {
     std::vector<std::string> options = mod.mods;
     options.insert(options.begin(), _DEFAULT_LABEL_);
 
-    brls::SelectListItem* item = new brls::SelectListItem(mod.source, options, modManager.getActiveIndex(mod) + 1, "");
+    brls::SelectListItem* item = new brls::SelectListItem(
+      mod.source,
+      MetaManager::limitSelectLabels(options),
+      modManager.getActiveIndex(mod) + 1,
+      ""
+    );
 
     item->getValueSelectedEvent()->subscribe([mod](size_t selection) {
       controller.source = mod.source;
@@ -65,6 +72,7 @@ void ModBrowser::loadMods(std::string group) {
     });
 
     this->addView(item);
+    this->willAppear(true); /* Scroll to the top */
   }
 }
 

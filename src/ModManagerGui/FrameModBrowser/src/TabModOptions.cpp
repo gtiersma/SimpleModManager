@@ -36,6 +36,7 @@ void TabModOptions::buildDisableAllMods() {
       new std::thread([dialog, loadingDialog]() {
         controller.deactivateAll();
         loadingDialog->close([dialog]() { dialog->close(); });
+        controller.group = "";
         brls::Application::unblockInputs();
       });
     });

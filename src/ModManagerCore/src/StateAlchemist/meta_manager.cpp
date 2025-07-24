@@ -156,3 +156,21 @@ void MetaManager::tryResult(Result result) {
     fatalThrow(result);
   }
 }
+
+/**
+ * Limit string size of the options used by a SelectItem.
+ * Needed for the UI. It hangs if strings get to be too excessively long.
+ */
+std::vector<std::string> MetaManager::limitSelectLabels(std::vector<std::string>& rawNames) {
+  std::vector<std::string> limitedNames;
+
+  for (const std::string& rawName : rawNames) {
+    if (rawName.length() <= MAX_LABEL_SIZE) {
+      limitedNames.push_back(rawName);
+    } else {
+      limitedNames.push_back(rawName.substr(0, MAX_LABEL_SIZE - 3) + "...");
+    }
+  }
+
+  return limitedNames;
+}

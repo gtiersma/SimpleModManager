@@ -17,7 +17,7 @@ const std::string ALCHEMIST_FOLDER = "mod_alchemy";
 const std::string ALCHEMIST_PATH = "/" + ALCHEMIST_FOLDER;
 const std::string ATMOSPHERE_PATH = "/atmosphere/contents/";
 
-// Size in bytes to reserve for storing a singlegame's title
-const size_t TITLE_BUFFER_SIZE = 4096;
+// UI seems likely to hang if a control's label is much longer than this number
+const int MAX_LABEL_SIZE = 25;
 
 #endif

@@ -26,9 +26,11 @@ GroupBrowser::GroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
   for (auto& group : groupList) {
     auto* item = new brls::ListItem(group);
 
-    item->getFocusEvent()->subscribe([owner_, item](View* view) {
-      // Pass the selected group to FrameModBrowser so it can pass it to the ModBrowser
-      owner_->handleGroupSelect(item->getLabel());
+    item->getFocusEvent()->subscribe([owner_, group](View* view) {
+      if (controller.group == group) return; // Do nothing if group did not change
+
+      // Pass the selected group to FrameModBrowser so it can pass it to the ModBrowser:
+      owner_->handleGroupSelect(group);
     });
 
     this->addView(item);
