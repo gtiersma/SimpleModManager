@@ -28,9 +28,10 @@ GroupBrowser::GroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
 
     item->getFocusEvent()->subscribe([owner_, group](View* view) {
       if (controller.group == group) return; // Do nothing if group did not change
+      controller.group = group;
 
-      // Pass the selected group to FrameModBrowser so it can pass it to the ModBrowser:
-      owner_->handleGroupSelect(group);
+      // Signal to FrameModBrowser so it can signal the ModBrowser to reload mods:
+      owner_->handleGroupSelect();
     });
 
     this->addView(item);

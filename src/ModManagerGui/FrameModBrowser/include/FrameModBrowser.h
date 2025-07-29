@@ -32,7 +32,7 @@ public:
   GuiModManager& getGuiModManager() { return *_guiModManagerPtr_; }
   GameBrowser& getGameBrowser(){ return _guiModManagerPtr_->getGameBrowser(); }
 
-  void handleGroupSelect(std::string group);
+  void handleGroupSelect();
 
 
 private:

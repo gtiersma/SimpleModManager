@@ -16,17 +16,26 @@
 /**
  * Object containing data related to a "source" (something moddable in a game)
  */
-struct ModSource{
+struct ModSource {
   ModSource() = default;
 
   /**
-   * @param source_ String label of the name of the moddable thing
-   * @param mods_ List of available mods for the moddable thing
+   * @param source_ String label of the name of the moddable thing (source)
+   * @param mods_ List of available mods of the source
+   * @param activeIndex_ Index of "mods" vector of mod that is currently active (-1 if none active)
    */
-  explicit ModSource(std::string source_, std::vector<std::string> mods_): source(std::move(source_)), mods(std::move(mods_)) {}
+  explicit ModSource(
+    std::string source_,
+    std::vector<std::string> mods_,
+    size_t activeIndex_
+  ):
+    source(std::move(source_)),
+    mods(std::move(mods_)),
+    activeIndex(activeIndex_) {}
 
   std::string source;
   std::vector<std::string> mods;
+  size_t activeIndex;
 };
 
 
@@ -44,29 +53,18 @@ class ModManager {
 public:
   explicit ModManager(GameBrowser* owner_);
 
-  /**
-   * Gets a list of all ModSources that belong to the current group
-   */
-  const std::vector<ModSource> &getGroupedModList() const;
-
   // shortcuts
   const ConfigHolder& getConfig() const;
   ConfigHolder& getConfig();
 
   // selector related
-  void updateModList();
-
-  // mod management
-  int getActiveIndex(const ModSource& source_);
+  ModSource loadSource(const std::string& sourceName);
 
 private:
   GameBrowser* _owner_{nullptr};
 
-  /**
-   * List of mods only belonging to group that is current when constructed.
-   * Can always be reconstructed by calling updateModList if the group changes.
-   */
-  std::vector<ModSource> _groupedModList_{};
+  // mod management
+  int getActiveIndex(const std::string& sourceName, const std::vector<std::string>& mods);
 };
 
 

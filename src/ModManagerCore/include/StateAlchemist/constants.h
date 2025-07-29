@@ -6,6 +6,9 @@
 // Small to minimize memory usage
 const int64_t FILE_LIST_BUFFER_SIZE = 30;
 
+// Max number of folders/files to load at a time when processing them
+const int MAX_FS_ENTRY_LOAD = 50;
+
 // Substring to delimit the rating from the mod name in the folder name:
 const std::string RATING_DELIMITER = "~~";
 

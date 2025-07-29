@@ -279,20 +279,24 @@ std::string Controller::getActiveMod(const std::string& source) {
     FsDirOpenMode_ReadFiles
   );
 
-  FsDirectoryEntry entry;
+  std::vector<FsDirectoryEntry> entries(MAX_FS_ENTRY_LOAD);
   s64 readCount = 0;
   std::string activeMod = "";
   std::string name;
 
   // Find the .txt file in the directory. The name would be the active mod:
-  while (R_SUCCEEDED(fsDirRead(&sourceDir, &readCount, 1, &entry)) && readCount) {
-    if (entry.type == FsDirEntryType_File) {
-      name = entry.name;
-      if (name.find(TXT_EXT) != std::string::npos) {
-        activeMod = name.substr(0, name.size() - TXT_EXT.size());
-        break;
+  while (R_SUCCEEDED(fsDirRead(&sourceDir, &readCount, MAX_FS_ENTRY_LOAD, entries.data())) && readCount) {
+    for (int i = 0; i < readCount; i++) {
+      FsDirectoryEntry entry = entries[i];
+      if (entry.type == FsDirEntryType_File) {
+        name = entry.name;
+        if (name.find(TXT_EXT) != std::string::npos) {
+          activeMod = name.substr(0, name.size() - TXT_EXT.size());
+          break;
+        }
       }
     }
+    if (activeMod != "") break;
   }
 
   fsDirClose(&sourceDir);
