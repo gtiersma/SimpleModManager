@@ -3,6 +3,7 @@
 #include <switch.h>
 
 #include <string>
+#include <vector>
 
 namespace MetaManager {
   
@@ -45,6 +46,12 @@ namespace MetaManager {
    * Checks if the entity name belongs to a folder name
    */
   bool namesMatch(char* folderName, const std::string& entityName);
+
+  /**
+   * Limit string size of the options used by a SelectItem.
+   * Needed for the UI. It hangs if strings get to be too excessively long.
+   */
+  std::vector<std::string> limitSelectLabels(std::vector<std::string>& rawNames);
 
   void tryResult(Result result);
 }

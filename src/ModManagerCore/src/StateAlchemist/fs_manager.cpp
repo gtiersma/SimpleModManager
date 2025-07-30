@@ -1,5 +1,6 @@
 #include "StateAlchemist/fs_manager.h"
 #include "StateAlchemist/meta_manager.h"
+#include "StateAlchemist/constants.h"
 
 #include <algorithm>
 #include <cstring>
@@ -88,12 +89,15 @@ std::vector<std::string> FsManager::listNames(const std::string& path, bool sort
 
   FsDir dir = FsManager::openFolder(path, FsDirOpenMode_ReadDirs);
 
-  FsDirectoryEntry entry;
+  std::vector<FsDirectoryEntry> entries(MAX_FS_ENTRY_LOAD);
   s64 readCount = 0;
-  while (R_SUCCEEDED(fsDirRead(&dir, &readCount, 1, &entry)) && readCount) {
-    // Exclude hidden folders that start with "."
-    if (entry.type == FsDirEntryType_Dir && entry.name[0] != '.') {
-      names.push_back(MetaManager::parseName(entry.name));
+  while (R_SUCCEEDED(fsDirRead(&dir, &readCount, MAX_FS_ENTRY_LOAD, entries.data())) && readCount) {
+    for (int i = 0; i < readCount; i++) {
+      FsDirectoryEntry entry = entries[i];
+      // Exclude hidden folders that start with "."
+      if (entry.type == FsDirEntryType_Dir && entry.name[0] != '.') {
+        names.push_back(MetaManager::parseName(entry.name));
+      }
     }
   }
 

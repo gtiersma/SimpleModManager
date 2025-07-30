@@ -51,8 +51,8 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
   this->addTab("Options", _tabModOptions_);
 }
 
-void FrameModBrowser::handleGroupSelect(std::string group) {
-  _modBrowser_->loadMods(group);
+void FrameModBrowser::handleGroupSelect() {
+  _modBrowser_->loadFirstPage();
 }
 
 bool FrameModBrowser::onCancel() {

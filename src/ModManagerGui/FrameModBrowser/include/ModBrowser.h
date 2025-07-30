@@ -11,7 +11,8 @@
 
 #include <borealis.hpp>
 
-#include "string"
+#include <vector>
+#include <string>
 
 
 class FrameModBrowser;
@@ -25,13 +26,54 @@ public:
 
   ModManager& getModManager();
 
-  void loadMods(std::string group);
+  /**
+   * Clears the list, loading the first page for mods for the current group set in controller.group
+   */
+  void loadFirstPage();
 
 private:
   FrameModBrowser* _owner_{nullptr};
 
+  // The last page # of mod sources that was loaded
+  size_t _page_{0};
+
+  // Vector of all moddable things (aka sources) available under the current group
+  std::vector<std::string> _source_names_;
+
+  /**
+   * Clears the list, adding a message that there are no mods
+   */
+  void displayNoMods();
+
+  /**
+   * Appends an item to the end of the list for loading the next page of sources
+   */
+  void appendLoadItem();
+
+  /**
+   * Called when the value of one of the select items is changed
+   */
+  void handleModSelect(const ModSource& mod, size_t selectedIndex);
+
+  /**
+   * Loads another page of mod sources
+   */
+  void appendNextPage();
+
+  /**
+   * Gets what the first item index should be in the page specified
+   */
+  size_t getFirstIndex(size_t page);
+
   // Label used for the setting to turn a mod off
   const std::string _DEFAULT_LABEL_{"UNMODIFIED"}; 
+
+  // The number of items that the first page should have
+  // (small because it loads automatically when navigating over groups).
+  const size_t _FIRST_PAGE_SIZE_{10};
+
+  // The number of items all pages after the first should have
+  const size_t _SEQUENT_PAGE_SIZE_{30};
 };
 
 

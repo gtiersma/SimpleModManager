@@ -6,6 +6,9 @@
 // Small to minimize memory usage
 const int64_t FILE_LIST_BUFFER_SIZE = 30;
 
+// Max number of folders/files to load at a time when processing them
+const int MAX_FS_ENTRY_LOAD = 50;
+
 // Substring to delimit the rating from the mod name in the folder name:
 const std::string RATING_DELIMITER = "~~";
 
@@ -17,7 +20,7 @@ const std::string ALCHEMIST_FOLDER = "mod_alchemy";
 const std::string ALCHEMIST_PATH = "/" + ALCHEMIST_FOLDER;
 const std::string ATMOSPHERE_PATH = "/atmosphere/contents/";
 
-// Size in bytes to reserve for storing a singlegame's title
-const size_t TITLE_BUFFER_SIZE = 4096;
+// UI seems likely to hang if a control's label is much longer than this number
+const int MAX_LABEL_SIZE = 25;
 
 #endif
