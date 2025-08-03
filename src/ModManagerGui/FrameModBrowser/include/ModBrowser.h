@@ -10,6 +10,7 @@
 #include "ModManager.h"
 
 #include <borealis.hpp>
+#include "scroll_list.hpp"
 
 #include <vector>
 #include <string>
@@ -17,12 +18,10 @@
 
 class FrameModBrowser;
 
-class ModBrowser : public brls::List {
+class ModBrowser : public brls::ScrollList {
 
 public:
   explicit ModBrowser(FrameModBrowser* owner_);
-
-  void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
   ModManager& getModManager();
 
@@ -30,6 +29,8 @@ public:
    * Clears the list, loading the first page for mods for the current group set in controller.group
    */
   void loadFirstPage();
+
+  void focusTop();
 
 private:
   FrameModBrowser* _owner_{nullptr};

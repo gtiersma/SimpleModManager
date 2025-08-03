@@ -56,7 +56,8 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
         dialog->close();
 
         // starts the async routine
-        ownerPtr->getGuiModManager().startApplyModPresetThread(item->getLabel());
+        // "getGuiModManager()" no longer exists, so this is broken
+        //ownerPtr->getGuiModManager().startApplyModPresetThread(item->getLabel());
       });
       dialog->addButton("No", [dialog](brls::View* view) {
         dialog->close();
@@ -86,7 +87,8 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
       // open editor
       auto* editor = new ThumbnailPresetEditor( ownerPtr, item->getLabel() );
 
-      auto* icon = ownerPtr->getIcon();
+      // game icon must be accessed differently; so this is broken
+      /*auto* icon = ownerPtr->getIcon();
       if(icon != nullptr){
         brls::PopupFrame::open(
             "Edit preset", icon, 0x20000, editor,
@@ -100,7 +102,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
             "Please select the mods you want to install",
             "The mods will be applied in the same order."
         );
-      }
+      }*/
 
       return true;
     });
@@ -119,7 +121,8 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
       // create new preset
       auto* editor = new ThumbnailPresetEditor( ownerPtr );
 
-      auto* icon = ownerPtr->getIcon();
+      // game icon must be accessed differently; so this is broken
+      /*auto* icon = ownerPtr->getIcon();
       if(icon != nullptr){
         brls::PopupFrame::open(
             "New preset", icon, 0x20000, editor,
@@ -133,7 +136,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
             "Please select the mods you want to install",
             "The mods will be applied in the same order."
         );
-      }
+      }*/
 
       return true;
     });

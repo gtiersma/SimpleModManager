@@ -5,15 +5,9 @@
 #ifndef SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 #define SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 
-#include <TabModOptions.h>
-#include <TabModPresets.h>
-
 #include "GuiModManager.h"
-#include "GameBrowser.h"
 
 #include "autofocusless_tab_frame.hpp"
-
-#include "GroupBrowser.h"
 
 
 class FrameModBrowser : public brls::AutofocuslessTabFrame {
@@ -21,32 +15,12 @@ class FrameModBrowser : public brls::AutofocuslessTabFrame {
 public:
   explicit FrameModBrowser(GuiModManager* guiModManagerPtr_);
   bool onCancel() override;
-
-  uint8_t *getIcon();
-  TabModPresets* getTabModPresets(){ return _tabModPresets_; }
-
-
-  [[nodiscard]] const GuiModManager& getGuiModManager() const{ return *_guiModManagerPtr_; }
+  
   [[nodiscard]] const GameBrowser& getGameBrowser() const{ return _guiModManagerPtr_->getGameBrowser(); }
-
-  GuiModManager& getGuiModManager() { return *_guiModManagerPtr_; }
   GameBrowser& getGameBrowser(){ return _guiModManagerPtr_->getGameBrowser(); }
-
-  void handleGroupSelect();
-
 
 private:
   GuiModManager* _guiModManagerPtr_{};
-
-  brls::BoxLayout* _tabModBrowser_{nullptr};
-  TabModOptions* _tabModOptions_{nullptr};
-  TabModPresets* _tabModPresets_{nullptr};
-
-  GroupBrowser* _groupBrowser_{nullptr};
-  ModBrowser* _modBrowser_{nullptr};
-
-  uint8_t* _icon_{nullptr};
-
 };
 
 

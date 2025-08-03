@@ -6,6 +6,7 @@
 
 #include <TabModPresets.h>
 #include <TabModOptions.h>
+#include <GroupBrowser.h>
 
 #include "GenericToolbox.Switch.h"
 #include "Logger.h"
@@ -17,9 +18,9 @@ LoggerInit([]{
 });
 
 
-FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModManagerPtr_(guiModManagerPtr_) {
+FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_): _guiModManagerPtr_(guiModManagerPtr_) {
 
-  GameBrowser& gameBrowser = getGameBrowser();
+  GameBrowser& gameBrowser = guiModManagerPtr_->getGameBrowser();
   Game game = gameBrowser.getGame(controller.titleId).value();
 
   // fetch game title
@@ -32,26 +33,22 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_) : _guiModMana
 
   this->setFooterText("Simple Mod Alchemist");
 
-  _groupBrowser_ = new GroupBrowser(this);
-  _modBrowser_ = new ModBrowser(this);
+  ModBrowser* modBrowser = new ModBrowser(this);
+  GroupBrowser* groupBrowser = new GroupBrowser(modBrowser);
 
-  _tabModBrowser_ = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  _tabModBrowser_->addView(_groupBrowser_);
-  _tabModBrowser_->addView(_modBrowser_, true);
+  brls::BoxLayout* tabModBrowser = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
+  tabModBrowser->addView(groupBrowser);
+  tabModBrowser->addView(modBrowser, true);
 
   //_tabModPresets_ = new TabModPresets(this);
-  _tabModOptions_ = new TabModOptions(this);
+  TabModOptions* tabModOptions = new TabModOptions(this);
 
-  _tabModOptions_->initialize();
+  tabModOptions->initialize();
 
-  this->addTab("Mod Browser", _tabModBrowser_);
+  this->addTab("Mod Browser", tabModBrowser);
   this->addSeparator();
   //this->addTab("Mod Presets", _tabModPresets_);
-  this->addTab("Options", _tabModOptions_);
-}
-
-void FrameModBrowser::handleGroupSelect() {
-  _modBrowser_->loadFirstPage();
+  this->addTab("Options", tabModOptions);
 }
 
 bool FrameModBrowser::onCancel() {
@@ -67,8 +64,4 @@ bool FrameModBrowser::onCancel() {
   }
   return true;
 
-}
-
-uint8_t *FrameModBrowser::getIcon() {
-  return _icon_;
 }

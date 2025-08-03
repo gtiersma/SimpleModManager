@@ -3,12 +3,11 @@
 //
 
 #include "GroupBrowser.h"
-#include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
 
 
-GroupBrowser::GroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
+GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
   this->setWidth(this->WIDTH);
 
   // Fetch the available groups
@@ -26,12 +25,16 @@ GroupBrowser::GroupBrowser(FrameModBrowser* owner_) : _owner_(owner_) {
   for (auto& group : groupList) {
     auto* item = new brls::ListItem(group);
 
-    item->getFocusEvent()->subscribe([owner_, group](View* view) {
+    item->getFocusEvent()->subscribe([mod_browser_, group](View* view) {
       if (controller.group == group) return; // Do nothing if group did not change
       controller.group = group;
 
-      // Signal to FrameModBrowser so it can signal the ModBrowser to reload mods:
-      owner_->handleGroupSelect();
+      // Have mod browser load mods of the focused group:
+      mod_browser_->loadFirstPage();
+    });
+
+    item->getClickEvent()->subscribe([mod_browser_](View* view) {
+      mod_browser_->focusTop();
     });
 
     this->addView(item);
