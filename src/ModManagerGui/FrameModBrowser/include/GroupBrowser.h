@@ -8,8 +8,8 @@
 
 #include "borealis.hpp"
 
+#include "ModBrowser.h"
 
-class FrameModBrowser;
 
 class GroupBrowser : public brls::List {
 
@@ -18,12 +18,9 @@ public:
   // Short width to provide more room for the mod list
   static const int WIDTH = 300;
 
-  explicit GroupBrowser(FrameModBrowser* owner_);
+  explicit GroupBrowser(ModBrowser* mod_browser_);
 
   void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
-
-private:
-  FrameModBrowser* _owner_{nullptr};
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

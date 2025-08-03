@@ -29,6 +29,10 @@ void ModBrowser::loadFirstPage() {
   this->willAppear(true); /* Scroll to the top */
 }
 
+void ModBrowser::focusTop() {
+  brls::Application::giveFocus(this->getChild(0));
+}
+
 void ModBrowser::displayNoMods() {
   this->clear(true);
 
@@ -82,7 +86,10 @@ void ModBrowser::appendNextPage() {
   ModManager& modManager = this->getModManager();
   size_t sourceCount = this->_source_names_.size();
 
-  if (this->_page_ != 1) {
+  // Whether this page is being loaded from the load-more button or not
+  bool wasLoadButtonUsed = this->_page_ != 1;
+
+  if (wasLoadButtonUsed) {
     // Would typically call "remove",
     // but it was crashing the app (probably because its being initiated within a lambda that belongs to itself).
     //
@@ -119,6 +126,12 @@ void ModBrowser::appendNextPage() {
     });
 
     this->addView(item);
+
+    // When the load-more button is used, it is re-created at the end of the list
+    // but we want to preserve the focus position in the list, so move the focus to the first-loaded item
+    if (wasLoadButtonUsed && i == pageStart) {
+      brls::Application::giveFocus(item);
+    }
   }
 
   // If there are more items not yet loaded, show the load-more item
@@ -126,8 +139,20 @@ void ModBrowser::appendNextPage() {
     this->appendLoadItem();
   }
 
-  // Update scrollable areas in response to the added items above
-  this->setUpdateScrollingOnNextFrame(true);
+  // Not sure why, but the list scrolls to a wrong position after the items are loaded
+  // AND after the first time focus changes after the items load when more items are appended.
+  //
+  // To fix this, both scroll positions need to be manually overridden.
+  if (wasLoadButtonUsed) {
+    this->scrollOverride = (float)(pageStart - 3) / (float)(nextPageStart);
+
+    // Don't ask what this calculation actually means,
+    // but it seems to scroll to approximately the right position each time a new page of content is loaded.
+    this->startScrolling(
+      true,
+      ((float)(this->getViewsCount() - 12 + (this->_page_ * 2)) / (float)(this->getViewsCount() + this->_page_))
+    );
+  }
 }
 
 size_t ModBrowser::getFirstIndex(size_t page) {
@@ -139,18 +164,6 @@ size_t ModBrowser::getFirstIndex(size_t page) {
   }
   
   return index;
-}
-
-void ModBrowser::draw(
-  NVGcontext *vg,
-  int x,
-  int y,
-  unsigned int width,
-  unsigned int height,
-  brls::Style *style,
-  brls::FrameContext *ctx
-) {
-  ScrollView::draw(vg, x, y, width, height, style, ctx);
 }
 
 ModManager& ModBrowser::getModManager() {

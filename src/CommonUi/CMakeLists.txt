@@ -7,6 +7,7 @@ set( SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/dialog_util.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/autofocusless_tab_frame.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/subtab_frame.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/scroll_list.cpp
     )
 
 

@@ -163,7 +163,8 @@ void ThumbnailPresetEditor::save() {
   _owner_->getGameBrowser().getModPresetHandler().readConfigFile();
 
   // trigger backdrop list update
-  _owner_->getTabModPresets()->setTriggerUpdateItem( true );
+  // "getTabModPresets()" was removed; so this is broken
+  //_owner_->getTabModPresets()->setTriggerUpdateItem( true );
 }
 void ThumbnailPresetEditor::autoAssignPresetName() {
   alchemyLogger.log("ThumbnailPresetEditor::autoAssignPresetName();");
