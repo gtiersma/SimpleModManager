@@ -14,12 +14,15 @@
 ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {}
 
 void ModBrowser::loadFirstPage() {
+  alchemyLogger.log("ModBrowser::loadFirstPage: clearing...");
   this->clear(true);
   this->_page_ = 0;
 
+  alchemyLogger.log("ModBrowser::loadFirstPage: loading sources...");
   this->_source_names_ = controller.loadSources(true);
 
   if (this->_source_names_.empty()) {
+    alchemyLogger.log("ModBrowser::loadFirstPage: no sources...");
     this->displayNoMods();
     return;
   }
@@ -88,6 +91,7 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
 }
 
 void ModBrowser::appendNextPage() {
+  alchemyLogger.log("ModBrowser::appendNextPage: begin...");
   this->_page_++;
   
   ModManager& modManager = this->getModManager();
@@ -115,12 +119,15 @@ void ModBrowser::appendNextPage() {
     i < nextPageStart && i < sourceCount;
     i++
   ) {
+    alchemyLogger.log("ModBrowser::appendNextPage: loading source... " + this->_source_names_[i]);
     ModSource source = modManager.loadSource(this->_source_names_[i]);
     std::vector<std::string> options = source.mods;
 
     // Add the option for choosing to use no mod
+    alchemyLogger.log("ModBrowser::appendNextPage: inserting default... ");
     options.insert(options.begin(), _DEFAULT_LABEL_);
 
+    alchemyLogger.log("ModBrowser::appendNextPage: constructing item... ");
     brls::SelectListItem* item = new brls::SelectListItem(
       source.source,
       MetaManager::limitSelectLabels(options),
@@ -132,6 +139,7 @@ void ModBrowser::appendNextPage() {
       this->handleModSelect(source, selection);
     });
 
+    alchemyLogger.log("ModBrowser::appendNextPage: adding item... ");
     this->addView(item);
 
     // When the load-more button is used, it is re-created at the end of the list
@@ -143,6 +151,7 @@ void ModBrowser::appendNextPage() {
 
   // If there are more items not yet loaded, show the load-more item
   if (sourceCount > nextPageStart) {
+    alchemyLogger.log("ModBrowser::appendNextPage: adding load item... ");
     this->appendLoadItem();
   }
 
@@ -161,6 +170,8 @@ void ModBrowser::appendNextPage() {
       ((float)(itemCount - 12 + (this->_page_ * 2)) / (float)(itemCount + this->_page_))
     );
   }
+
+  alchemyLogger.log("ModBrowser::appendNextPage: kohmplete... ");
 }
 
 size_t ModBrowser::getFirstIndex(size_t page) {
