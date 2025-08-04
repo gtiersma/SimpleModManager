@@ -144,13 +144,14 @@ void ModBrowser::appendNextPage() {
   //
   // To fix this, both scroll positions need to be manually overridden.
   if (wasLoadButtonUsed) {
-    this->scrollOverride = (float)(pageStart - 3) / (float)(nextPageStart);
+    size_t itemCount = this->getViewsCount();
+    this->scrollOverride = (float)(pageStart - 3) / (float)(itemCount - this->_page_);
 
     // Don't ask what this calculation actually means,
     // but it seems to scroll to approximately the right position each time a new page of content is loaded.
     this->startScrolling(
       true,
-      ((float)(this->getViewsCount() - 12 + (this->_page_ * 2)) / (float)(this->getViewsCount() + this->_page_))
+      ((float)(itemCount - 12 + (this->_page_ * 2)) / (float)(itemCount + this->_page_))
     );
   }
 }

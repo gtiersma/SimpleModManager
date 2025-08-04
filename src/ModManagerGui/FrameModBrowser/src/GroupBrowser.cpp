@@ -40,16 +40,3 @@ GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
     this->addView(item);
   }
 }
-
-void GroupBrowser::draw(
-  NVGcontext *vg,
-  int x,
-  int y,
-  unsigned int width,
-  unsigned int height,
-  brls::Style *style,
-  brls::FrameContext *ctx
-) {
-  ScrollView::draw(vg, x, y, width, height, style, ctx);
-}
-
