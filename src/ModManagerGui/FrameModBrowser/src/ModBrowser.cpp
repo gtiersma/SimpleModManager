@@ -120,7 +120,7 @@ void ModBrowser::appendNextPage() {
       ""
     );
 
-    item->getValueSelectedEvent()->subscribe([this, &source](size_t selection) {
+    item->getValueSelectedEvent()->subscribe([this, source](size_t selection) {
       this->handleModSelect(source, selection);
     });
 
