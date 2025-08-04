@@ -13,14 +13,12 @@
 
 class GroupBrowser : public brls::List {
 
-public:
+  public:
 
-  // Short width to provide more room for the mod list
-  static const int WIDTH = 300;
+    // Short width to provide more room for the mod list
+    static const int WIDTH = 300;
 
-  explicit GroupBrowser(ModBrowser* mod_browser_);
-
-  void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
+    explicit GroupBrowser(ModBrowser* mod_browser_);
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

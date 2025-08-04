@@ -58,10 +58,15 @@ bool FrameModBrowser::onCancel() {
   brls::Application::onGamepadButtonPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, false);
 
   // If the sidebar was already there, the focus has not changed
-  if(lastFocus == brls::Application::getCurrentFocus()){
+  if (lastFocus == brls::Application::getCurrentFocus()) {
     LogInfo("Back on games screen...");
     brls::Application::popView(brls::ViewAnimation::SLIDE_RIGHT);
   }
+
+  // clear the group/source shown
+  controller.source = "";
+  controller.group = "";
+
   return true;
 
 }
