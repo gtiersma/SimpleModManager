@@ -63,11 +63,11 @@ bool FrameModBrowser::onCancel() {
   if (lastFocus == brls::Application::getCurrentFocus()) {
     LogInfo("Back on games screen...");
     brls::Application::popView(brls::ViewAnimation::SLIDE_RIGHT);
-  }
 
-  // clear the group/source shown
-  controller.source = "";
-  controller.group = "";
+    // clear the group/source shown
+    controller.source = "";
+    controller.group = "";
+  }
 
   return true;
 
