@@ -58,6 +58,8 @@ void ModBrowser::appendLoadItem() {
 }
 
 void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
+  alchemyLogger.log("ModBrowser::handleModSelect: selecting index " + std::to_string(selectedIndex));
+  alchemyLogger.log("ModBrowser::handleModSelect: selecting source " + mod.source);
 
   // Note: selection is -1 if backed out of selecting
   if (selectedIndex == -1) return;
@@ -67,15 +69,20 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
   if (selectedIndex == 0) {
     // If the default option was chosen, deactivate whatever mod is active:
     controller.deactivateMod();
+    alchemyLogger.log("ModBrowser::handleModSelect: mod deactivated");
   } else {
 
     // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
     std::string modToActivate(mod.mods[selectedIndex - 1]);
+    alchemyLogger.log("ModBrowser::handleModSelect: mod to activate: " + modToActivate);
+    alchemyLogger.log("ModBrowser::handleModSelect: currently active: " + controller.getActiveMod(mod.source));
 
     // If the mod was changed, deactivate the old one and activate the new one:
     if (controller.getActiveMod(mod.source) != modToActivate) {
       controller.deactivateMod();
+      alchemyLogger.log("ModBrowser::handleModSelect: mod deactivated");
       controller.activateMod(modToActivate);
+      alchemyLogger.log("ModBrowser::handleModSelect: mod activated");
     }
   }
 }
