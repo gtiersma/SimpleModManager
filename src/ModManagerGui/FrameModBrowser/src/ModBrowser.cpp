@@ -93,7 +93,6 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
 }
 
 void ModBrowser::appendNextPage() {
-  alchemyLogger.log("ModBrowser::appendNextPage: begin...");
   this->_page_++;
   
   ModManager& modManager = this->getModManager();
@@ -126,22 +125,25 @@ void ModBrowser::appendNextPage() {
     std::vector<std::string> options = source.mods;
 
     // Add the option for choosing to use no mod
-    alchemyLogger.log("ModBrowser::appendNextPage: inserting default... ");
     options.insert(options.begin(), _DEFAULT_LABEL_);
 
-    alchemyLogger.log("ModBrowser::appendNextPage: constructing item... ");
+    std::vector<std::string> limitedLabels = MetaManager::limitSelectLabels(options);
+    for (std::string& label : limitedLabels) {
+      alchemyLogger.log("ModBrowser::appendNextPage: constructing item with label... " + label);
+    }
+
     brls::SelectListItem* item = new brls::SelectListItem(
       source.source,
       MetaManager::limitSelectLabels(options),
       source.activeIndex + 1, // Add 1 for the no-mod option added to the beginning
       ""
     );
+    alchemyLogger.log("ModBrowser::appendNextPage: active " + std::to_string(source.activeIndex - 1));
 
     item->getValueSelectedEvent()->subscribe([this, source](size_t selection) {
       this->handleModSelect(source, selection);
     });
 
-    alchemyLogger.log("ModBrowser::appendNextPage: adding item... ");
     this->addView(item);
 
     // When the load-more button is used, it is re-created at the end of the list
