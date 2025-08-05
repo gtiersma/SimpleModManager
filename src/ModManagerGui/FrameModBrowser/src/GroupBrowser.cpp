@@ -8,6 +8,8 @@
 
 
 GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
+  this->_modBrowser_ = mod_browser_;
+
   this->setWidth(this->WIDTH);
 
   // Fetch the available groups
@@ -39,4 +41,9 @@ GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
 
     this->addView(item);
   }
+}
+
+void GroupBrowser::willDisappear(bool resetState) {
+  this->_modBrowser_->clearItems();
+  ScrollView::willDisappear(resetState);
 }

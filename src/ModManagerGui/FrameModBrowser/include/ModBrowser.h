@@ -26,6 +26,11 @@ public:
   ModManager& getModManager();
 
   /**
+   * Clears the list
+   */
+  void clearItems();
+
+  /**
    * Clears the list, loading the first page for mods for the current group set in controller.group
    */
   void loadFirstPage();
