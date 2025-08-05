@@ -68,16 +68,11 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
   if (selectedIndex == 0) {
     // If the default option was chosen, deactivate whatever mod is active:
     controller.deactivateMod();
-  } else {
-
-    // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
-    std::string modToActivate(mod.mods[selectedIndex - 1]);
-
+  } else if (mod.activeIndex != selectedIndex - 1) {
     // If the mod was changed, deactivate the old one and activate the new one:
-    if (controller.getActiveMod(mod.source) != modToActivate) {
-      controller.deactivateMod();
-      controller.activateMod(modToActivate);
-    }
+    controller.deactivateMod();
+    // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
+    controller.activateMod(mod.mods[selectedIndex - 1]);
   }
 }
 
@@ -122,8 +117,12 @@ void ModBrowser::appendNextPage() {
       ""
     );
 
-    item->getValueSelectedEvent()->subscribe([this, source](size_t selection) {
+    item->getValueSelectedEvent()->subscribe([this, item, source](size_t selection) {
       this->handleModSelect(source, selection);
+
+      // Could be my imagination, but I think these lines help prevent the random DataAbort errors that infrequently occur
+      item->setSelectedValue(selection);
+      this->refresh();
     });
 
     this->addView(item);
