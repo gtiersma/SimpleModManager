@@ -13,9 +13,11 @@
 
 ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {}
 
+void ModBrowser::clearItems() { this->clear(true); }
+
 void ModBrowser::loadFirstPage() {
   alchemyLogger.log("ModBrowser::loadFirstPage: clearing...");
-  this->clear(true);
+  this->clearItems();
   this->_page_ = 0;
 
   alchemyLogger.log("ModBrowser::loadFirstPage: loading sources...");
@@ -37,7 +39,7 @@ void ModBrowser::focusTop() {
 }
 
 void ModBrowser::displayNoMods() {
-  this->clear(true);
+  this->clearItems();
 
   brls::ListItem* item = new brls::ListItem(
     "No mods have been found in " + controller.getGroupPath(),

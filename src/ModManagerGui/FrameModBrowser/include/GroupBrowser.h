@@ -19,6 +19,11 @@ class GroupBrowser : public brls::List {
     static const int WIDTH = 300;
 
     explicit GroupBrowser(ModBrowser* mod_browser_);
+
+  private:
+    ModBrowser* _modBrowser_{};
+
+    void willDisappear(bool resetState = false) override;
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H
