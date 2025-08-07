@@ -53,7 +53,7 @@ void runGui(){
   brls::Logger::setLogLevel(brls::LogLevel::ERROR);
 
   brls::i18n::loadTranslations("en-US");
-  LogThrowIf(not brls::Application::init("SimpleModManager"), "Unable to init Borealis application");
+  LogThrowIf(not brls::Application::init("SimpleModAlchemist"), "Unable to init Borealis application");
 
   // Create the app's folder in the SD Root if not yet created:
   FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
