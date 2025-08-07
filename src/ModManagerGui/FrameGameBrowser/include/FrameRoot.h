@@ -10,12 +10,10 @@
 #include "borealis.hpp"
 
 
-class FrameRoot : public brls::TabFrame {
+class FrameRoot : public brls::AppletFrame {
 
 public:
   FrameRoot();
-
-  bool onCancel() override;
 
   const GuiModManager &getGuiModManager() const { return _guiModManager_; }
   GuiModManager &getGuiModManager(){ return _guiModManager_; }

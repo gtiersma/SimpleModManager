@@ -7,13 +7,10 @@
 
 #include <borealis.hpp>
 
-class TabAbout : public brls::List {
+class TabAbout : public brls::Box {
 
 public:
   TabAbout();
-
-  View* getDefaultFocus() override{ return nullptr; }
-
 };
 
 
