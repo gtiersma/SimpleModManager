@@ -3,7 +3,7 @@
 
 
 # Replace this with the name of your application
-set( GUI_NAME "Simple Mod Alchemist")
+set( GUI_NAME "SimpleModAlchemist")
 set( GUI_APP "${GUI_NAME}")
 set( GUI_DIR ${PROJECT_SOURCE_DIR}/gui)
 
