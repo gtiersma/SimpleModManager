@@ -97,6 +97,8 @@ class ScrollList : public View
 
     void setContentView(View* view);
     View* getContentView();
+
+    void refresh();
     
     void startScrolling(bool animated, float newScroll);
 };

@@ -287,6 +287,11 @@ void ScrollList::setContentView(View* view)
     this->invalidate();
 }
 
+void ScrollList::refresh()
+{
+  this->setContentView(this->contentView);
+}
+
 View* ScrollList::getContentView()
 {
     return this->contentView;

@@ -75,20 +75,16 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
     // If the default option was chosen, deactivate whatever mod is active:
     controller.deactivateMod();
     alchemyLogger.log("ModBrowser::handleModSelect: mod deactivated");
-  } else {
-
-    // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
-    std::string modToActivate(mod.mods[selectedIndex - 1]);
-    alchemyLogger.log("ModBrowser::handleModSelect: mod to activate: " + modToActivate);
+  } else if (mod.activeIndex != selectedIndex - 1) {
+    alchemyLogger.log("ModBrowser::handleModSelect: mod to activate: " + mod.mods[selectedIndex - 1]);
     alchemyLogger.log("ModBrowser::handleModSelect: currently active: " + controller.getActiveMod(mod.source));
 
     // If the mod was changed, deactivate the old one and activate the new one:
-    if (controller.getActiveMod(mod.source) != modToActivate) {
-      controller.deactivateMod();
-      alchemyLogger.log("ModBrowser::handleModSelect: mod deactivated");
-      controller.activateMod(modToActivate);
-      alchemyLogger.log("ModBrowser::handleModSelect: mod activated");
-    }
+    controller.deactivateMod();
+    alchemyLogger.log("ModBrowser::handleModSelect: mod deactivated");
+    // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
+    controller.activateMod(mod.mods[selectedIndex - 1]);
+    alchemyLogger.log("ModBrowser::handleModSelect: mod activated");
   }
 }
 
@@ -140,8 +136,12 @@ void ModBrowser::appendNextPage() {
     );
     alchemyLogger.log("ModBrowser::appendNextPage: active " + std::to_string(source.activeIndex - 1));
 
-    item->getValueSelectedEvent()->subscribe([this, source](size_t selection) {
+    item->getValueSelectedEvent()->subscribe([this, item, source](size_t selection) {
       this->handleModSelect(source, selection);
+
+      // Could be my imagination, but I think these lines help prevent the random DataAbort errors that infrequently occur
+      item->setSelectedValue(selection);
+      this->refresh();
     });
 
     this->addView(item);
