@@ -9,10 +9,9 @@
 #include "borealis.hpp"
 
 
-class GroupBrowser : public brls::TabFrame {
-
+class GroupBrowser : public brls::ScrollingFrame {
   public:
-    explicit GroupBrowser();
+    explicit GroupBrowser(FrameModBrowser* owner_);
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

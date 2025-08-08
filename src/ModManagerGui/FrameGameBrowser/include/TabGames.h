@@ -16,7 +16,7 @@
 struct GameItem;
 class FrameRoot;
 
-class TabGames : public brls::Box {
+class TabGames : public brls::ScrollingFrame {
 
 public:
   explicit TabGames(FrameRoot* owner_);
@@ -34,9 +34,7 @@ private:
 
 struct GameItem{
   std::string title{};
-
-  // memory is fully handled by brls
-  brls::Label* item{nullptr};
+  brls::Box* item{nullptr};
 };
 
 

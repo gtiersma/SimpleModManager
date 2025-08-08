@@ -8,11 +8,11 @@
 #include <StateAlchemist/controller.h>
 
 
-GroupBrowser::GroupBrowser() {
-  auto groupList = controller.loadGroups(true);
+GroupBrowser::GroupBrowser(FrameModBrowser* owner_) {
+  std::vector<std::string> groupList = controller.loadGroups(true);
 
   if (groupList.empty()) {
-    auto dialog = new brls::Dialog(
+    brls::Dialog* dialog = new brls::Dialog(
       "No mod groups have been found in " + controller.getGamePath() +
       ". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
@@ -20,7 +20,12 @@ GroupBrowser::GroupBrowser() {
     return;
   }
 
-  for (auto& group : groupList) {
-    this->addTab(group, []() { return new ModBrowser(); });
+  brls::TabFrame* tabs = new brls::TabFrame();
+  for (std::string& group : groupList) {
+    tabs->addTab(group, [owner_, group]() {
+      controller.group = group;
+      return new ModBrowser(owner_);
+    });
   }
+  this->addView(tabs);
 }

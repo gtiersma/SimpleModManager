@@ -10,13 +10,9 @@
 
 
 
-ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {}
-
-void ModBrowser::clearItems() { this->clear(true); }
-
-void ModBrowser::loadFirstPage() {
-  this->clearItems();
-  this->_page_ = 0;
+ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {
+  this->_container_ = new brls::Box();
+  this->addView(this->_container_);
 
   this->_source_names_ = controller.loadSources(true);
 
@@ -26,36 +22,26 @@ void ModBrowser::loadFirstPage() {
   }
 
   this->appendNextPage();
-  
-  this->willAppear(true); /* Scroll to the top */
-}
-
-void ModBrowser::focusTop() {
-  brls::Application::giveFocus(this->getChild(0));
 }
 
 void ModBrowser::displayNoMods() {
-  this->clearItems();
-
-  brls::ListItem* item = new brls::ListItem(
-    "No mods have been found in " + controller.getGroupPath(),
-    "Put mods within that folder like this: ./<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
+  brls::DetailCell* message = new brls::DetailCell();
+  message->setText("No mods have been found in " + controller.getGroupPath());
+  message->setDetailText(
+    "Within that folder, organize the mods in this manner: ./<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
   );
-
-  item->show([](){}, false);
-
-  this->addView(item);
-  this->willAppear(true);
+  this->_container_->addView(message);
 }
 
-void ModBrowser::appendLoadItem() {
-  auto* item = new brls::ListItem("Show more...");
-
-  item->getClickEvent()->subscribe([this](brls::View* view) {
+void ModBrowser::appendLoadButton() {
+  brls::Button* button = new brls::Button();
+  button->setText("Show more...");
+  button->registerClickAction([this](brls::View* view) {
     this->appendNextPage();
+    return true;
   });
-
-  this->addView(item);
+  this->_container_->addView(button);
+  this->_load_button_ = button;
 }
 
 void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
@@ -86,15 +72,7 @@ void ModBrowser::appendNextPage() {
   bool wasLoadButtonUsed = this->_page_ != 1;
 
   if (wasLoadButtonUsed) {
-    // Would typically call "remove",
-    // but it was crashing the app (probably because its being initiated within a lambda that belongs to itself).
-    //
-    // So the next best thing is to just collapse it.
-    //
-    // It will still remain in memory, unused, but there shouldn't be many of these.
-    //
-    // The last child should be the load item.
-    this->getChild(this->getViewsCount() - 1)->collapse(false);
+    this->removeView(this->_load_button_);
   }
 
   size_t pageStart = this->getFirstIndex(this->_page_);
@@ -110,49 +88,26 @@ void ModBrowser::appendNextPage() {
     // Add the option for choosing to use no mod
     options.insert(options.begin(), _DEFAULT_LABEL_);
 
-    brls::SelectListItem* item = new brls::SelectListItem(
+    brls::SelectorCell* selector = new brls::SelectorCell();
+    selector->init(
       source.source,
       MetaManager::limitSelectLabels(options),
       source.activeIndex + 1, // Add 1 for the no-mod option added to the beginning
-      ""
+      [](int selected) {},
+      [this, source](int selected) { this->handleModSelect(source, selected); }
     );
-
-    item->getValueSelectedEvent()->subscribe([this, item, source](size_t selection) {
-      this->handleModSelect(source, selection);
-
-      // Could be my imagination, but I think these lines help prevent the random DataAbort errors that infrequently occur
-      item->setSelectedValue(selection);
-      this->refresh();
-    });
-
-    this->addView(item);
+    this->_container_->addView(selector);
 
     // When the load-more button is used, it is re-created at the end of the list
     // but we want to preserve the focus position in the list, so move the focus to the first-loaded item
     if (wasLoadButtonUsed && i == pageStart) {
-      brls::Application::giveFocus(item);
+      brls::Application::giveFocus(selector);
     }
   }
 
-  // If there are more items not yet loaded, show the load-more item
+  // If there are more items not yet loaded, show the load-more button
   if (sourceCount > nextPageStart) {
-    this->appendLoadItem();
-  }
-
-  // Not sure why, but the list scrolls to a wrong position after the items are loaded
-  // AND after the first time focus changes after the items load when more items are appended.
-  //
-  // To fix this, both scroll positions need to be manually overridden.
-  if (wasLoadButtonUsed) {
-    size_t itemCount = this->getViewsCount();
-    this->scrollOverride = (float)(pageStart - 3) / (float)(itemCount - this->_page_);
-
-    // Don't ask what this calculation actually means,
-    // but it seems to scroll to approximately the right position each time a new page of content is loaded.
-    this->startScrolling(
-      true,
-      ((float)(itemCount - 12 + (this->_page_ * 2)) / (float)(itemCount + this->_page_))
-    );
+    this->appendLoadButton();
   }
 }
 

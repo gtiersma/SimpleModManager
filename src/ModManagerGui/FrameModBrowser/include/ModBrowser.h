@@ -10,7 +10,6 @@
 #include "ModManager.h"
 
 #include <borealis.hpp>
-#include "scroll_list.hpp"
 
 #include <vector>
 #include <string>
@@ -18,26 +17,16 @@
 
 class FrameModBrowser;
 
-class ModBrowser : public brls::ScrollList {
+class ModBrowser : public brls::ScrollingFrame {
 
 public:
   explicit ModBrowser(FrameModBrowser* owner_);
 
   ModManager& getModManager();
 
-  /**
-   * Clears the list
-   */
-  void clearItems();
-
-  /**
-   * Clears the list, loading the first page for mods for the current group set in controller.group
-   */
-  void loadFirstPage();
-
-  void focusTop();
-
 private:
+  brls::Box* _container_{nullptr};
+  brls::Button* _load_button_{nullptr};
   FrameModBrowser* _owner_{nullptr};
 
   // The last page # of mod sources that was loaded
@@ -52,9 +41,10 @@ private:
   void displayNoMods();
 
   /**
-   * Appends an item to the end of the list for loading the next page of sources
+   * Appends a button to the end of the list for loading the next page of sources.
+   * The button is available as "_load_button_".
    */
-  void appendLoadItem();
+  void appendLoadButton();
 
   /**
    * Called when the value of one of the select items is changed

@@ -9,7 +9,6 @@
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
 
-#include <sstream>
 #include <StateAlchemist/constants.h>
 #include <StateAlchemist/meta_manager.h>
 #include <Game.h>
@@ -18,23 +17,16 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
   std::vector<Game> gameList = this->getGameBrowser().getGameList();
 
   if (gameList.empty()) {
-    std::stringstream ssTitle;
-    std::stringstream ssSubTitle;
-
-    ssTitle << "No game folders have been found.";
-
-    ssSubTitle << "- To add mods, put them on the SD card in this manner: ";
-    ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-is-replacing>/<mod-name>/<mods-files-and-folders>." << std::endl;
-
-    _gameItems_.emplace_back();
-    _gameItems_.back().item = new brls::Label();
-    _gameItems_.back().item->setText(ssTitle.str());
-
-    _gameItems_.emplace_back();
-    _gameItems_.back().item = new brls::Label();
-    _gameItems_.back().item->setFontSize(15.0f);
-    _gameItems_.back().item->setText(ssSubTitle.str());
+    brls::DetailCell* message = new brls::DetailCell();
+    message->setText("No game folders have been found.");
+    message->setDetailText(
+      "To add mods, put them on the SD card in this manner: SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<mod-name>/<mod-files-and-folders>."
+    );
+    this->addView(message);
   } else {
+     brls::Box* container = new brls::Box();
+     this->addView(container);
+
     _gameItems_.reserve(gameList.size());
 
     for(auto& gameEntry : gameList) {
@@ -57,12 +49,11 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       item->registerClickAction([&, gameEntry](View* view) {
         getGameBrowser().selectGame(gameEntry.titleId);
         FrameModBrowser* modsBrowser = new FrameModBrowser(&_owner_->getGuiModManager());
-        brls::Activity modsActivity = new brls::Activity(modsBrowser);
+        brls::Activity* modsActivity = new brls::Activity(modsBrowser);
         brls::Application::pushActivity(modsActivity, brls::TransitionAnimation::SLIDE_LEFT);
-        modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
-        modsBrowser->updateActionHint(brls::Key::PLUS, ""); // make the change visible
+        return true;
       });
-      item->updateActionHint(brls::Key::A, "Open");
+      item->updateActionHint(brls::BUTTON_A, "Open");
 
       _gameItems_.emplace_back();
       _gameItems_.back().title = gameEntry.name;
@@ -74,7 +65,7 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
     });
   
     // add to the view
-    for (auto& game : _gameItems_) { this->addView( game.item ); }
+    for (auto& game : _gameItems_) { container->addView( game.item ); }
   }
 }
 

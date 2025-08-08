@@ -15,21 +15,17 @@ TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {
 }
 
 void TabGeneralSettings::rebuildLayout() {
-  brls::Label* migrationItem = new brls::Label();
+  brls::DetailCell* migrationItem = new brls::DetailCell();
   migrationItem->setText("Bring over old SimpleModManager mods");
+  migrationItem->setDetailText(
+    "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager."
+  );
   migrationItem->setFocusable(true);
   migrationItem->registerClickAction([this](brls::View* view) {
     buildMigrateConfirmDialog()->open();
     return true;
   });
   this->addView(migrationItem);
-
-  brls::Label* migrationDescription = new brls::Label();
-  migrationDescription->setText(
-    "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager."
-  );
-  migrationDescription->setFontSize(15.0f);
-  this->addView(migrationDescription);
 }
 
 /**

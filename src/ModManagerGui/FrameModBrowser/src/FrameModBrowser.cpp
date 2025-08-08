@@ -41,7 +41,7 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_): _guiModManag
   this->getFooter()->addView(footerLabel);
 
   brls::TabFrame* tabs = new brls::TabFrame();
-  tabs->addTab("Mod Browser", []() { return new GroupBrowser(); });
+  tabs->addTab("Mod Browser", [this]() { return new GroupBrowser(this); });
   tabs->addSeparator();
   tabs->addTab("Options", [this]() {
     TabModOptions* tabModOptions = new TabModOptions(this);
