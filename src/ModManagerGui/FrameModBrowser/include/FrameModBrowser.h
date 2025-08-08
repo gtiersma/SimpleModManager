@@ -7,14 +7,13 @@
 
 #include "GuiModManager.h"
 
-#include "autofocusless_tab_frame.hpp"
+#include "borealis.hpp"
 
 
-class FrameModBrowser : public brls::AutofocuslessTabFrame {
+class FrameModBrowser : public brls::AppletFrame {
 
 public:
   explicit FrameModBrowser(GuiModManager* guiModManagerPtr_);
-  bool onCancel() override;
   
   [[nodiscard]] const GameBrowser& getGameBrowser() const{ return _guiModManagerPtr_->getGameBrowser(); }
   GameBrowser& getGameBrowser(){ return _guiModManagerPtr_->getGameBrowser(); }

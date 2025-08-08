@@ -3,16 +3,12 @@
 //
 
 #include "GroupBrowser.h"
+#include "ModBrowser.h"
 
 #include <StateAlchemist/controller.h>
 
 
-GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
-  this->_modBrowser_ = mod_browser_;
-
-  this->setWidth(this->WIDTH);
-
-  // Fetch the available groups
+GroupBrowser::GroupBrowser() {
   auto groupList = controller.loadGroups(true);
 
   if (groupList.empty()) {
@@ -25,25 +21,6 @@ GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
   }
 
   for (auto& group : groupList) {
-    auto* item = new brls::ListItem(group);
-
-    item->getFocusEvent()->subscribe([mod_browser_, group](View* view) {
-      if (controller.group == group) return; // Do nothing if group did not change
-      controller.group = group;
-
-      // Have mod browser load mods of the focused group:
-      mod_browser_->loadFirstPage();
-    });
-
-    item->getClickEvent()->subscribe([mod_browser_](View* view) {
-      mod_browser_->focusTop();
-    });
-
-    this->addView(item);
+    this->addTab(group, []() { return new ModBrowser(); });
   }
-}
-
-void GroupBrowser::willDisappear(bool resetState) {
-  this->_modBrowser_->clearItems();
-  ScrollView::willDisappear(resetState);
 }

@@ -9,64 +9,55 @@
 #include <GroupBrowser.h>
 
 #include "GenericToolbox.Switch.h"
-#include "Logger.h"
 #include <StateAlchemist/controller.h>
 
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[FrameModBrowser]");
-});
-
-
 FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_): _guiModManagerPtr_(guiModManagerPtr_) {
-
   GameBrowser& gameBrowser = guiModManagerPtr_->getGameBrowser();
   Game game = gameBrowser.getGame(controller.titleId).value();
 
-  // fetch game title
-  this->setTitle(game.name);
-
   std::string gamePath = controller.getGamePath();
 
-  if (game.icon.size() > 0) { this->setIcon(game.icon.data(), 0x20000); }
-  else { this->setIcon("romfs:/images/icon_corner.png"); }
+  // Construct header
+  // Header must be cleared and rebuilt because there's no setImageFromMem() for the icon in its API
+  brls::Box* header = this->getHeader();
+  header->clearViews(true);
+  
+  brls::Image* icon = new brls::Image();
+  if (game.icon.size() > 0) {
+    icon->setImageFromMem(game.icon.data(), 0x20000);
+  } else {
+    icon->setImageFromFile("romfs:/images/icon_corner.png");
+  }
 
-  this->setFooterText("Simple Mod Alchemist");
+  header->addView(icon);
 
-  ModBrowser* modBrowser = new ModBrowser(this);
-  GroupBrowser* groupBrowser = new GroupBrowser(modBrowser);
+  brls::Label* title = new brls::Label();
+  title->setText(game.name);
+  header->addView(title);
 
-  brls::BoxLayout* tabModBrowser = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  tabModBrowser->addView(groupBrowser);
-  tabModBrowser->addView(modBrowser, true);
+  brls::Label* footerLabel = new brls::Label();
+  footerLabel->setText("Simple Mod Alchemist");
+  this->getFooter()->addView(footerLabel);
 
-  //_tabModPresets_ = new TabModPresets(this);
-  TabModOptions* tabModOptions = new TabModOptions(this);
+  brls::TabFrame* tabs = new brls::TabFrame();
+  tabs->addTab("Mod Browser", []() { return new GroupBrowser(); });
+  tabs->addSeparator();
+  tabs->addTab("Options", [this]() {
+    TabModOptions* tabModOptions = new TabModOptions(this);
+    tabModOptions->initialize();
+    return tabModOptions;
+  });
 
-  tabModOptions->initialize();
-
-  this->addTab("Mod Browser", tabModBrowser);
-  this->addSeparator();
-  //this->addTab("Mod Presets", _tabModPresets_);
-  this->addTab("Options", tabModOptions);
-}
-
-bool FrameModBrowser::onCancel() {
-
-  // Go back to sidebar
-  auto* lastFocus = brls::Application::getCurrentFocus();
-  brls::Application::onGamepadButtonPressed(GLFW_GAMEPAD_BUTTON_DPAD_LEFT, false);
-
-  // If the sidebar was already there, the focus has not changed
-  if (lastFocus == brls::Application::getCurrentFocus()) {
-    LogInfo("Back on games screen...");
-    brls::Application::popView(brls::ViewAnimation::SLIDE_RIGHT);
+  tabs->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
+    brls::Application::popActivity(brls::TransitionAnimation::SLIDE_RIGHT);
 
     // clear the group/source shown
     controller.source = "";
     controller.group = "";
-  }
 
-  return true;
+    return true;
+  });
 
+  this->addView(tabs);
 }
