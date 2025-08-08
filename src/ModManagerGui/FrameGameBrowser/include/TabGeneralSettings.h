@@ -12,14 +12,14 @@
 
 class FrameRoot;
 
-class TabGeneralSettings : public brls::List {
+class TabGeneralSettings : public brls::Box {
 
 public:
   explicit TabGeneralSettings(FrameRoot* owner_);
 
   void rebuildLayout();
 
-  brls::ListItem* itemInstallLocationPreset{nullptr};
+  brls::Box* itemInstallLocationPreset{nullptr};
 
   [[nodiscard]] const ConfigHolder& getConfig() const;
   ConfigHolder& getConfig();

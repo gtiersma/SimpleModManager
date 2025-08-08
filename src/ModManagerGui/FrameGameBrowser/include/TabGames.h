@@ -16,7 +16,7 @@
 struct GameItem;
 class FrameRoot;
 
-class TabGames : public brls::List {
+class TabGames : public brls::Box {
 
 public:
   explicit TabGames(FrameRoot* owner_);
@@ -36,7 +36,7 @@ struct GameItem{
   std::string title{};
 
   // memory is fully handled by brls
-  brls::ListItem* item{nullptr};
+  brls::Label* item{nullptr};
 };
 
 

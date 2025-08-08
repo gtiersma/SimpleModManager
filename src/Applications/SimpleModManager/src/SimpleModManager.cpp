@@ -9,8 +9,6 @@
 
 #include "ConfigHandler.h"
 
-#include "Logger.h"
-
 #include <borealis.hpp>
 
 #include <string>
@@ -23,13 +21,7 @@
 #include "StateAlchemist/fs_manager.h"
 
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[SimpleModManager.nro]");
-});
-
-
-int main(int argc, char* argv[]){
-  LogInfo << "SimpleModManager is starting..." << std::endl;
+int main(int argc, char* argv[]) {
 
   // https://github.com/jbeder/yaml-cpp/wiki/Tutorial
 //  YAML::Node config = YAML::LoadFile("config.yaml");
@@ -47,26 +39,17 @@ int main(int argc, char* argv[]){
 
 
 void runGui(){
-  LogInfo << "Starting GUI..." << std::endl;
-  LogThrowIf(R_FAILED(nsInitialize()), "nsInitialize Failed");
-
-  brls::Logger::setLogLevel(brls::LogLevel::ERROR);
-
-  brls::i18n::loadTranslations("en-US");
-  LogThrowIf(not brls::Application::init("SimpleModAlchemist"), "Unable to init Borealis application");
+  brls::Application::init();
+  brls::Application::createWindow("Simple Mod Alchemist");
 
   // Create the app's folder in the SD Root if not yet created:
   FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 
-  LogInfo << "Creating root frame..." << std::endl;
-  auto* mainFrame = new FrameRoot();
+  FrameRoot* mainFrame = new FrameRoot();
+  brls::Activity* mainActivity = new brls::Activity(mainFrame);
+  brls::Application::pushActivity(mainActivity);
 
-  LogInfo << "Pushing to view" << std::endl;
-  brls::Application::pushView( mainFrame );
-  mainFrame->registerAction( "", brls::Key::PLUS, []{return true;}, true );
-  mainFrame->updateActionHint( brls::Key::PLUS, "" ); // make the change visible
-
-  while( brls::Application::mainLoop() ){  }
+  while (brls::Application::mainLoop()) {};
 
   nsExit();
 }

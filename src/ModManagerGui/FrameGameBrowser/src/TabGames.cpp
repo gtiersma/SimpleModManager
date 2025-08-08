@@ -8,7 +8,6 @@
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
-#include "Logger.h"
 
 #include <sstream>
 #include <StateAlchemist/constants.h>
@@ -28,43 +27,55 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
     ssSubTitle << "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-is-replacing>/<mod-name>/<mods-files-and-folders>." << std::endl;
 
     _gameItems_.emplace_back();
-    _gameItems_.back().item = new brls::ListItem( ssTitle.str(), ssSubTitle.str() );
-    _gameItems_.back().item->show([](){}, false);
+    _gameItems_.back().item = new brls::Label();
+    _gameItems_.back().item->setText(ssTitle.str());
+
+    _gameItems_.emplace_back();
+    _gameItems_.back().item = new brls::Label();
+    _gameItems_.back().item->setFontSize(15.0f);
+    _gameItems_.back().item->setText(ssSubTitle.str());
   } else {
     _gameItems_.reserve(gameList.size());
 
     for(auto& gameEntry : gameList) {
       std::string gamePath { GenericToolbox::joinPath(ALCHEMIST_FOLDER, MetaManager::getHexTitleId(gameEntry.titleId)) };
 
-      // memory allocation
-      auto* item = new brls::ListItem(gameEntry.name, "", "");
+      brls::Box* item = new brls::Box();
+      item->setFocusable(true);
+      item->addGestureRecognizer(new brls::TapGestureRecognizer(item));
 
       if (gameEntry.icon.size() > 0) {
-        item->setThumbnail(gameEntry.icon.data(), 0x20000);
+        brls::Image* image = new brls::Image();
+        image->setImageFromMem(gameEntry.icon.data(), 0x20000);
+        item->addView(image);
       }
 
-      item->getClickEvent()->subscribe([&, gameEntry](View* view) {
+      brls::Label* label = new brls::Label();
+      label->setText(gameEntry.name);
+      item->addView(label);
+
+      item->registerClickAction([&, gameEntry](View* view) {
         getGameBrowser().selectGame(gameEntry.titleId);
-        auto* modsBrowser = new FrameModBrowser( &_owner_->getGuiModManager() );
-        brls::Application::pushView(modsBrowser, brls::ViewAnimation::SLIDE_LEFT);
+        FrameModBrowser* modsBrowser = new FrameModBrowser(&_owner_->getGuiModManager());
+        brls::Activity modsActivity = new brls::Activity(modsBrowser);
+        brls::Application::pushActivity(modsActivity, brls::TransitionAnimation::SLIDE_LEFT);
         modsBrowser->registerAction("", brls::Key::PLUS, []{return true;}, true);
         modsBrowser->updateActionHint(brls::Key::PLUS, ""); // make the change visible
       });
       item->updateActionHint(brls::Key::A, "Open");
 
-
       _gameItems_.emplace_back();
       _gameItems_.back().title = gameEntry.name;
       _gameItems_.back().item = item;
     }
+
+    GenericToolbox::sortVector(_gameItems_, [](const GameItem& a_, const GameItem& b_){
+      return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title);
+    });
+  
+    // add to the view
+    for (auto& game : _gameItems_) { this->addView( game.item ); }
   }
-
-  GenericToolbox::sortVector(_gameItems_, [](const GameItem& a_, const GameItem& b_){
-    return GenericToolbox::toLowerCase(a_.title) < GenericToolbox::toLowerCase(b_.title);
-  });
-
-  // add to the view
-  for (auto& game : _gameItems_) { this->addView( game.item ); }
 }
 
 const GameBrowser& TabGames::getGameBrowser() const{

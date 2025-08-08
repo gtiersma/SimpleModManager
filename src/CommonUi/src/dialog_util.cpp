@@ -6,14 +6,16 @@
  * @param action Short label describing the action being performed
  */
 brls::Dialog* DialogUtil::buildLoadingDialog(std::string action) {
-  auto* layout = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  auto* label = new brls::Label(brls::LabelStyle::DIALOG, action + "...");
-  auto* progress = new brls::ProgressSpinner();
-  progress->willAppear(); // TODO: no progress spinner :(
-  layout->addView(label);
-  layout->addView(progress);
+  brls::Box* container = new brls::Box();
 
-  auto* dialog = new brls::Dialog(layout);
+  brls::Label* label = new brls::Label();
+  label->setText(action + "...");
+  container->addView(label);
+
+  brls::ProgressSpinner* progress = new brls::ProgressSpinner();
+  container->addView(progress);
+
+  brls::Dialog* dialog = new brls::Dialog(container);
   dialog->setCancelable(false);
 
   return dialog;
