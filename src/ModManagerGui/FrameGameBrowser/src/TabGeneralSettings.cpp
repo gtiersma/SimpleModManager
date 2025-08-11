@@ -7,7 +7,6 @@
 
 #include "FrameRoot.h"
 
-#include "Logger.h"
 #include <dialog_util.hpp>
 
 TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {

@@ -3,7 +3,6 @@
 //
 
 #include "ModManager.h"
-#include <Toolbox.h>
 #include <GameBrowser.h>
 
 #include "GenericToolbox.Switch.h"

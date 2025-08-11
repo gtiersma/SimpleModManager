@@ -59,10 +59,10 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
   }*/
 
   // the list that will appear
-  auto* modViewList = new brls::List();
+  /*auto* modViewList = new brls::List();
   for( auto& availableMod : _availableModItemList_ ){ modViewList->addView( availableMod ); }
   this->setContentView( modViewList );
-  this->registerAction("", brls::Key::PLUS, []{return true;}, true);
+  this->registerAction("", brls::Key::PLUS, []{return true;}, true);*/
 
 
   int presetIndex{-1};
@@ -83,7 +83,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
   }
 
   // sidebar and save button
-  this->getSidebar()->setTitle( _bufferPreset_.name );
+  /*this->getSidebar()->setTitle( _bufferPreset_.name );
   this->getSidebar()->getButton()->getClickEvent()->subscribe([this](brls::View* view){
     this->save();
 
@@ -92,7 +92,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 
     return true;
   });
-  this->getSidebar()->registerAction("", brls::Key::PLUS, []{return true;}, true);
+  this->getSidebar()->registerAction("", brls::Key::PLUS, []{return true;}, true);*/
 
   this->updateTags();
 }
@@ -102,13 +102,13 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 void ThumbnailPresetEditor::updateTags() {
 
   // reset tags
-  for( auto & availableMod : _availableModItemList_ ){  availableMod->setValue(""); }
+  //for( auto & availableMod : _availableModItemList_ ){  availableMod->setValue(""); }
 
   // set tags
   for( size_t iEntry = 0 ; iEntry < _bufferPreset_.modList.size() ; iEntry++ ){
     // loop over selected mods
 
-    for( auto & availableMod : _availableModItemList_ ){
+    /*for( auto & availableMod : _availableModItemList_ ){
       // loop over available mods
 
       if( availableMod->getLabel() != _bufferPreset_.modList[iEntry] ){
@@ -122,12 +122,12 @@ void ThumbnailPresetEditor::updateTags() {
       else ss << availableMod->getValue() << " & #" << iEntry + 1;
       availableMod->setValue( ss.str() );
 
-    }
+    }*/
   }
 
   std::stringstream ss;
   ss << this->_bufferPreset_.modList.size() << " mods have been selected.";
-  this->getSidebar()->setSubtitle( ss.str() );
+  //this->getSidebar()->setSubtitle( ss.str() );
 
 }
 void ThumbnailPresetEditor::save() {
@@ -175,7 +175,7 @@ void ThumbnailPresetEditor::autoAssignPresetName() {
   }
 }
 
-void ThumbnailPresetEditor::draw(
+/*void ThumbnailPresetEditor::draw(
     NVGcontext *vg, int x, int y,
     unsigned int width, unsigned int height,
     brls::Style *style, brls::FrameContext *ctx) {
@@ -191,5 +191,5 @@ void ThumbnailPresetEditor::draw(
 
   // trigger the default draw
   this->ThumbnailFrame::draw(vg, x, y, width, height, style, ctx);
-}
+}*/
 

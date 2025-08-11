@@ -9,23 +9,18 @@
 #include <ThumbnailPresetEditor.h>
 
 #include <borealis.hpp>
-#include "Logger.h"
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabModPresets]");
-});
 
 
-void TabModPresets::draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) {
+/*void TabModPresets::draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) {
 
   if( _triggerUpdateItem_ ){
     this->updatePresetItems();
   }
 
-  this->brls::List::draw( vg,x,y,width,height,style,ctx );
-}
+  //this->brls::List::draw( vg,x,y,width,height,style,ctx );
+}8***/
 
-void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
+/*void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
 
   if( item == nullptr ){
     LogError << "Can't assign buttons to nullptr item" << std::endl;
@@ -88,7 +83,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
       auto* editor = new ThumbnailPresetEditor( ownerPtr, item->getLabel() );
 
       // game icon must be accessed differently; so this is broken
-      /*auto* icon = ownerPtr->getIcon();
+      auto* icon = ownerPtr->getIcon();
       if(icon != nullptr){
         brls::PopupFrame::open(
             "Edit preset", icon, 0x20000, editor,
@@ -102,7 +97,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
             "Please select the mods you want to install",
             "The mods will be applied in the same order."
         );
-      }*/
+      }
 
       return true;
     });
@@ -122,7 +117,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
       auto* editor = new ThumbnailPresetEditor( ownerPtr );
 
       // game icon must be accessed differently; so this is broken
-      /*auto* icon = ownerPtr->getIcon();
+      auto* icon = ownerPtr->getIcon();
       if(icon != nullptr){
         brls::PopupFrame::open(
             "New preset", icon, 0x20000, editor,
@@ -136,7 +131,7 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
             "Please select the mods you want to install",
             "The mods will be applied in the same order."
         );
-      }*/
+      }
 
       return true;
     });
@@ -145,10 +140,10 @@ void TabModPresets::assignButtons(brls::ListItem *item, bool isPreset_) {
     item->setActionAvailable(brls::Key::A, true);
   }
 
-}
+}*/
 
 void TabModPresets::updatePresetItems() {
-  LogInfo << "Updating displayed preset items" << std::endl;
+  //LogInfo << "Updating displayed preset items" << std::endl;
 
   _triggerUpdateItem_ = false;
 
@@ -156,48 +151,47 @@ void TabModPresets::updatePresetItems() {
   auto presetList = _owner_->getGameBrowser().getModPresetHandler().getPresetList();
 
   // make sure it is the right size
-  _itemList_.reserve( presetList.size() + 1 );
+  //_itemList_.reserve( presetList.size() + 1 );
 
   // keep the index out of the for loop
   size_t iPreset = 0;
 
-  LogInfo << "Adding " << presetList.size() << " presets..." << std::endl;
+  //LogInfo << "Adding " << presetList.size() << " presets..." << std::endl;
   for( ; iPreset < presetList.size() ; iPreset++ ){
-    LogScopeIndent;
-    LogInfo << "Adding mod preset: " << presetList[iPreset].name << std::endl;
-    if( iPreset+1 > _itemList_.size() ){
+    //LogInfo << "Adding mod preset: " << presetList[iPreset].name << std::endl;
+    //if( iPreset+1 > _itemList_.size() ){
       // missing slot
-      _itemList_.emplace_back( new brls::ListItem( presetList[iPreset].name ) );
+      //_itemList_.emplace_back( new brls::ListItem( presetList[iPreset].name ) );
 
       // add it once
-      this->addView( _itemList_[ iPreset ] );
-    }
-    this->assignButtons( _itemList_[ iPreset ], true );
-    _itemList_[ iPreset ]->setLabel( presetList[iPreset].name );
-    _itemList_[ iPreset ]->setValue( std::to_string(presetList[iPreset].modList.size()) + " mods in this set" );
-    if( _itemList_[iPreset]->isCollapsed() ) _itemList_[iPreset]->expand();
+      //this->addView( _itemList_[ iPreset ] );
+    //}
+    //this->assignButtons( _itemList_[ iPreset ], true );
+    //_itemList_[ iPreset ]->setLabel( presetList[iPreset].name );
+    //_itemList_[ iPreset ]->setValue( std::to_string(presetList[iPreset].modList.size()) + " mods in this set" );
+    //if( _itemList_[iPreset]->isCollapsed() ) _itemList_[iPreset]->expand();
   }
 
   // need one more slot for create new preset
-  if( iPreset+1 > _itemList_.size() ){
-    LogInfo << "(re)-Creating add button" << std::endl;
-    _itemList_.emplace_back( new brls::ListItem( "\uE402 Create a new mod preset" ) );
+  //if( iPreset+1 > _itemList_.size() ){
+    //LogInfo << "(re)-Creating add button" << std::endl;
+    //_itemList_.emplace_back( new brls::ListItem( "\uE402 Create a new mod preset" ) );
 
-    this->addView( _itemList_[ iPreset ] );
-  }
-  this->assignButtons( _itemList_[ iPreset ], false );
-  if( _itemList_[iPreset]->isCollapsed() ) _itemList_[iPreset]->expand();
-  _itemList_[ iPreset ]->setLabel( "\uE402 Create a new mod preset" );
-  _itemList_[ iPreset ]->setValue( "" );
+    //this->addView( _itemList_[ iPreset ] );
+  //}
+  //this->assignButtons( _itemList_[ iPreset ], false );
+  //if( _itemList_[iPreset]->isCollapsed() ) _itemList_[iPreset]->expand();
+  //_itemList_[ iPreset ]->setLabel( "\uE402 Create a new mod preset" );
+  //_itemList_[ iPreset ]->setValue( "" );
   iPreset++;
 
   // hide the slots that were already created
-  for( ; iPreset < _itemList_.size() ; iPreset++ ){
-    _itemList_[iPreset]->collapse();
-  }
+  //for( ; iPreset < _itemList_.size() ; iPreset++ ){
+    //_itemList_[iPreset]->collapse();
+  //}
 
-  LogTrace << GET_VAR_NAME_VALUE(getViewsCount()) << std::endl;
-  LogTrace << GET_VAR_NAME_VALUE(_itemList_.size()) << std::endl;
+  //LogTrace << GET_VAR_NAME_VALUE(getViewsCount()) << std::endl;
+  //LogTrace << GET_VAR_NAME_VALUE(_itemList_.size()) << std::endl;
 
   // focus is lost as the list has been cleared
 //  brls::Application::giveFocus( this->getDefaultFocus() );
@@ -209,7 +203,7 @@ void TabModPresets::updatePresetItems() {
 //  }
 
   brls::Application::unblockInputs();
-  LogInfo << "Leaving update..." << std::endl;
+  //LogInfo << "Leaving update..." << std::endl;
 }
 
 

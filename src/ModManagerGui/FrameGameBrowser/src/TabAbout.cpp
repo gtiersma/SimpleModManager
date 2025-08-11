@@ -3,7 +3,7 @@
 //
 
 #include "TabAbout.h"
-#include <Toolbox.h>
+#include <StateAlchemist/constants.h>
 
 TabAbout::TabAbout() {
   
@@ -26,7 +26,7 @@ TabAbout::TabAbout() {
   columns->addView(leftBox);
 
   brls::Header* versionHeader = new brls::Header();
-  versionHeader->setTitle("Version " + Toolbox::getAppVersion() + " - What's new ?");
+  versionHeader->setTitle("Version " + APP_VERSION + " - What's new ?");
   leftBox->addView(versionHeader);
 
   brls::Label* changelog = new brls::Label();

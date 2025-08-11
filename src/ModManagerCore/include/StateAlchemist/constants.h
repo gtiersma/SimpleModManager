@@ -3,6 +3,8 @@
 
 #include <string>
 
+const std::string APP_VERSION = "1.0.0";
+
 // Small to minimize memory usage
 const int64_t FILE_LIST_BUFFER_SIZE = 30;
 

@@ -7,6 +7,7 @@
 
 
 #include "borealis.hpp"
+#include "FrameModBrowser.h"
 
 
 class GroupBrowser : public brls::ScrollingFrame {

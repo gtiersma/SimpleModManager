@@ -1,112 +1,186 @@
-# Copyright 2019 SwitchPy Team. All rights reserved.
-# Licensed under the MIT license.
-# Refer to the LICENSE file included.
-#
-# libnx CMake template for Nintendo Switch homebrew development.
-
 cmake_minimum_required(VERSION 3.10)
 
-project(SimpleModAlchemist)
+set(BOREALIS_LIBRARY ${CMAKE_CURRENT_SOURCE_DIR}/submodules/borealis/library)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-include(options)
-include(utils)
-include(devkita64-libnx)
+# build options
+include(${BOREALIS_LIBRARY}/cmake/commonOption.cmake)
 
-# needed by tesla lib
-set( CMAKE_CXX_STANDARD 20 )
+# Dependencies
+option(USE_SHARED_LIB "Whether to use shared libs provided by system" OFF)
+cmake_dependent_option(USE_SYSTEM_FMT "" OFF "NOT USE_SHARED_LIB" ON)
+cmake_dependent_option(USE_SYSTEM_TINYXML2 "" OFF "NOT USE_SHARED_LIB" ON)
+cmake_dependent_option(USE_SYSTEM_TWEENY "" OFF "NOT USE_SHARED_LIB" ON)
 
-find_package(LIBNX REQUIRED)
-if (NOT LIBNX_FOUND)
-    cmake_panic("Unable to detect libnx on this system.")
+if (APPLE AND PLATFORM_DESKTOP)
+    option(BUNDLE_MACOS_APP "Bundle a app for macOS" OFF)
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "" FORCE)
+    set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "" FORCE)
+    set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET[arch=arm64] "11.0" CACHE STRING "" FORCE)
+    message(STATUS "CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}")
+endif ()
+
+# toolchain
+include(${BOREALIS_LIBRARY}/cmake/toolchain.cmake)
+
+# project info
+project(simple_state_alchemist)
+set(VERSION_MAJOR "1")
+set(VERSION_MINOR "0")
+set(VERSION_ALTER "0")
+set(VERSION_BUILD "0")
+set(PACKAGE_NAME "com.borealis.sma")
+set(PSN_TITLE_ID  "n/a")
+set(PSN_VERSION  "n/a")
+set(PROJECT_AUTHOR "nadrino, gtiersma")
+set(PROJECT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/src/Applications/SimpleModManager/resources/assets/icon_gui.jpg)
+set(PROJECT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resources)
+
+if (USE_LIBROMFS)
+    add_libromfs(${PROJECT_NAME} ${PROJECT_RESOURCES})
+endif ()
+
+add_subdirectory(${BOREALIS_LIBRARY})
+
+find_package(Threads REQUIRED)
+list(APPEND APP_PLATFORM_LIB ${CMAKE_THREAD_LIBS_INIT})
+
+# setting src and include
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/Applications/SimpleModManager/include)
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/CommonUi/include)
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/ModManagerCore/include)
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/ModManagerGui/CoreExtension/include)
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/ModManagerGui/FrameGameBrowser/include)
+list(APPEND APP_PLATFORM_INCLUDE ${CMAKE_CURRENT_SOURCE_DIR}/src/ModManagerGui/FrameModBrowser/include)
+file(GLOB_RECURSE MAIN_SRC src/*.cpp)
+
+set(PLATFORM_OPTION)
+if (PLATFORM_DESKTOP)
+    if (WIN32)
+        configure_file("${CMAKE_SOURCE_DIR}/src/PC/resource.rc.in" "${CMAKE_BINARY_DIR}/resource.rc")
+        list(APPEND MAIN_SRC ${CMAKE_BINARY_DIR}/resource.rc)
+        if (MINGW)
+            set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++ -static" CACHE STRING "" FORCE)
+        endif ()
+    elseif (BUNDLE_MACOS_APP)
+        list(APPEND MAIN_SRC ${CMAKE_SOURCE_DIR}/src/PC/borealis.icns)
+    endif ()
+elseif (PLATFORM_SWITCH)
+    set(APP_PLATFORM_LIB
+        # needed by borealis
+        glfw3 EGL glapi drm_nouveau
+        # base lib
+        nx m
+    )
+    list(APPEND MAIN_SRC ${BOREALIS_LIBRARY}/lib/platforms/switch/switch_wrapper.c)
+elseif (PLATFORM_PS4)
+    # Show backtrace when app crash
+    list(APPEND MAIN_SRC ${BOREALIS_LIBRARY}/lib/platforms/ps4/crashlog.c)
+elseif (PLATFORM_PSV)
+    add_definitions(-D__psp2__ -D__PSV__)
 endif ()
 
 
-find_package(ZLIB REQUIRED)
-if (${ZLIB_FOUND})
-    message("ZLIB found : ${ZLIB_VERSION_STRING}")
-    message("ZLIB_INCLUDE_DIRS = ${ZLIB_INCLUDE_DIRS}")
-    message("ZLIB_LIBRARIES = ${ZLIB_LIBRARIES}")
-else()
-    message(FATAL_ERROR "ZLIB has not been found.")
+# building target
+program_target(${PROJECT_NAME} "${MAIN_SRC}")
+set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+
+
+# building release file
+if (PLATFORM_DESKTOP)
+    if (BUNDLE_MACOS_APP)
+        set_target_properties(${PROJECT_NAME} PROPERTIES
+            MACOSX_BUNDLE TRUE
+            MACOSX_BUNDLE_BUNDLE_NAME ${PROJECT_NAME}
+            MACOSX_BUNDLE_BUNDLE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}"
+            MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}"
+            MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}"
+            MACOSX_BUNDLE_ICON_FILE "borealis.icns"
+            MACOSX_BUNDLE_COPYRIGHT "Copyright 2023 ${PROJECT_AUTHOR}"
+            RESOURCE "${CMAKE_SOURCE_DIR}/src/PC/borealis.icns"
+        )
+        add_custom_target(${PROJECT_NAME}.data
+                COMMAND "${CMAKE_COMMAND}" -E copy_directory ${PROJECT_RESOURCES} ${PROJECT_NAME}.app/Contents/Resources/resources
+        )
+    else ()
+        add_custom_target(${PROJECT_NAME}.data
+                COMMAND "${CMAKE_COMMAND}" -E copy_directory ${PROJECT_RESOURCES} ${CMAKE_CURRENT_BINARY_DIR}/resources
+        )
+    endif ()
+    if (NOT USE_LIBROMFS)
+        add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}.data)
+    endif ()
+elseif (PLATFORM_PSV)
+    set(VITA_MKSFOEX_FLAGS "${VITA_MKSFOEX_FLAGS} -d ATTRIBUTE2=12") # max heap size mode
+    vita_create_self(${PROJECT_NAME}.self ${PROJECT_NAME} UNSAFE)
+    set(PSV_ASSETS_FILES ${CMAKE_SOURCE_DIR}/psv/sce_sys sce_sys)
+    if (NOT USE_LIBROMFS)
+        list(APPEND PSV_ASSETS_FILES ${CMAKE_SOURCE_DIR}/resources resources)
+    endif ()
+    if (NOT USE_GXM)
+        list(APPEND PSV_ASSETS_FILES ${CMAKE_SOURCE_DIR}/psv/module/ module)
+    endif ()
+    if (USE_VITA_SHARK)
+        list(APPEND PSV_ASSETS_FILES "${CMAKE_BINARY_DIR}/vendor/SceShaccCg" module)
+    endif ()
+    vita_create_vpk(${PROJECT_NAME}.vpk ${PSN_TITLE_ID} ${PROJECT_NAME}.self
+            VERSION ${PSN_VERSION}
+            NAME ${PROJECT_NAME}
+            FILE ${PSV_ASSETS_FILES}
+    )
+elseif (PLATFORM_PS4)
+    # There is no `add_self` and `add_pkg` functions without pacbrew toolchain.
+    # We can install the OpenOrbits SDK so that the IDE can provide some basic code prompts,
+    # but compilation is done through the pacbrew Docker container as pacbrew only supports Linux.
+    if (PS4)
+        # Defined by pacbrew toolchain
+        add_self(${PROJECT_NAME})
+        add_pkg(${PROJECT_NAME}
+                # Put all the resources inside `<build dir>/ps4` directory, and access through `/app0/...`
+                # eg: `cmake-build/ps4/resources/icon.png` -> `/app0/resources/icon.png`
+                ${CMAKE_BINARY_DIR}/ps4
+                ${PSN_TITLE_ID}
+                "Borealis DEMO"
+                ${PSN_VERSION}
+                # https://psdevwiki.com/ps4/param.sfo#ATTRIBUTE
+                # Support ps4 pro
+                8388608
+        )
+    endif()
+    add_custom_target(${PROJECT_NAME}.data
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory ${CMAKE_SOURCE_DIR}/ps4 ${CMAKE_BINARY_DIR}/ps4
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory ${PROJECT_RESOURCES} ${CMAKE_BINARY_DIR}/ps4/resources
+    )
+    add_dependencies(${PROJECT_NAME} ${PROJECT_NAME}.data)
+elseif (PLATFORM_SWITCH)
+    if (USE_DEKO3D)
+        gen_dksh("${PROJECT_RESOURCES}/shaders")
+    endif ()
+    add_custom_target(${PROJECT_NAME}.nro DEPENDS ${PROJECT_NAME}
+        COMMAND ${NX_NACPTOOL_EXE} --create "${PROJECT_NAME}" "${PROJECT_AUTHOR}" "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}" ${PROJECT_NAME}.nacp --titleid=${PROJECT_TITLEID}
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_RESOURCES} ${CMAKE_BINARY_DIR}/resources
+        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/resources/font
+        COMMAND ${NX_ELF2NRO_EXE} ${PROJECT_NAME}.elf ${PROJECT_NAME}.nro --icon=${PROJECT_ICON} --nacp=${PROJECT_NAME}.nacp --romfsdir=${CMAKE_BINARY_DIR}/resources
+    )
+elseif (PLATFORM_IOS)
+    ios_bundle(
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/iphoneos/Splash.storyboard"
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/Images.xcassets"
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/iOSBundleInfo.plist.in"
+            "borealis"
+            "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}")
+elseif (PLATFORM_TVOS)
+    ios_bundle(
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/tvos/Splash.storyboard"
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/Images.xcassets"
+            "${CMAKE_CURRENT_SOURCE_DIR}/demo/ios/iOSBundleInfo.plist.in"
+            "borealis"
+            "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_ALTER}")
 endif ()
 
-find_package(Freetype REQUIRED)
-if (${FREETYPE_FOUND})
-    message("Freetype found : ${FREETYPE_VERSION_STRING}")
-    message("FREETYPE_INCLUDE_DIRS = ${FREETYPE_INCLUDE_DIRS}")
-    message("FREETYPE_LIBRARIES = ${FREETYPE_LIBRARIES}")
-else()
-    message(FATAL_ERROR "FREETYPE has not been found.")
-endif ()
-
-
-find_package(BZip2 REQUIRED)
-if (${BZIP2_FOUND})
-    message("BZIP2 found : ${BZIP2_VERSION_STRING}")
-    message("BZIP2_INCLUDE_DIRS = ${BZIP2_INCLUDE_DIRS}")
-    message("BZIP2_LIBRARIES = ${BZIP2_LIBRARIES}")
-else()
-    message(FATAL_ERROR "BZIP2 has not been found.")
-endif ()
-
-#find_package(SDL2 REQUIRED)
-#message("SDL2_INCLUDE_DIRS = ${SDL2_INCLUDE_DIRS}")
-#message("SDL2_LIBRARIES = ${SDL2_LIBRARIES}")
-
-
-include_directories(${PROJECT_BINARY_DIR})
-include_directories("${PORTLIBS}/include")
-include_directories("${LIBNX}/include")
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
-include_directories("${ZLIB_INCLUDE_DIRS}")
-include_directories("${FREETYPE_INCLUDE_DIRS}")
-#include_directories("${SDL2_INCLUDE_DIRS}")
-
-set(VERSION_MAJOR 1)
-set(VERSION_MINOR 0)
-set(VERSION_MICRO 0)
-set(VERSION_TAG "\"\"")
-set(APP_VERSION
-    "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}")
-
-add_definitions( -DVERSION_APP=${APP_VERSION} )
-add_definitions( -DVERSION_MAJOR_APP=${VERSION_MAJOR} )
-add_definitions( -DVERSION_MINOR_APP=${VERSION_MINOR} )
-add_definitions( -DVERSION_MICRO_APP=${VERSION_MICRO} )
-
-if (NOT DEFINED CMAKE_BUILD_TYPE_INIT)
-    set(CMAKE_BUILD_TYPE_INIT Release)
-endif ()
-
-
-include(nx-utils)
-
-cmake_info("Building ${APP_TITLE} version ${APP_VERSION}.")
-
-# SimpleModManager Core
-set(SMM_CORE_DIR ${PROJECT_SOURCE_DIR}/core)
-set(SMM_CORE_SOURCE_DIR ${SMM_CORE_DIR}/source)
-set(SMM_CORE_INCLUDE_DIR ${SMM_CORE_DIR}/include)
-
-include_directories(${SMM_CORE_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE SimpleModAlchemist ${APP_PLATFORM_INCLUDE})
+target_compile_options(${PROJECT_NAME} PRIVATE -ffunction-sections -fdata-sections ${APP_PLATFORM_OPTION})
+target_link_libraries(${PROJECT_NAME} PRIVATE borealis ${APP_PLATFORM_LIB})
 
 # Submodules
 set( SUBMODULES_DIR ${PROJECT_SOURCE_DIR}/submodules )
 include_directories( ${SUBMODULES_DIR}/cpp-generic-toolbox/include )
-
-include_directories( ${SUBMODULES_DIR}/simple-cpp-logger/include )
-add_definitions( -D LOGGER_MAX_LOG_LEVEL_PRINTED=6 )
-add_definitions( -D LOGGER_PREFIX_LEVEL=3 )
-add_definitions( -D LOGGER_ENABLE_COLORS_ON_USER_HEADER=1 )
-add_definitions( -D LOGGER_TIME_FORMAT="\\\"%d/%m/%Y %H:%M:%S"\\\" )
-add_definitions( -D LOGGER_PREFIX_FORMAT="\\\"{TIME} {USER_HEADER} {FILELINE}"\\\" )
-
-# Auto Generated
-configure_file( version_config.h.in ${CMAKE_BINARY_DIR}/generated/version_config.h )
-include_directories( ${CMAKE_BINARY_DIR}/generated/ )
-
-include( ${CMAKE_CURRENT_SOURCE_DIR}/cmake/borealisLib.cmake )
-
-# This project
-add_subdirectory( ${CMAKE_CURRENT_SOURCE_DIR}/src )

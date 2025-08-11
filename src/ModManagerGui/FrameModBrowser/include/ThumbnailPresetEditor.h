@@ -15,7 +15,7 @@
 
 class FrameModBrowser;
 
-class ThumbnailPresetEditor : public brls::ThumbnailFrame {
+class ThumbnailPresetEditor : public brls::Box {
 
 public:
   explicit ThumbnailPresetEditor(FrameModBrowser* owner_, const std::string& presetName_ = "");
@@ -24,7 +24,7 @@ public:
   void save();
   void autoAssignPresetName();
 
-  void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
+  //void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
 private:
   FrameModBrowser* _owner_{nullptr};
@@ -34,7 +34,7 @@ private:
 //  std::string _presetName_{"new-preset"};
 //  std::vector<std::string> _selectedModsList_;
 
-  std::vector<brls::ListItem*> _availableModItemList_;
+  //std::vector<brls::ListItem*> _availableModItemList_;
 
 
 };

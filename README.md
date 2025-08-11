@@ -94,10 +94,8 @@ sudo dkp-pacman -Suy -r /System/Volumes/Data
 ```bash
 git clone https://github.com/nadrino/SimpleModManager.git
 cd SimpleModManager
-mkdir build 
-cd build
-cmake ../ -DCMAKE_TOOLCHAIN_FILE=../cmake/devkita64-libnx.cmake
-make
+cmake -B build_switch -DPLATFORM_SWITCH=ON
+make -C build_switch simple_state_alchemist.nro -j$(nproc)
 ```
 
 

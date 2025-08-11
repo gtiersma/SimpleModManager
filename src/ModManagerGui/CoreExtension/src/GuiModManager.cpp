@@ -7,7 +7,6 @@
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
 #include "GenericToolbox.Misc.h"
-#include "Logger.h"
 
 #include <string>
 #include <vector>
@@ -15,15 +14,11 @@
 #include <StateAlchemist/controller.h>
 
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[GuiModManager]");
-});
 
 const GameBrowser &GuiModManager::getGameBrowser() const { return _gameBrowser_; }
 GameBrowser &GuiModManager::getGameBrowser(){ return _gameBrowser_; }
 
 void GuiModManager::applyMod(const std::string &modName_) {
-  LogWarning << __METHOD_NAME__ << ": " << modName_ << std::endl;
   modApplyMonitor = ModApplyMonitor();
 
   // Get the group, source and mod name from the string into a vector --- TEMP CODE
@@ -58,19 +53,16 @@ void GuiModManager::startApplyModPresetThread(const std::string &modPresetName_)
 
 void GuiModManager::applyModPresetFunction(const std::string& presetName_){
   // push the progress bar to the view
-  _loadingPopup_.pushView();
+  // BROKEN
+  /*_loadingPopup_.pushView();
 
-  LogInfo << "Removing all installed mods..." << std::endl;
-  _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::redNvgColor);
   _loadingPopup_.getMonitorView()->setHeaderTitle("Removing all installed mods...");
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
   _loadingPopup_.getMonitorView()->setTitlePtr( &modRemoveAllMonitor.currentMod );
   _loadingPopup_.getMonitorView()->setSubTitlePtr( &modRemoveMonitor.currentFile );
   this->removeAllMods();
 
-  LogInfo("Applying Mod Preset");
   _loadingPopup_.getMonitorView()->setHeaderTitle("Applying mod preset...");
-  _loadingPopup_.getMonitorView()->setProgressColor(GenericToolbox::Borealis::greenNvgColor);
   _loadingPopup_.getMonitorView()->resetMonitorAddresses();
   _loadingPopup_.getMonitorView()->setTitlePtr( &modApplyListMonitor.currentMod );
   _loadingPopup_.getMonitorView()->setSubTitlePtr( &modApplyMonitor.currentFile );
@@ -81,13 +73,13 @@ void GuiModManager::applyModPresetFunction(const std::string& presetName_){
   }
   this->applyModsList(modsList);
 
-  this->leaveModAction();
+  this->leaveModAction();*/
 }
 
 
 void GuiModManager::leaveModAction(){
   _triggerUpdateModsDisplayedStatus_ = true;
-  _loadingPopup_.popView();
+  //_loadingPopup_.popView();
   brls::Application::unblockInputs();
 }
 
