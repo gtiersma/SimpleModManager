@@ -4,7 +4,6 @@
 
 #include "TabGames.h"
 #include "FrameModBrowser.h"
-#include "FrameRoot.h"
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
@@ -13,8 +12,8 @@
 #include <StateAlchemist/meta_manager.h>
 #include <Game.h>
 
-TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
-  std::vector<Game> gameList = this->getGameBrowser().getGameList();
+TabGames::TabGames() {
+  std::vector<Game> gameList = gameBrowser.getGameList();
 
   if (gameList.empty()) {
     brls::DetailCell* message = new brls::DetailCell();
@@ -47,8 +46,8 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
       item->addView(label);
 
       item->registerClickAction([&, gameEntry](View* view) {
-        getGameBrowser().selectGame(gameEntry.titleId);
-        FrameModBrowser* modsBrowser = new FrameModBrowser(&_owner_->getGuiModManager());
+        gameBrowser.selectGame(gameEntry.titleId);
+        FrameModBrowser* modsBrowser = new FrameModBrowser();
         brls::Activity* modsActivity = new brls::Activity(modsBrowser);
         brls::Application::pushActivity(modsActivity, brls::TransitionAnimation::SLIDE_LEFT);
         return true;
@@ -69,10 +68,4 @@ TabGames::TabGames(FrameRoot* owner_) : _owner_(owner_) {
   }
 }
 
-const GameBrowser& TabGames::getGameBrowser() const{
-  return _owner_->getGuiModManager().getGameBrowser();
-}
-
-GameBrowser& TabGames::getGameBrowser(){
-  return _owner_->getGuiModManager().getGameBrowser();
-}
+brls::View* TabGames::create() { return new TabGames(); }

@@ -9,7 +9,7 @@
 #include <dialog_util.hpp>
 
 
-TabModOptions::TabModOptions(FrameModBrowser* owner_) : _owner_(owner_) {  }
+TabModOptions::TabModOptions() {}
 
 void TabModOptions::buildDisableAllMods() {
   _itemDisableAllMods_ = new brls::DetailCell();
@@ -41,13 +41,6 @@ void TabModOptions::buildDisableAllMods() {
 void TabModOptions::initialize() {
   this->buildDisableAllMods();
   this->addView(_itemDisableAllMods_);
-}
-
-const ModManager &TabModOptions::getModManager() const {
-  return _owner_->getGameBrowser().getModManager();
-}
-ModManager &TabModOptions::getModManager() {
-  return _owner_->getGameBrowser().getModManager();
 }
 
 

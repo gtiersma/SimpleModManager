@@ -12,13 +12,10 @@
 #include "string"
 #include "vector"
 
-
-class FrameModBrowser;
-
 class ThumbnailPresetEditor : public brls::Box {
 
 public:
-  explicit ThumbnailPresetEditor(FrameModBrowser* owner_, const std::string& presetName_ = "");
+  explicit ThumbnailPresetEditor(const std::string& presetName_ = "");
 
   void updateTags();
   void save();
@@ -27,8 +24,6 @@ public:
   //void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
 
 private:
-  FrameModBrowser* _owner_{nullptr};
-
   PresetData _bufferPreset_;
 
 //  std::string _presetName_{"new-preset"};

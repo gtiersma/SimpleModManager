@@ -148,7 +148,7 @@ void TabModPresets::updatePresetItems() {
   _triggerUpdateItem_ = false;
 
   // adding presets to the list
-  auto presetList = _owner_->getGameBrowser().getModPresetHandler().getPresetList();
+  auto presetList = gameBrowser.getModPresetHandler().getPresetList();
 
   // make sure it is the right size
   //_itemList_.reserve( presetList.size() + 1 );

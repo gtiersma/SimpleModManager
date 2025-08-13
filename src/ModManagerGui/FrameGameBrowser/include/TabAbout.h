@@ -11,6 +11,7 @@ class TabAbout : public brls::Box {
 
 public:
   TabAbout();
+  static brls::View* create();
 };
 
 

@@ -14,7 +14,7 @@ class FrameModBrowser;
 class TabModPresets : public brls::Box {
 
 public:
-  explicit TabModPresets(FrameModBrowser* owner_) : _owner_(owner_) {  }
+  explicit TabModPresets() {  }
 
   void setTriggerUpdateItem(bool triggerUpdateItem){ _triggerUpdateItem_ = triggerUpdateItem; }
 
@@ -27,8 +27,6 @@ protected:
   void updatePresetItems();
 
 private:
-  FrameModBrowser* _owner_{nullptr};
-
   bool _triggerUpdateItem_{true};
 
   // memory handled by brls

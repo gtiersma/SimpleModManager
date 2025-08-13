@@ -20,9 +20,7 @@ class FrameModBrowser;
 class ModBrowser : public brls::ScrollingFrame {
 
 public:
-  explicit ModBrowser(FrameModBrowser* owner_);
-
-  ModManager& getModManager();
+  explicit ModBrowser();
 
 private:
   brls::Box* _container_{nullptr};

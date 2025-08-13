@@ -9,9 +9,11 @@
 
 #include <dialog_util.hpp>
 
-TabGeneralSettings::TabGeneralSettings(FrameRoot* owner_) : _owner_(owner_) {
+TabGeneralSettings::TabGeneralSettings() {
   this->rebuildLayout();
 }
+
+brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }
 
 void TabGeneralSettings::rebuildLayout() {
   brls::DetailCell* migrationItem = new brls::DetailCell();
@@ -67,11 +69,4 @@ brls::Dialog* TabGeneralSettings::buildMigrateFinishedDialog() {
     "It's recommended to reorganize them into group folders on your pc to make them easy to use, but you don't have to. "\
     "Any files that couldn't be moved have been left where they were."
   );
-}
-
-const ConfigHolder& TabGeneralSettings::getConfig() const{
-  return _owner_->getGuiModManager().getGameBrowser().getConfigHandler().getConfig();
-}
-ConfigHolder& TabGeneralSettings::getConfig(){
-  return _owner_->getGuiModManager().getGameBrowser().getConfigHandler().getConfig();
 }

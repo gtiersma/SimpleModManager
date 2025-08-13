@@ -48,4 +48,6 @@ private:
 
 };
 
+extern GameBrowser gameBrowser;
+
 #endif //SWITCHTEMPLATE_BROWSER_H

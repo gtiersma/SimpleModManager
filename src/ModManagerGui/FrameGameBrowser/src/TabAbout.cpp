@@ -86,3 +86,5 @@ TabAbout::TabAbout() {
   credits->setFontSize(15.0f);
   this->addView(credits);
 }
+
+brls::View* TabAbout::create() { return new TabAbout(); }

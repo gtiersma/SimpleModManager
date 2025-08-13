@@ -17,17 +17,13 @@ class FrameModBrowser;
 class TabModOptions : public brls::Box {
 
 public:
-  explicit TabModOptions(FrameModBrowser* owner_);
-
-  [[nodiscard]] const ModManager& getModManager() const;
-  ModManager& getModManager();
+  explicit TabModOptions();
 
   void initialize();
 
   void buildDisableAllMods();
 
 private:
-  FrameModBrowser* _owner_{nullptr};
   brls::DetailCell* _itemDisableAllMods_{nullptr};
 
 };

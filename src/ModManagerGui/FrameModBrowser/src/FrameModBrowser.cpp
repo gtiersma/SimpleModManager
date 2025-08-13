@@ -12,8 +12,7 @@
 #include <StateAlchemist/controller.h>
 
 
-FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_): _guiModManagerPtr_(guiModManagerPtr_) {
-  GameBrowser& gameBrowser = guiModManagerPtr_->getGameBrowser();
+FrameModBrowser::FrameModBrowser() {
   Game game = gameBrowser.getGame(controller.titleId).value();
 
   std::string gamePath = controller.getGamePath();
@@ -41,10 +40,10 @@ FrameModBrowser::FrameModBrowser(GuiModManager* guiModManagerPtr_): _guiModManag
   this->getFooter()->addView(footerLabel);
 
   brls::TabFrame* tabs = new brls::TabFrame();
-  tabs->addTab("Mod Browser", [this]() { return new GroupBrowser(this); });
+  tabs->addTab("Mod Browser", []() { return new GroupBrowser(); });
   tabs->addSeparator();
-  tabs->addTab("Options", [this]() {
-    TabModOptions* tabModOptions = new TabModOptions(this);
+  tabs->addTab("Options", []() {
+    TabModOptions* tabModOptions = new TabModOptions();
     tabModOptions->initialize();
     return tabModOptions;
   });

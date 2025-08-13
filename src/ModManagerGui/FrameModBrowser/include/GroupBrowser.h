@@ -12,7 +12,7 @@
 
 class GroupBrowser : public brls::ScrollingFrame {
   public:
-    explicit GroupBrowser(FrameModBrowser* owner_);
+    explicit GroupBrowser();
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

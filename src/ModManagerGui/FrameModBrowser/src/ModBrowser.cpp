@@ -10,7 +10,7 @@
 
 
 
-ModBrowser::ModBrowser(FrameModBrowser* owner_): _owner_(owner_) {
+ModBrowser::ModBrowser() {
   this->_container_ = new brls::Box();
   this->addView(this->_container_);
 
@@ -65,7 +65,6 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
 void ModBrowser::appendNextPage() {
   this->_page_++;
   
-  ModManager& modManager = this->getModManager();
   size_t sourceCount = this->_source_names_.size();
 
   // Whether this page is being loaded from the load-more button or not
@@ -82,7 +81,7 @@ void ModBrowser::appendNextPage() {
     i < nextPageStart && i < sourceCount;
     i++
   ) {
-    ModSource source = modManager.loadSource(this->_source_names_[i]);
+    ModSource source = gameBrowser.getModManager().loadSource(this->_source_names_[i]);
     std::vector<std::string> options = source.mods;
 
     // Add the option for choosing to use no mod
@@ -120,8 +119,4 @@ size_t ModBrowser::getFirstIndex(size_t page) {
   }
   
   return index;
-}
-
-ModManager& ModBrowser::getModManager() {
-  return _owner_->getGameBrowser().getModManager();
 }

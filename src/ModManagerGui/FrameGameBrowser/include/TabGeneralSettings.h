@@ -15,7 +15,8 @@ class FrameRoot;
 class TabGeneralSettings : public brls::Box {
 
 public:
-  explicit TabGeneralSettings(FrameRoot* owner_);
+  explicit TabGeneralSettings();
+  static brls::View* create();
 
   void rebuildLayout();
 
@@ -25,12 +26,8 @@ public:
   ConfigHolder& getConfig();
 
 private:
-  FrameRoot* _owner_{};
-
   brls::Dialog* buildMigrateConfirmDialog();
-  brls::Dialog* buildMigrateLoadingDialog();
   brls::Dialog* buildMigrateFinishedDialog();
-
 };
 
 

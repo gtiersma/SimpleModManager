@@ -8,7 +8,7 @@
 #include <StateAlchemist/controller.h>
 
 
-GroupBrowser::GroupBrowser(FrameModBrowser* owner_) {
+GroupBrowser::GroupBrowser() {
   std::vector<std::string> groupList = controller.loadGroups(true);
 
   if (groupList.empty()) {
@@ -22,9 +22,9 @@ GroupBrowser::GroupBrowser(FrameModBrowser* owner_) {
 
   brls::TabFrame* tabs = new brls::TabFrame();
   for (std::string& group : groupList) {
-    tabs->addTab(group, [owner_, group]() {
+    tabs->addTab(group, [group]() {
       controller.group = group;
-      return new ModBrowser(owner_);
+      return new ModBrowser();
     });
   }
   this->addView(tabs);

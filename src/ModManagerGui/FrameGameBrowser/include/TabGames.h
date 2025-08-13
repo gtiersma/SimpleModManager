@@ -14,20 +14,14 @@
 
 
 struct GameItem;
-class FrameRoot;
 
 class TabGames : public brls::ScrollingFrame {
 
 public:
-  explicit TabGames(FrameRoot* owner_);
-
-  // non native getters
-  [[nodiscard]] const GameBrowser& getGameBrowser() const;
-
-  GameBrowser& getGameBrowser();
+  explicit TabGames();
+  static brls::View* create();
 
 private:
-  FrameRoot* _owner_{};
   std::vector<GameItem> _gameItems_;
 
 };
