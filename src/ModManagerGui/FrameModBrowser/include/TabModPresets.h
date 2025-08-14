@@ -11,29 +11,27 @@
 
 class FrameModBrowser;
 
-class TabModPresets : public brls::List {
+class TabModPresets : public brls::Box {
 
 public:
-  explicit TabModPresets(FrameModBrowser* owner_) : _owner_(owner_) {  }
+  explicit TabModPresets() {  }
 
   void setTriggerUpdateItem(bool triggerUpdateItem){ _triggerUpdateItem_ = triggerUpdateItem; }
 
-  void draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) override;
+  //void draw(NVGcontext *vg, int x, int y, unsigned width, unsigned height, brls::Style *style, brls::FrameContext *ctx) override;
 
-  void assignButtons(brls::ListItem *item, bool isPreset_);
+  //void assignButtons(brls::ListItem *item, bool isPreset_);
 
 
 protected:
   void updatePresetItems();
 
 private:
-  FrameModBrowser* _owner_{nullptr};
-
   bool _triggerUpdateItem_{true};
 
   // memory handled by brls
-  brls::ListItem* _itemNewCreatePreset_{nullptr};
-  std::vector<brls::ListItem*> _itemList_{};
+  //brls::ListItem* _itemNewCreatePreset_{nullptr};
+  //std::vector<brls::ListItem*> _itemList_{};
 
 };
 

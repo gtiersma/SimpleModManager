@@ -11,7 +11,9 @@
 #include <StateAlchemist/constants.h>
 #include <AlchemistLogger.h>
 #include <Game.h>
+#include <GenericToolbox.Fs.h>
 
+GameBrowser gameBrowser;
 
 GameBrowser::GameBrowser(){ this->init(); }
 

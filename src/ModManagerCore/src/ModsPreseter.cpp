@@ -2,7 +2,6 @@
 // Created by Nadrino on 13/02/2020.
 //
 
-#include <Toolbox.h>
 #include <ModsPresetHandler.h>
 #include <Selector.h>
 
@@ -39,7 +38,7 @@ void ModsPresetHandler::selectModPreset() {
     using namespace GenericToolbox::Switch::Terminal;
 
     consoleClear();
-    printRight("SimpleModManager v" + Toolbox::getAppVersion());
+    printRight("SimpleModManager v" + APP_VERSION);
     std::cout << GenericToolbox::ColorCodes::redBackground << std::setw(GenericToolbox::getTerminalWidth()) << std::left;
     std::cout << "Select mod preset" << GenericToolbox::ColorCodes::resetColor;
     std::cout << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth());
@@ -155,7 +154,7 @@ void ModsPresetHandler::editPreset( size_t entryIndex_ ) {
     using namespace GenericToolbox::Switch::Terminal;
 
     consoleClear();
-    printRight("SimpleModManager v" + Toolbox::getAppVersion());
+    printRight("SimpleModManager v" + APP_VERSION);
     std::cout << GenericToolbox::ColorCodes::redBackground << std::setw(GenericToolbox::getTerminalWidth()) << std::left;
     std::string header_title = "Creating preset : " + preset.name + ". Select the mods you want.";
     std::cout << header_title << GenericToolbox::ColorCodes::resetColor;

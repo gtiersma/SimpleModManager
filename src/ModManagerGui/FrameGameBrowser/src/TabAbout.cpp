@@ -3,102 +3,89 @@
 //
 
 #include "TabAbout.h"
-#include <Toolbox.h>
-
-#include "Logger.h"
-
-#include <borealis.hpp>
+#include <StateAlchemist/constants.h>
 #include <AlchemistLogger.h>
 
-
-
-LoggerInit([]{
-  Logger::setUserHeaderStr("[TabAbout]");
-});
-
 TabAbout::TabAbout() {
-  alchemyLogger.log("TabAbout::TabAbout();");
-  LogWarning << "Building about tab..." << std::endl;
-
+  
   // Subtitle
-  auto* shortDescription = new brls::Label(
-    brls::LabelStyle::REGULAR,
+  brls::Label* shortDescription = new brls::Label();
+  shortDescription->setText(
     "Simple Mod Alchemist is an Nintendo Switch homebrew app for managing mods on the SD card.\n"\
-    "It originated by merging the code of two homebrew apps together: SimpleModManager and State Alchemist.\n",
-    true
+    "It originated by merging the code of two homebrew apps together: SimpleModManager and State Alchemist.\n"
   );
-  shortDescription->setHorizontalAlign(NVG_ALIGN_CENTER);
+  shortDescription->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   this->addView(shortDescription);
 
-  auto* table = new brls::BoxLayout(brls::BoxLayoutOrientation::HORIZONTAL);
-  table->setSpacing(22);
-  table->setHeight(260);
+  brls::Box* columns = new brls::Box(brls::Axis::ROW);
+  columns->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
+  this->addView(columns);
 
-  auto* leftBox = new brls::BoxLayout(brls::BoxLayoutOrientation::VERTICAL);
-  leftBox->setSpacing(22);
+  brls::Box* leftBox = new brls::Box();
+  leftBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   leftBox->setWidth(500);
-  leftBox->setParent(table);
+  columns->addView(leftBox);
 
-  leftBox->addView(new brls::Header("Version " + Toolbox::getAppVersion() + " - What's new ?"));
-  auto *changelog = new brls::Label(
-    brls::LabelStyle::DESCRIPTION,
+  brls::Header* versionHeader = new brls::Header();
+  versionHeader->setTitle("Version " + APP_VERSION + " - What's new ?");
+  leftBox->addView(versionHeader);
+
+  brls::Label* changelog = new brls::Label();
+  changelog->setText(
     " - Mods are now grouped\n"\
     " - Major performance improvements with large files\n"\
     " - Improved how mods are organized in folders\n"\
-    " - The best part: General stability improvements\n",
-    true
+    " - The best part: General stability improvements\n"
   );
-  changelog->setHorizontalAlign(NVG_ALIGN_LEFT);
+  changelog->setHorizontalAlign(brls::HorizontalAlign::LEFT);
   leftBox->addView(changelog);
 
-  leftBox->addView(new brls::Header("Copyright"));
-  auto *copyright = new brls::Label(
-    brls::LabelStyle::DESCRIPTION,
+  brls::Header* copyrightHeader = new brls::Header();
+  copyrightHeader->setTitle("Copyright");
+  leftBox->addView(copyrightHeader);
+
+  brls::Label* copyright = new brls::Label();
+  copyright->setText(
     "Simple Mod Alchemist is licensed under GPL-v3.0\n" \
         "\u00A9 SimpleModManager 2019 - 2023 Nadrino"\
-        "\u00A9 Simple Mod Alchemist 2025 gtiersma",
-    true
+        "\u00A9 Simple Mod Alchemist 2025 gtiersma"
   );
-  copyright->setHorizontalAlign(NVG_ALIGN_CENTER);
+  copyright->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   leftBox->addView(copyright);
 
-  auto* rightBox = new brls::BoxLayout(brls::BoxLayoutOrientation::VERTICAL);
-  rightBox->setSpacing(22);
+  brls::Box* rightBox = new brls::Box();
+  rightBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   rightBox->setWidth(200);
-  rightBox->setParent(table);
+  columns->addView(rightBox);
 
-  rightBox->addView(new brls::Label(brls::LabelStyle::DESCRIPTION, " "));
-
-  auto* portrait = new brls::Image("romfs:/images/portrait.jpg");
-  portrait->setScaleType(brls::ImageScaleType::SCALE);
-  portrait->setHeight(200);
-  portrait->setParent(rightBox);
+  brls::Image* portrait = new brls::Image();
+  portrait->setImageFromFile("romfs:/images/portrait.jpg");
+  portrait->setScalingType(brls::ImageScalingType::FIT);
   rightBox->addView(portrait);
-  auto* portraitText = new brls::Label(
-    brls::LabelStyle::SMALL,
-    "SimpleModManager Original Author: Nadrino",
-    true
-  );
-  portraitText->setHorizontalAlign(NVG_ALIGN_CENTER);
-  rightBox->addView(portraitText);
 
-  table->addView(leftBox);
-  table->addView(rightBox);
+  brls::Label* portraitLabel = new brls::Label();
+  portraitLabel->setText("SimpleModManager Original Author: Nadrino");
+  portraitLabel->setFontSize(15.0f);
+  portraitLabel->setHorizontalAlign(brls::HorizontalAlign::CENTER);
+  rightBox->addView(portraitLabel);
 
-  this->addView(table);
+  this->addView(columns);
 
-  this->addView(new brls::Header("Credits"));
-  auto *links = new brls::Label(
-    brls::LabelStyle::SMALL,
-    "\uE017  Maintained by gtiersma.\n"\
-    "\uE017  Built upon SimpleModManager, developed by Nadrino.\n"\
-    "\uE017  Powered by Borealis, provided by the RetroNX team.\n"\
-    "\uE017  Special thanks to RetroNX, devkitPro,"\
+  brls::Header* creditsHeader = new brls::Header();
+  creditsHeader->setTitle("Credits");
+  this->addView(creditsHeader);
+
+  brls::Label* credits = new brls::Label();
+  credits->setText(
+    "\u00A9  Maintained by gtiersma.\n"\
+    "\u00A9  Built upon SimpleModManager, developed by Nadrino.\n"\
+    "\u00A9  Powered by Borealis, provided by the RetroNX team.\n"\
+    "\u00A9  Special thanks to RetroNX, devkitPro,"\
     " the ethical homebrew development community in general, and Nintendo.\n"\
-    "\uE017  This software is NOT licensed by Nintendo.\n",
-    true
+    "\u00A9  This software is NOT licensed by Nintendo.\n"
   );
-  this->addView(links);
-
-  LogInfo << "About tab built." << std::endl;
+  credits->setFontSize(15.0f);
+  this->addView(credits);
 }
+
+brls::View* TabAbout::create() { return new TabAbout(); }

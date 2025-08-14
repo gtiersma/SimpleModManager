@@ -10,19 +10,10 @@
 #include "borealis.hpp"
 
 
-class FrameRoot : public brls::TabFrame {
+class FrameRoot : public brls::Activity {
 
 public:
-  FrameRoot();
-
-  bool onCancel() override;
-
-  const GuiModManager &getGuiModManager() const { return _guiModManager_; }
-  GuiModManager &getGuiModManager(){ return _guiModManager_; }
-
-private:
-  GuiModManager _guiModManager_{};
-
+  CONTENT_FROM_XML_RES("FrameGameBrowser/FrameRoot.xml");
 };
 
 

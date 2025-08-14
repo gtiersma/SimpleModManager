@@ -6,16 +6,13 @@
 #include "SimpleModManager.h"
 
 #include <FrameRoot.h>
+#include <TabGames.h>
+#include <TabGeneralSettings.h>
+#include <TabAbout.h>
 
 #include "ConfigHandler.h"
 
-#include "Logger.h"
-
 #include <borealis.hpp>
-
-#include <string>
-#include <cstdlib>
-#include "iostream"
 
 #include "switch.h"
 #include <AlchemistLogger.h>
@@ -23,56 +20,48 @@
 #include "StateAlchemist/fs_manager.h"
 
 
-LoggerInit([]{
-  Logger::setUserHeaderStr("[SimpleModManager.nro]");
-});
+int main(int argc, char* argv[])
+{
+    brls::Application::init();
+    brls::Application::createWindow("Simple Mod Alchemist");
+    brls::Application::getPlatform()->setThemeVariant(brls::ThemeVariant::DARK);
 
+    // Have the application register an action on every activity that will quit when you press BUTTON_START
+    brls::Application::setGlobalQuit(false);
 
-int main(int argc, char* argv[]){
-  alchemyLogger.log("launching...");
+    // Register custom views (including tabs, which are views)
+    /*brls::Application::registerXMLView("CaptionedImage", CaptionedImage::create);
+    brls::Application::registerXMLView("RecyclingListTab", RecyclingListTab::create);
+    brls::Application::registerXMLView("ComponentsTab", ComponentsTab::create);
+    brls::Application::registerXMLView("TransformTab", TransformTab::create);
+    brls::Application::registerXMLView("TransformBox", TransformBox::create);
+    brls::Application::registerXMLView("PokemonView", PokemonView::create);
+    brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
+    brls::Application::registerXMLView("TextTestTab", TextTestTab::create);*/
+    brls::Application::registerXMLView("TabGames", TabGames::create);
+    brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
+    brls::Application::registerXMLView("TabAbout", TabAbout::create);
 
-  LogInfo << "SimpleModManager is starting..." << std::endl;
+    // Create the app's folder in the SD Root if not yet created:
+    FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 
-  // https://github.com/jbeder/yaml-cpp/wiki/Tutorial
-//  YAML::Node config = YAML::LoadFile("config.yaml");
-//  if (config["lastLogin"]) {
-//    std::cout << "Last logged in: " << config["lastLogin"].as<std::string>() << "\n";
-//  }
-//  const auto username = config["username"].as<std::string>();
-//  const auto password = config["password"].as<std::string>();
+    brls::Activity* mainActivity = new FrameRoot();
 
-  runGui();
+    brls::AppletFrame* appFrame = (brls::AppletFrame*)mainActivity->getContentView();
+    appFrame->setTitle("Simple Mod Alchemist (v" + APP_VERSION + ")");
 
-  // Exit
-  return EXIT_SUCCESS;
+    brls::Application::pushActivity(new FrameRoot());
+
+    // Run the app
+    while (brls::Application::mainLoop())
+        ;
+
+    nsExit();
+
+    // Exit
+    return EXIT_SUCCESS;
 }
 
-
-void runGui(){
-  alchemyLogger.log("runGui();");
-  LogInfo << "Starting GUI..." << std::endl;
-  LogThrowIf(R_FAILED(nsInitialize()), "nsInitialize Failed");
-
-  brls::Logger::setLogLevel(brls::LogLevel::ERROR);
-
-  brls::i18n::loadTranslations("en-US");
-  LogThrowIf(not brls::Application::init("SimpleModAlchemist"), "Unable to init Borealis application");
-
-  // Create the app's folder in the SD Root if not yet created:
-  FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
-
-  LogInfo << "Creating root frame..." << std::endl;
-  auto* mainFrame = new FrameRoot();
-
-  alchemyLogger.log("runGui: pushing view");
-  LogInfo << "Pushing to view" << std::endl;
-  brls::Application::pushView( mainFrame );
-  alchemyLogger.log("runGui: regist acts");
-  mainFrame->registerAction( "", brls::Key::PLUS, []{return true;}, true );
-  mainFrame->updateActionHint( brls::Key::PLUS, "" ); // make the change visible
-
-  alchemyLogger.log("runGui: main loop");
-  while( brls::Application::mainLoop() ){  }
-
-  nsExit();
-}
+#ifdef __WINRT__
+#include <borealis/core/main.hpp>
+#endif

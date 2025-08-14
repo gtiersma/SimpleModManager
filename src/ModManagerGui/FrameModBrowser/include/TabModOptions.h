@@ -14,25 +14,17 @@
 
 class FrameModBrowser;
 
-class TabModOptions : public brls::List {
+class TabModOptions : public brls::Box {
 
 public:
-  explicit TabModOptions(FrameModBrowser* owner_);
-
-  [[nodiscard]] const ModManager& getModManager() const;
-  ModManager& getModManager();
+  explicit TabModOptions();
 
   void initialize();
 
   void buildDisableAllMods();
 
-  void draw(NVGcontext* vg, int x, int y, unsigned width, unsigned height, brls::Style* style, brls::FrameContext* ctx) override;
-
 private:
-  FrameModBrowser* _owner_{nullptr};
-
-  // memory handled by brls
-  brls::ListItem* _itemDisableAllMods_{nullptr};
+  brls::DetailCell* _itemDisableAllMods_{nullptr};
 
 };
 

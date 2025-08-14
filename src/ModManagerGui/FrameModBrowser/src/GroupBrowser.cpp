@@ -3,20 +3,16 @@
 //
 
 #include "GroupBrowser.h"
+#include "ModBrowser.h"
 
 #include <StateAlchemist/controller.h>
 
 
-GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
-  this->_modBrowser_ = mod_browser_;
-
-  this->setWidth(this->WIDTH);
-
-  // Fetch the available groups
-  auto groupList = controller.loadGroups(true);
+GroupBrowser::GroupBrowser() {
+  std::vector<std::string> groupList = controller.loadGroups(true);
 
   if (groupList.empty()) {
-    auto dialog = new brls::Dialog(
+    brls::Dialog* dialog = new brls::Dialog(
       "No mod groups have been found in " + controller.getGamePath() +
       ". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
@@ -24,26 +20,12 @@ GroupBrowser::GroupBrowser(ModBrowser* mod_browser_) {
     return;
   }
 
-  for (auto& group : groupList) {
-    auto* item = new brls::ListItem(group);
-
-    item->getFocusEvent()->subscribe([mod_browser_, group](View* view) {
-      if (controller.group == group) return; // Do nothing if group did not change
+  brls::TabFrame* tabs = new brls::TabFrame();
+  for (std::string& group : groupList) {
+    tabs->addTab(group, [group]() {
       controller.group = group;
-
-      // Have mod browser load mods of the focused group:
-      mod_browser_->loadFirstPage();
+      return new ModBrowser();
     });
-
-    item->getClickEvent()->subscribe([mod_browser_](View* view) {
-      mod_browser_->focusTop();
-    });
-
-    this->addView(item);
   }
-}
-
-void GroupBrowser::willDisappear(bool resetState) {
-  this->_modBrowser_->clearItems();
-  ScrollView::willDisappear(resetState);
+  this->addView(tabs);
 }

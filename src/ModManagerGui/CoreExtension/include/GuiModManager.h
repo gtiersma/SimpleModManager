@@ -7,7 +7,6 @@
 
 
 #include "GameBrowser.h"
-#include "GenericToolbox.Borealis.h"
 
 #include <borealis.hpp>
 
@@ -47,7 +46,6 @@ private:
 
 
   // monitors
-  GenericToolbox::Borealis::PopupLoadingBox _loadingPopup_;
   struct ModApplyMonitor{
     double progress{0};
     std::string currentFile{};

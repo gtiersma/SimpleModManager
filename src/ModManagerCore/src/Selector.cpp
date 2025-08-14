@@ -4,12 +4,11 @@
 
 #include "Selector.h"
 
-#include <Toolbox.h>
-
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
 
 #include <switch.h>
+#include <StateAlchemist/constants.h>
 #include <AlchemistLogger.h>
 
 // non native setters
@@ -271,7 +270,6 @@ void Selector::refillPageEntryCache() const {
 
 // static
 void Selector::printMenu(const MenuLineList& menu_){
-  alchemyLogger.log("Selector::printMenu();");
   for( auto& menuLine : menu_.lineList ){
     // if is last but empty, skip. It's just a trailing std::endl
     if( &menuLine == &menu_.lineList.back() and menuLine.empty() ){ break; }
@@ -288,7 +286,7 @@ std::string Selector::askQuestion(const std::string& question_, const std::vecto
   Selector sel;
 
   // set the layout with the question:
-  sel.getHeader() >> "SimpleModManager v" >> Toolbox::getAppVersion() << std::endl;
+  sel.getHeader() >> "SimpleModManager v" >> APP_VERSION << std::endl;
   sel.getHeader() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth()) << std::endl;
   sel.getHeader() << question_ << std::endl;
   sel.getHeader() << GenericToolbox::repeatString("*", GenericToolbox::getTerminalWidth());

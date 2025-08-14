@@ -1,0 +1,24 @@
+<brls:AppletFrame
+    iconInterpolation="linear"
+    footerHidden="false">
+    <brls:TabFrame
+        id="root-tabs"
+        icon="@res/img/icon_corner.png">
+
+        <brls:Tab label="Games" >
+          <TabGames/>
+        </brls:Tab>
+
+        <brls:Separator />
+
+        <!-- Static tab linking to another XML -->
+        <brls:Tab label="Options" >
+          <TabGeneralSettings/>
+        </brls:Tab>
+
+        <brls:Tab label="About" >
+          <TabAbout/>
+        </brls:Tab>
+
+    </brls:TabFrame>
+</brls:AppletFrame>

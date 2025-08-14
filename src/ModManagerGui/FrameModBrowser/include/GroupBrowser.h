@@ -7,23 +7,12 @@
 
 
 #include "borealis.hpp"
+#include "FrameModBrowser.h"
 
-#include "ModBrowser.h"
 
-
-class GroupBrowser : public brls::List {
-
+class GroupBrowser : public brls::ScrollingFrame {
   public:
-
-    // Short width to provide more room for the mod list
-    static const int WIDTH = 300;
-
-    explicit GroupBrowser(ModBrowser* mod_browser_);
-
-  private:
-    ModBrowser* _modBrowser_{};
-
-    void willDisappear(bool resetState = false) override;
+    explicit GroupBrowser();
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

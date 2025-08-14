@@ -3,7 +3,6 @@
 //
 
 #include "ConfigHandler.h"
-#include "Toolbox.h"
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
@@ -65,7 +64,7 @@ void ConfigHandler::dumpConfigToFile() const {
   ssConfig << std::endl;
   ssConfig << std::endl;
   ssConfig << "# DO NOT TOUCH THIS : used to recognise the last version of the program config" << std::endl;
-  ssConfig << "last-program-version = " << Toolbox::getAppVersion() << std::endl;
+  ssConfig << "last-program-version = " << APP_VERSION << std::endl;
   ssConfig << std::endl;
 
   GenericToolbox::dumpStringInFile(_config_.configFilePath, ssConfig.str());

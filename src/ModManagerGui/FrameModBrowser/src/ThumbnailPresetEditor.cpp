@@ -16,7 +16,7 @@
 
 
 
-ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std::string& presetName_) : _owner_(owner_){
+ThumbnailPresetEditor::ThumbnailPresetEditor(const std::string& presetName_) {
   alchemyLogger.log("ThumbnailPresetEditor::ThumbnailPresetEditor();");
 
   // TODO: BROKEN
@@ -61,16 +61,16 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
   }*/
 
   // the list that will appear
-  auto* modViewList = new brls::List();
+  /*auto* modViewList = new brls::List();
   for( auto& availableMod : _availableModItemList_ ){ modViewList->addView( availableMod ); }
   this->setContentView( modViewList );
-  this->registerAction("", brls::Key::PLUS, []{return true;}, true);
+  this->registerAction("", brls::Key::PLUS, []{return true;}, true);*/
 
 
   int presetIndex{-1};
   if( not presetName_.empty() ){
     presetIndex = GenericToolbox::findElementIndex(
-        presetName_, _owner_->getGameBrowser().getModPresetHandler().getPresetList(),
+        presetName_, gameBrowser.getModPresetHandler().getPresetList(),
         [](const PresetData& p ){ return p.name; }
     );
   }
@@ -81,11 +81,11 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
   }
   else{
     // copy existing preset
-    _bufferPreset_ = _owner_->getGameBrowser().getModPresetHandler().getPresetList()[presetIndex];
+    _bufferPreset_ = gameBrowser.getModPresetHandler().getPresetList()[presetIndex];
   }
 
   // sidebar and save button
-  this->getSidebar()->setTitle( _bufferPreset_.name );
+  /*this->getSidebar()->setTitle( _bufferPreset_.name );
   this->getSidebar()->getButton()->getClickEvent()->subscribe([this](brls::View* view){
     this->save();
 
@@ -94,7 +94,7 @@ ThumbnailPresetEditor::ThumbnailPresetEditor(FrameModBrowser* owner_, const std:
 
     return true;
   });
-  this->getSidebar()->registerAction("", brls::Key::PLUS, []{return true;}, true);
+  this->getSidebar()->registerAction("", brls::Key::PLUS, []{return true;}, true);*/
 
   this->updateTags();
 }
@@ -105,13 +105,13 @@ void ThumbnailPresetEditor::updateTags() {
   alchemyLogger.log("ThumbnailPresetEditor::updateTags();");
 
   // reset tags
-  for( auto & availableMod : _availableModItemList_ ){  availableMod->setValue(""); }
+  //for( auto & availableMod : _availableModItemList_ ){  availableMod->setValue(""); }
 
   // set tags
   for( size_t iEntry = 0 ; iEntry < _bufferPreset_.modList.size() ; iEntry++ ){
     // loop over selected mods
 
-    for( auto & availableMod : _availableModItemList_ ){
+    /*for( auto & availableMod : _availableModItemList_ ){
       // loop over available mods
 
       if( availableMod->getLabel() != _bufferPreset_.modList[iEntry] ){
@@ -125,12 +125,12 @@ void ThumbnailPresetEditor::updateTags() {
       else ss << availableMod->getValue() << " & #" << iEntry + 1;
       availableMod->setValue( ss.str() );
 
-    }
+    }*/
   }
 
   std::stringstream ss;
   ss << this->_bufferPreset_.modList.size() << " mods have been selected.";
-  this->getSidebar()->setSubtitle( ss.str() );
+  //this->getSidebar()->setSubtitle( ss.str() );
 
 }
 void ThumbnailPresetEditor::save() {
@@ -139,7 +139,7 @@ void ThumbnailPresetEditor::save() {
   // is it an existing preset?
   int presetIndex{
       GenericToolbox::findElementIndex(
-          _bufferPreset_.name, _owner_->getGameBrowser().getModPresetHandler().getPresetList(),
+          _bufferPreset_.name, gameBrowser.getModPresetHandler().getPresetList(),
           [](const PresetData& p ){ return p.name; }
       )
   };
@@ -149,18 +149,18 @@ void ThumbnailPresetEditor::save() {
 
   // insert into preset list
   if( presetIndex != -1 ){
-    _owner_->getGameBrowser().getModPresetHandler().getPresetList()[presetIndex] = _bufferPreset_;
+    gameBrowser.getModPresetHandler().getPresetList()[presetIndex] = _bufferPreset_;
   }
   else{
-    _owner_->getGameBrowser().getModPresetHandler().getPresetList().emplace_back( _bufferPreset_ );
+    gameBrowser.getModPresetHandler().getPresetList().emplace_back( _bufferPreset_ );
   }
 
   // TODO: Check for conflicts
 //  showConflictingFiles(_presetName_);
 
   // save to file
-  _owner_->getGameBrowser().getModPresetHandler().writeConfigFile();
-  _owner_->getGameBrowser().getModPresetHandler().readConfigFile();
+  gameBrowser.getModPresetHandler().writeConfigFile();
+  gameBrowser.getModPresetHandler().readConfigFile();
 
   // trigger backdrop list update
   // "getTabModPresets()" was removed; so this is broken
@@ -172,7 +172,7 @@ void ThumbnailPresetEditor::autoAssignPresetName() {
   _bufferPreset_.name = autoName;
   int count{0};
   while( GenericToolbox::doesElementIsInVector(
-      _bufferPreset_.name, _owner_->getGameBrowser().getModPresetHandler().getPresetList(),
+      _bufferPreset_.name, gameBrowser.getModPresetHandler().getPresetList(),
       [](const PresetData& p ){ return p.name; }
   )){
     _bufferPreset_.name = autoName + "-" + std::to_string(count);
@@ -180,7 +180,7 @@ void ThumbnailPresetEditor::autoAssignPresetName() {
   }
 }
 
-void ThumbnailPresetEditor::draw(
+/*void ThumbnailPresetEditor::draw(
     NVGcontext *vg, int x, int y,
     unsigned int width, unsigned int height,
     brls::Style *style, brls::FrameContext *ctx) {
@@ -197,5 +197,5 @@ void ThumbnailPresetEditor::draw(
 
   // trigger the default draw
   this->ThumbnailFrame::draw(vg, x, y, width, height, style, ctx);
-}
+}*/
 
