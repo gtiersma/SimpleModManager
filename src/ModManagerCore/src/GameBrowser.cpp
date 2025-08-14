@@ -15,7 +15,7 @@
 
 GameBrowser gameBrowser;
 
-GameBrowser::GameBrowser(){ this->init(); }
+GameBrowser::GameBrowser(){}
 
 // getters
 const ConfigHandler &GameBrowser::getConfigHandler() const {

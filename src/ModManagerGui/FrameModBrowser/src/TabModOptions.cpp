@@ -7,6 +7,7 @@
 
 #include <StateAlchemist/controller.h>
 #include <dialog_util.hpp>
+#include <AlchemistLogger.h>
 
 
 

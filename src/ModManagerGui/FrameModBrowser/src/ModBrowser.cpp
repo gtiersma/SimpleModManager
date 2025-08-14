@@ -104,11 +104,6 @@ void ModBrowser::appendNextPage() {
       alchemyLogger.log("ModBrowser::appendNextPage: constructing item with label... " + label);
     }
 
-    std::vector<std::string> limitedLabels = MetaManager::limitSelectLabels(options);
-    for (std::string& label : limitedLabels) {
-      alchemyLogger.log("ModBrowser::appendNextPage: constructing item with label... " + label);
-    }
-
     brls::SelectorCell* selector = new brls::SelectorCell();
     selector->init(
       source.source,
@@ -118,25 +113,7 @@ void ModBrowser::appendNextPage() {
       [this, source](int selected) { this->handleModSelect(source, selected); }
     );
     this->_container_->addView(selector);
-      ""
-    );
     alchemyLogger.log("ModBrowser::appendNextPage: active " + std::to_string(source.activeIndex - 1));
-
-    item->getValueSelectedEvent()->subscribe([this, item, source](size_t selection) {
-      this->handleModSelect(source, selection);
-
-      // Could be my imagination, but I think these lines help prevent the random DataAbort errors that infrequently occur
-      item->setSelectedValue(selection);
-      this->refresh();
-    });
-
-    this->addView(item);
-
-    // When the load-more button is used, it is re-created at the end of the list
-    // but we want to preserve the focus position in the list, so move the focus to the first-loaded item
-    if (wasLoadButtonUsed && i == pageStart) {
-      brls::Application::giveFocus(selector);
-    }
   }
 
   // If there are more items not yet loaded, show the load-more button
