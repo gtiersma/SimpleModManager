@@ -7,6 +7,7 @@
 #include <AlchemistLogger.h>
 
 TabAbout::TabAbout() {
+  alchemyLogger.log("TabAbout:::TabAbout");
   
   // Subtitle
   brls::Label* shortDescription = new brls::Label();

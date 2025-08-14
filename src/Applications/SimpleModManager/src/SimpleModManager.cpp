@@ -22,11 +22,15 @@
 
 int main(int argc, char* argv[])
 {
+    alchemyLogger.log("main:::init");
     brls::Application::init();
+    alchemyLogger.log("main:::createWindow");
     brls::Application::createWindow("Simple Mod Alchemist");
+    alchemyLogger.log("main:::setThemeVariant");
     brls::Application::getPlatform()->setThemeVariant(brls::ThemeVariant::DARK);
 
     // Have the application register an action on every activity that will quit when you press BUTTON_START
+    alchemyLogger.log("main:::setGlobalQuit");
     brls::Application::setGlobalQuit(false);
 
     // Register custom views (including tabs, which are views)
@@ -38,6 +42,7 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("PokemonView", PokemonView::create);
     brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
     brls::Application::registerXMLView("TextTestTab", TextTestTab::create);*/
+    alchemyLogger.log("main:::registerXMLView");
     brls::Application::registerXMLView("TabGames", TabGames::create);
     brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
@@ -45,14 +50,19 @@ int main(int argc, char* argv[])
     // Create the app's folder in the SD Root if not yet created:
     FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 
+    alchemyLogger.log("main:::new FrameRoot()");
     brls::Activity* mainActivity = new FrameRoot();
 
+    alchemyLogger.log("main:::getContentView");
     brls::AppletFrame* appFrame = (brls::AppletFrame*)mainActivity->getContentView();
+    alchemyLogger.log("main:::setTitle");
     appFrame->setTitle("Simple Mod Alchemist (v" + APP_VERSION + ")");
 
-    brls::Application::pushActivity(new FrameRoot());
+    alchemyLogger.log("main:::setTitle");
+    brls::Application::pushActivity(mainActivity);
 
     // Run the app
+    alchemyLogger.log("main:::mainLoop");
     while (brls::Application::mainLoop())
         ;
 
