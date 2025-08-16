@@ -13,7 +13,6 @@
 #include <Game.h>
 
 TabGames::TabGames() {
-
   gameBrowser.init();
   std::vector<Game> gameList = gameBrowser.getGameList();
 

@@ -34,6 +34,8 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
 
+    nsInitialize();
+
     // Create the app's folder in the SD Root if not yet created:
     FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 

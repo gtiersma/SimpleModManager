@@ -10,11 +10,10 @@
 #include <StateAlchemist/meta_manager.h>
 #include <StateAlchemist/constants.h>
 #include <Game.h>
-#include <GenericToolbox.Fs.h>
 
 GameBrowser gameBrowser;
 
-GameBrowser::GameBrowser(){ this->init(); }
+GameBrowser::GameBrowser(){}
 
 // getters
 const ConfigHandler &GameBrowser::getConfigHandler() const {
