@@ -60,10 +60,12 @@ void GameBrowser::init(){
   // Filter out any folders that are definitely no Switch Title ID:
   for (auto& folder : folderList) {
     if (MetaManager::isTitleId(folder)) {
+      alchemyLogger.log("GameBrowser.init:::getting Game for " + folder);
       u64 titleId = MetaManager::getNumericTitleId(folder);
       auto game = std::make_unique<Game>(titleId, folder);
 
       // Load the icon for the game:
+      alchemyLogger.log("GameBrowser.init:::getting icon");
       u64 gameDataSize {};
       auto gameData = std::make_unique<NsApplicationControlData>();
       MetaManager::tryResult(
@@ -75,15 +77,18 @@ void GameBrowser::init(){
           &gameDataSize
         )
       );
+      alchemyLogger.log("GameBrowser.init:::transfering icon size");
       const auto iconSize = gameDataSize - sizeof(NacpStruct);
       game->icon.resize(iconSize);
       std::memcpy(game->icon.data(), gameData->icon, game->icon.size());
 
       // Load the title of the game:
+      alchemyLogger.log("GameBrowser.init:::getting game name");
       NacpLanguageEntry* nameData;
       MetaManager::tryResult(nsGetApplicationDesiredLanguage(&gameData->nacp, &nameData));
       game->name = nameData->name;
 
+      alchemyLogger.log("GameBrowser.init:::game name: " + game->name);
       _gameList_.push_back(std::move(*game));
     }
   }
