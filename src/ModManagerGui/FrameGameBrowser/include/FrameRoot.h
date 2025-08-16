@@ -13,7 +13,7 @@
 class FrameRoot : public brls::Activity {
 
 public:
-  CONTENT_FROM_XML_RES("FrameGameBrowser/FrameRoot.xml");
+  CONTENT_FROM_XML_RES("FrameGameBrowser/frame_root.xml");
 };
 
 
