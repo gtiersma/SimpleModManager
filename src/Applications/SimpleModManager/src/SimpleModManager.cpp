@@ -30,14 +30,6 @@ int main(int argc, char* argv[])
     brls::Application::setGlobalQuit(false);
 
     // Register custom views (including tabs, which are views)
-    /*brls::Application::registerXMLView("CaptionedImage", CaptionedImage::create);
-    brls::Application::registerXMLView("RecyclingListTab", RecyclingListTab::create);
-    brls::Application::registerXMLView("ComponentsTab", ComponentsTab::create);
-    brls::Application::registerXMLView("TransformTab", TransformTab::create);
-    brls::Application::registerXMLView("TransformBox", TransformBox::create);
-    brls::Application::registerXMLView("PokemonView", PokemonView::create);
-    brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
-    brls::Application::registerXMLView("TextTestTab", TextTestTab::create);*/
     brls::Application::registerXMLView("TabGames", TabGames::create);
     brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
@@ -45,14 +37,12 @@ int main(int argc, char* argv[])
     // Create the app's folder in the SD Root if not yet created:
     FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
 
-    gameBrowser.init();
-
     brls::Activity* mainActivity = new FrameRoot();
+
+    brls::Application::pushActivity(mainActivity);
 
     brls::AppletFrame* appFrame = (brls::AppletFrame*)mainActivity->getContentView();
     appFrame->setTitle("Simple Mod Alchemist (v" + APP_VERSION + ")");
-
-    brls::Application::pushActivity(new FrameRoot());
 
     // Run the app
     while (brls::Application::mainLoop())
