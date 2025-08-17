@@ -6,7 +6,7 @@
  * @param action Short label describing the action being performed
  */
 brls::Dialog* DialogUtil::buildLoadingDialog(std::string action) {
-  brls::Box* container = new brls::Box();
+  brls::Box* container = new brls::Box(brls::Axis::COLUMN);
 
   brls::Label* label = new brls::Label();
   label->setText(action + "...");

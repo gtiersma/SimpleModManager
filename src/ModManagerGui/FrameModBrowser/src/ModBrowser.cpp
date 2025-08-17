@@ -11,7 +11,7 @@
 
 
 ModBrowser::ModBrowser() {
-  this->_container_ = new brls::Box();
+  this->_container_ = new brls::Box(brls::Axis::COLUMN);
   this->addView(this->_container_);
 
   this->_source_names_ = controller.loadSources(true);

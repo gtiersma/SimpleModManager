@@ -16,11 +16,11 @@ TabAbout::TabAbout() {
   shortDescription->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   this->addView(shortDescription);
 
-  brls::Box* columns = new brls::Box(brls::Axis::ROW);
+  brls::Box* columns = new brls::Box();
   columns->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   this->addView(columns);
 
-  brls::Box* leftBox = new brls::Box();
+  brls::Box* leftBox = new brls::Box(brls::Axis::COLUMN);
   leftBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   leftBox->setWidth(500);
   columns->addView(leftBox);
@@ -52,7 +52,7 @@ TabAbout::TabAbout() {
   copyright->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   leftBox->addView(copyright);
 
-  brls::Box* rightBox = new brls::Box();
+  brls::Box* rightBox = new brls::Box(brls::Axis::COLUMN);
   rightBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   rightBox->setWidth(200);
   columns->addView(rightBox);

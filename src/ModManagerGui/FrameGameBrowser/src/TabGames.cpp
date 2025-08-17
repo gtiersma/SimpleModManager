@@ -4,6 +4,7 @@
 
 #include "TabGames.h"
 #include "FrameModBrowser.h"
+#include "icon_cell.hpp"
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
@@ -24,7 +25,7 @@ TabGames::TabGames() {
     );
     this->addView(message);
   } else {
-     brls::Box* container = new brls::Box();
+     brls::Box* container = new brls::Box(brls::Axis::COLUMN);
      this->addView(container);
 
     _gameItems_.reserve(gameList.size());
@@ -32,19 +33,12 @@ TabGames::TabGames() {
     for(auto& gameEntry : gameList) {
       std::string gamePath { GenericToolbox::joinPath(ALCHEMIST_FOLDER, MetaManager::getHexTitleId(gameEntry.titleId)) };
 
-      brls::Box* item = new brls::Box();
-      item->setFocusable(true);
-      item->addGestureRecognizer(new brls::TapGestureRecognizer(item));
+      brls::IconCell* item = new brls::IconCell();
 
+      item->setText(gameEntry.name);
       if (gameEntry.icon.size() > 0) {
-        brls::Image* image = new brls::Image();
-        image->setImageFromMem(gameEntry.icon.data(), 0x20000);
-        item->addView(image);
+        item->setIconFromMem(gameEntry.icon.data(), 0x20000);
       }
-
-      brls::Label* label = new brls::Label();
-      label->setText(gameEntry.name);
-      item->addView(label);
 
       item->registerClickAction([&, gameEntry](View* view) {
         gameBrowser.selectGame(gameEntry.titleId);
