@@ -24,18 +24,25 @@ struct ModSource {
    * @param mods_ List of available mods of the source
    * @param activeIndex_ Index of "mods" vector of mod that is currently active (-1 if none active)
    */
-  explicit ModSource(
-    std::string source_,
-    std::vector<std::string> mods_,
-    size_t activeIndex_
-  ):
+  explicit ModSource(std::string source_, std::vector<std::string> mods_, size_t activeIndex_):
     source(std::move(source_)),
     mods(std::move(mods_)),
-    activeIndex(activeIndex_) {}
+    activeIndex(activeIndex_) {
+      options = mods_;
+      options.insert(options.begin(), _DEFAULT_OPTION_);
+    }
 
   std::string source;
   std::vector<std::string> mods;
+
+  // Essentially just the mods list, but as options for the UI.
+  // The main difference is it also has the option for using no mod at the beginning as an additional element.
+  std::vector<std::string> options;
+
   size_t activeIndex;
+
+  // Option used for the setting to turn a mod off
+  const std::string _DEFAULT_OPTION_{"UNMODIFIED"}; 
 };
 
 
