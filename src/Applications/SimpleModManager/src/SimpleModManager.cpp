@@ -34,18 +34,12 @@ int main(int argc, char* argv[])
     brls::Application::setGlobalQuit(false);
 
     // Register custom views (including tabs, which are views)
-    /*brls::Application::registerXMLView("CaptionedImage", CaptionedImage::create);
-    brls::Application::registerXMLView("RecyclingListTab", RecyclingListTab::create);
-    brls::Application::registerXMLView("ComponentsTab", ComponentsTab::create);
-    brls::Application::registerXMLView("TransformTab", TransformTab::create);
-    brls::Application::registerXMLView("TransformBox", TransformBox::create);
-    brls::Application::registerXMLView("PokemonView", PokemonView::create);
-    brls::Application::registerXMLView("SettingsTab", SettingsTab::create);
-    brls::Application::registerXMLView("TextTestTab", TextTestTab::create);*/
     alchemyLogger.log("main:::registerXMLView");
     brls::Application::registerXMLView("TabGames", TabGames::create);
     brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
+
+    nsInitialize();
 
     // Create the app's folder in the SD Root if not yet created:
     FsManager::createFolderIfNeeded(ALCHEMIST_PATH);
@@ -55,13 +49,11 @@ int main(int argc, char* argv[])
     alchemyLogger.log("main:::new FrameRoot()");
     brls::Activity* mainActivity = new FrameRoot();
 
-    alchemyLogger.log("main:::getContentView");
+    brls::Application::pushActivity(mainActivity);
+
     brls::AppletFrame* appFrame = (brls::AppletFrame*)mainActivity->getContentView();
     alchemyLogger.log("main:::setTitle");
     appFrame->setTitle("Simple Mod Alchemist (v" + APP_VERSION + ")");
-
-    alchemyLogger.log("main:::setTitle");
-    brls::Application::pushActivity(mainActivity);
 
     // Run the app
     alchemyLogger.log("main:::mainLoop");

@@ -10,6 +10,7 @@
 #include "ModManager.h"
 
 #include <borealis.hpp>
+#include <note_cell.hpp>
 
 
 class FrameModBrowser;
@@ -24,7 +25,7 @@ public:
   void buildDisableAllMods();
 
 private:
-  brls::DetailCell* _itemDisableAllMods_{nullptr};
+  brls::NoteCell* _itemDisableAllMods_{nullptr};
 
 };
 
