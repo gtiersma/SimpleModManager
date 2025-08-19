@@ -6,15 +6,15 @@
 #include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
-#include <dialog_util.hpp>
+#include <util.hpp>
 
 
 TabModOptions::TabModOptions() {}
 
 void TabModOptions::buildDisableAllMods() {
-  _itemDisableAllMods_ = new brls::DetailCell();
+  _itemDisableAllMods_ = new brls::NoteCell();
   _itemDisableAllMods_->setText("Disable all mods");
-  _itemDisableAllMods_->setDetailText(
+  _itemDisableAllMods_->setNote(
     "Turn all mods off for this game, returning all files to under the \"" + ALCHEMIST_FOLDER + "\" folder. "\
     "This is useful if you want to delete some of them from the SD card."
   );
@@ -22,7 +22,7 @@ void TabModOptions::buildDisableAllMods() {
     brls::Dialog* dialog = new brls::Dialog("Disable all mods? Are you sure?");
 
     dialog->addButton("Yes", []() {
-      brls::Dialog* loadingDialog = DialogUtil::buildLoadingDialog("Disabling all mods. Please wait");
+      brls::Dialog* loadingDialog = Util::buildLoadingDialog("Disabling all mods. Please wait");
       loadingDialog->open();
 
       new std::thread([loadingDialog]() {

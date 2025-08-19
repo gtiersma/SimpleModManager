@@ -7,7 +7,8 @@
 
 #include "FrameRoot.h"
 
-#include <dialog_util.hpp>
+#include <util.hpp>
+#include <note_cell.hpp>
 
 TabGeneralSettings::TabGeneralSettings() {
   this->rebuildLayout();
@@ -16,9 +17,11 @@ TabGeneralSettings::TabGeneralSettings() {
 brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }
 
 void TabGeneralSettings::rebuildLayout() {
-  brls::DetailCell* migrationItem = new brls::DetailCell();
+  Util::padTabContent(this);
+
+  brls::NoteCell* migrationItem = new brls::NoteCell();
   migrationItem->setText("Bring over old SimpleModManager mods");
-  migrationItem->setDetailText(
+  migrationItem->setNote(
     "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager."
   );
   migrationItem->setFocusable(true);
@@ -40,17 +43,16 @@ brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   );
 
   confirmDialog->addButton("Yes", [this, confirmDialog]() {
-    brls::Dialog* loadingDialog = DialogUtil::buildLoadingDialog(
+    brls::Dialog* loadingDialog = Util::buildLoadingDialog(
       "Moving mods from the old SimpleModManager to this app. Please wait"
     );
     loadingDialog->open();
-
+  
     new std::thread([this, loadingDialog]() {
       ModMigrator().begin();
-      loadingDialog->close();
-
-      brls::Dialog* completeDialog = buildMigrateFinishedDialog();
-      completeDialog->open();
+      loadingDialog->close([this]() {
+        buildMigrateFinishedDialog()->open();
+      });
     });
   });
 
@@ -59,14 +61,16 @@ brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
   return confirmDialog;
 }
 
- /**
-  * Builds a dialog to show for after the migration finishes
-  */
+/**
+ * Builds a dialog to show for after the migration finishes
+ */
 brls::Dialog* TabGeneralSettings::buildMigrateFinishedDialog() {
-  return new brls::Dialog(
+  brls::Dialog* completeDialog = new brls::Dialog(
     "Finished moving mod files & folders.\n\n"\
     "The mods have been grouped in an \"uncategorized\" folder. "\
     "It's recommended to reorganize them into group folders on your pc to make them easy to use, but you don't have to. "\
     "Any files that couldn't be moved have been left where they were."
   );
+  completeDialog->addButton("OK", []() {});
+  return completeDialog;
 }

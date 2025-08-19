@@ -12,20 +12,23 @@
 #include <StateAlchemist/constants.h>
 #include <StateAlchemist/meta_manager.h>
 #include <Game.h>
+#include <util.hpp>
+#include <note_cell.hpp>
 
 TabGames::TabGames() {
-  gameBrowser.init();
   std::vector<Game> gameList = gameBrowser.getGameList();
 
   if (gameList.empty()) {
-    brls::DetailCell* message = new brls::DetailCell();
+    brls::NoteCell* message = new brls::NoteCell();
     message->setText("No game folders have been found.");
-    message->setDetailText(
+    message->setNote(
       "To add mods, put them on the SD card in this manner: SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<mod-name>/<mod-files-and-folders>."
     );
+    Util::padTabContent(message);
     this->addView(message);
   } else {
      brls::Box* container = new brls::Box(brls::Axis::COLUMN);
+     Util::padTabContent(container);
      this->addView(container);
 
     _gameItems_.reserve(gameList.size());

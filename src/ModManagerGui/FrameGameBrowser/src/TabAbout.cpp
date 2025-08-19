@@ -4,8 +4,10 @@
 
 #include "TabAbout.h"
 #include <StateAlchemist/constants.h>
+#include <util.hpp>
 
 TabAbout::TabAbout() {
+  Util::padTabContent(this);
   
   // Subtitle
   brls::Label* shortDescription = new brls::Label();

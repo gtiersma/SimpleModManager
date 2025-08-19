@@ -14,33 +14,39 @@
     limitations under the License.
 */
 
-#include "icon_cell.hpp"
+#include "note_cell.hpp"
 
 namespace brls
 {
 
-const std::string iconCellXML = R"xml(
+const std::string noteCellXML = R"xml(
 <brls:Box
+    axis="column"
     width="auto"
-    height="auto"
+    height="140.0"
     focusable="true"
     paddingTop="12.5"
     paddingBottom="12.5">
 
-    <brls:Image
-        id="brls/iconcell/image"
-        width="44px"
-        height="44px"
-        marginLeft="@style/brls/sidebar/item_accent_margin_sides"
-        marginRight="@style/brls/sidebar/item_accent_margin_sides"/>
-
     <brls:Label
-        id="brls/iconcell/title"
+        id="brls/notecell/title"
         width="auto"
         height="auto"
         grow="1.0"
         fontSize="@style/brls/sidebar/item_font_size"
         marginTop="@style/brls/sidebar/item_accent_margin_top_bottom"
+        marginBottom="6.0"
+        marginLeft="@style/brls/sidebar/item_accent_margin_sides"
+        marginRight="@style/brls/sidebar/item_accent_margin_sides" />
+
+    <brls:Label
+        id="brls/notecell/note"
+        width="auto"
+        height="auto"
+        grow="1.0"
+        fontSize="18.0"
+        textColor="@theme/brls/header/subtitle"
+        marginTop="6.0"
         marginBottom="@style/brls/sidebar/item_accent_margin_top_bottom"
         marginLeft="@style/brls/sidebar/item_accent_margin_sides"
         marginRight="@style/brls/sidebar/item_accent_margin_sides" />
@@ -48,32 +54,34 @@ const std::string iconCellXML = R"xml(
 </brls:Box>
 )xml";
 
-IconCell::IconCell()
+NoteCell::NoteCell()
 {
-    this->inflateFromXMLString(iconCellXML);
+    this->inflateFromXMLString(noteCellXML);
 
     this->registerStringXMLAttribute("title", [this](std::string value)
         { this->title->setText(value); });
+    this->registerStringXMLAttribute("note", [this](std::string value)
+        { this->note->setText(value); });
 }
 
-void IconCell::setIconFromMem(const unsigned char *data, int size)
-{
-    this->image->setImageFromMem(data, size);
-}
-
-void IconCell::setText(std::string title)
+void NoteCell::setText(std::string title)
 {
     this->title->setText(title);
 }
 
-void IconCell::setTextColor(NVGcolor color)
+void NoteCell::setTextColor(NVGcolor color)
 {
     this->title->setTextColor(color);
 }
 
-View* IconCell::create()
+void NoteCell::setNote(std::string note)
 {
-    return new IconCell();
+    this->note->setText(note);
+}
+
+View* NoteCell::create()
+{
+    return new NoteCell();
 }
 
 } // namespace brls

@@ -7,6 +7,7 @@
 
 #include <StateAlchemist/controller.h>
 #include <StateAlchemist/meta_manager.h>
+#include <note_cell.hpp>
 
 
 
@@ -77,9 +78,9 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
   if (!this->hasModSources()) {
 
     // CASE: No mod sources in this group
-    brls::DetailCell* item = (brls::DetailCell*)recycler->dequeueReusableCell("Detail");
+    brls::NoteCell* item = (brls::NoteCell*)recycler->dequeueReusableCell("Note");
     item->setText("No mods have been found in " + controller.getGroupPath());
-    item->setDetailText(
+    item->setNote(
       "Within that folder, organize the mods in this manner: ./<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
     return item;
@@ -138,6 +139,7 @@ ModBrowser::ModBrowser(): brls::Box(brls::Axis::COLUMN) {
 
   this->_container_->registerCell("Selector", []() { return new brls::SelectorCell(); });
   this->_container_->registerCell("Detail", []() { return new brls::DetailCell(); });
+  this->_container_->registerCell("Note", []() { return new brls::NoteCell(); });
 
   this->_recycled_data_ = new ModDataSource(
     controller.loadSources(true),
