@@ -46,9 +46,12 @@ TabGames::TabGames() {
       }
 
       item->registerClickAction([&, gameEntry](View* view) {
+        alchemyLogger.log("TabGames::select game...");
         gameBrowser.selectGame(gameEntry.titleId);
         FrameModBrowser* modsBrowser = new FrameModBrowser();
+        alchemyLogger.log("TabGames::creating activity...");
         brls::Activity* modsActivity = new brls::Activity(modsBrowser);
+        alchemyLogger.log("TabGames::pushing activity...");
         brls::Application::pushActivity(modsActivity, brls::TransitionAnimation::SLIDE_LEFT);
         return true;
       });

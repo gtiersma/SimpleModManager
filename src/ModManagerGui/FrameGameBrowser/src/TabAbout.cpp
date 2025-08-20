@@ -12,6 +12,7 @@ TabAbout::TabAbout() {
   Util::padTabContent(this);
   
   // Subtitle
+  alchemyLogger.log("TabAbout:::1");
   brls::Label* shortDescription = new brls::Label();
   shortDescription->setText(
     "Simple Mod Alchemist is an Nintendo Switch homebrew app for managing mods on the SD card.\n"\
@@ -20,19 +21,23 @@ TabAbout::TabAbout() {
   shortDescription->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   this->addView(shortDescription);
 
+  alchemyLogger.log("TabAbout:::2");
   brls::Box* columns = new brls::Box();
   columns->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   this->addView(columns);
 
+  alchemyLogger.log("TabAbout:::3");
   brls::Box* leftBox = new brls::Box(brls::Axis::COLUMN);
   leftBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   leftBox->setWidth(500);
   columns->addView(leftBox);
 
+  alchemyLogger.log("TabAbout:::4");
   brls::Header* versionHeader = new brls::Header();
   versionHeader->setTitle("Version " + APP_VERSION + " - What's new ?");
   leftBox->addView(versionHeader);
 
+  alchemyLogger.log("TabAbout:::5");
   brls::Label* changelog = new brls::Label();
   changelog->setText(
     " - Mods are now grouped\n"\
@@ -43,10 +48,12 @@ TabAbout::TabAbout() {
   changelog->setHorizontalAlign(brls::HorizontalAlign::LEFT);
   leftBox->addView(changelog);
 
+  alchemyLogger.log("TabAbout:::6");
   brls::Header* copyrightHeader = new brls::Header();
   copyrightHeader->setTitle("Copyright");
   leftBox->addView(copyrightHeader);
 
+  alchemyLogger.log("TabAbout:::7");
   brls::Label* copyright = new brls::Label();
   copyright->setText(
     "Simple Mod Alchemist is licensed under GPL-v3.0\n" \
@@ -56,28 +63,34 @@ TabAbout::TabAbout() {
   copyright->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   leftBox->addView(copyright);
 
+  alchemyLogger.log("TabAbout:::8");
   brls::Box* rightBox = new brls::Box(brls::Axis::COLUMN);
   rightBox->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   rightBox->setWidth(200);
   columns->addView(rightBox);
 
+  alchemyLogger.log("TabAbout:::9");
   brls::Image* portrait = new brls::Image();
   portrait->setImageFromFile("romfs:/images/portrait.jpg");
   portrait->setScalingType(brls::ImageScalingType::FIT);
   rightBox->addView(portrait);
 
+  alchemyLogger.log("TabAbout:::10");
   brls::Label* portraitLabel = new brls::Label();
   portraitLabel->setText("SimpleModManager Original Author: Nadrino");
   portraitLabel->setFontSize(15.0f);
   portraitLabel->setHorizontalAlign(brls::HorizontalAlign::CENTER);
   rightBox->addView(portraitLabel);
 
+  alchemyLogger.log("TabAbout:::11");
   this->addView(columns);
 
+  alchemyLogger.log("TabAbout:::12");
   brls::Header* creditsHeader = new brls::Header();
   creditsHeader->setTitle("Credits");
   this->addView(creditsHeader);
 
+  alchemyLogger.log("TabAbout:::13");
   brls::Label* credits = new brls::Label();
   credits->setText(
     "\u00A9  Maintained by gtiersma.\n"\

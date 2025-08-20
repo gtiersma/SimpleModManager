@@ -14,15 +14,18 @@
 
 
 FrameModBrowser::FrameModBrowser() {
+  alchemyLogger.log("FrameModBrowser::FrameModBrowser...");
   Game game = gameBrowser.getGame(controller.titleId).value();
 
   std::string gamePath = controller.getGamePath();
 
   // Construct header
   // Header must be cleared and rebuilt because there's no setImageFromMem() for the icon in its API
+  alchemyLogger.log("FrameModBrowser::Clearing header...");
   brls::Box* header = this->getHeader();
   header->clearViews(true);
   
+  alchemyLogger.log("FrameModBrowser::Setting header image...");
   brls::Image* icon = new brls::Image();
   if (game.icon.size() > 0) {
     icon->setImageFromMem(game.icon.data(), 0x20000);
@@ -30,12 +33,15 @@ FrameModBrowser::FrameModBrowser() {
     icon->setImageFromFile("romfs:/images/icon_corner.png");
   }
 
+  alchemyLogger.log("FrameModBrowser::Adding image...");
   header->addView(icon);
 
+  alchemyLogger.log("FrameModBrowser::Adding title...");
   brls::Label* title = new brls::Label();
   title->setText(game.name);
   header->addView(title);
 
+  alchemyLogger.log("FrameModBrowser::Setting footer...");
   brls::Label* footerLabel = new brls::Label();
   footerLabel->setText("Simple Mod Alchemist");
   this->getFooter()->addView(footerLabel);
@@ -59,5 +65,6 @@ FrameModBrowser::FrameModBrowser() {
     return true;
   });
 
+  alchemyLogger.log("FrameModBrowser::Adding tabs...");
   this->addView(tabs);
 }
