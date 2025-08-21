@@ -23,7 +23,7 @@ endif ()
 include(${BOREALIS_LIBRARY}/cmake/toolchain.cmake)
 
 # project info
-project(simple_state_alchemist)
+project("Simple Mod Alchemist")
 set(VERSION_MAJOR "1")
 set(VERSION_MINOR "0")
 set(VERSION_ALTER "0")
