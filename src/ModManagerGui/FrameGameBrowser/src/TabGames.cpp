@@ -43,11 +43,11 @@ TabGames::TabGames() {
         item->setIconFromMem(gameEntry.icon.data(), 0x20000);
       }
 
-      item->registerClickAction([&, gameEntry](View* view) {
+      item->registerClickAction([gameEntry](View* view) {
         gameBrowser.selectGame(gameEntry.titleId);
         FrameModBrowser* modsBrowser = new FrameModBrowser();
-        brls::Activity* modsActivity = new brls::Activity(modsBrowser);
-        brls::Application::pushActivity(modsActivity, brls::TransitionAnimation::SLIDE_LEFT);
+        modsBrowser->initialize();
+        brls::Application::pushActivity(modsBrowser);
         return true;
       });
       item->updateActionHint(brls::BUTTON_A, "Open");

@@ -13,6 +13,8 @@
 class GroupBrowser : public brls::ScrollingFrame {
   public:
     explicit GroupBrowser();
+
+    static GroupBrowser* create();
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

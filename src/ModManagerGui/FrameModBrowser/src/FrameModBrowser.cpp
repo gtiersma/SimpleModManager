@@ -4,22 +4,22 @@
 
 #include "FrameModBrowser.h"
 
-#include <TabModPresets.h>
 #include <TabModOptions.h>
 #include <GroupBrowser.h>
 
-#include "GenericToolbox.Switch.h"
 #include <StateAlchemist/controller.h>
 
 
-FrameModBrowser::FrameModBrowser() {
+void FrameModBrowser::initialize() {
   Game game = gameBrowser.getGame(controller.titleId).value();
 
   std::string gamePath = controller.getGamePath();
 
+  brls::AppletFrame* appletFrame = (brls::AppletFrame*)this->getContentView();
+
   // Construct header
   // Header must be cleared and rebuilt because there's no setImageFromMem() for the icon in its API
-  brls::Box* header = this->getHeader();
+  brls::Box* header = appletFrame->getHeader();
   header->clearViews(true);
   
   brls::Image* icon = new brls::Image();
@@ -37,18 +37,9 @@ FrameModBrowser::FrameModBrowser() {
 
   brls::Label* footerLabel = new brls::Label();
   footerLabel->setText("Simple Mod Alchemist");
-  this->getFooter()->addView(footerLabel);
+  appletFrame->getFooter()->addView(footerLabel);
 
-  brls::TabFrame* tabs = new brls::TabFrame();
-  tabs->addTab("Mod Browser", []() { return new GroupBrowser(); });
-  tabs->addSeparator();
-  tabs->addTab("Options", []() {
-    TabModOptions* tabModOptions = new TabModOptions();
-    tabModOptions->initialize();
-    return tabModOptions;
-  });
-
-  tabs->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
+  appletFrame->getContentView()->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
     brls::Application::popActivity(brls::TransitionAnimation::SLIDE_RIGHT);
 
     // clear the group/source shown
@@ -57,6 +48,4 @@ FrameModBrowser::FrameModBrowser() {
 
     return true;
   });
-
-  this->addView(tabs);
 }
