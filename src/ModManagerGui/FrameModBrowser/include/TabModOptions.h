@@ -20,12 +20,9 @@ class TabModOptions : public brls::Box {
 public:
   explicit TabModOptions();
 
-  void initialize();
-
   void buildDisableAllMods();
 
-private:
-  brls::NoteCell* _itemDisableAllMods_{nullptr};
+  static TabModOptions* create();
 
 };
 

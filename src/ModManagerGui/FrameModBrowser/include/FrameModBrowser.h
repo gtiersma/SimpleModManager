@@ -5,15 +5,15 @@
 #ifndef SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 #define SIMPLEMODMANAGER_FRAMEMODBROWSER_H
 
-#include "GuiModManager.h"
-
 #include "borealis.hpp"
 
 
-class FrameModBrowser : public brls::AppletFrame {
+class FrameModBrowser : public brls::Activity {
 
 public:
-  explicit FrameModBrowser();
+  CONTENT_FROM_XML_RES("FrameModBrowser/frame_mod_browser.xml");
+
+  void initialize();
 };
 
 

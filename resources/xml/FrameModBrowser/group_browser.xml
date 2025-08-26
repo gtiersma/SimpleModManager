@@ -1,0 +1,22 @@
+<brls:Box
+    width="auto"
+    height="auto"
+    axis="row">
+
+    <brls:Sidebar
+        id="group-list"
+        width="@style/brls/tab_frame/sidebar_width"
+        height="auto"/>
+
+    <brls:Box
+        id="mod-list-container"
+        width="auto"
+        height="auto"
+        grow="1.0"
+        paddingLeft="@style/brls/tab_frame/content_padding_sides"
+        paddingRight="@style/brls/tab_frame/content_padding_sides"
+        paddingTop="@style/brls/tab_frame/content_padding_top_bottom"
+        paddingBottom="@style/brls/tab_frame/content_padding_top_bottom"
+        />
+
+</brls:Box>

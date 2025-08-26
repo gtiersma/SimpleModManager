@@ -1,0 +1,17 @@
+<brls:IconApplet
+    iconInterpolation="linear"
+    footerHidden="false">
+    <brls:TabFrame>
+
+        <brls:Tab label="Mods" >
+          <GroupBrowser/>
+        </brls:Tab>
+
+        <brls:Separator />
+
+        <brls:Tab label="Mod Options" >
+          <TabModOptions/>
+        </brls:Tab>
+
+    </brls:TabFrame>
+</brls:IconApplet>

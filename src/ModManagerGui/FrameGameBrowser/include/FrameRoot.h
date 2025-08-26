@@ -5,8 +5,6 @@
 #ifndef SIMPLEMODMANAGER_FRAMEROOT_H
 #define SIMPLEMODMANAGER_FRAMEROOT_H
 
-#include "GuiModManager.h"
-
 #include "borealis.hpp"
 
 
