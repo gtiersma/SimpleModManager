@@ -1,4 +1,4 @@
-<brls:AppletFrame
+<brls:IconApplet
     iconInterpolation="linear"
     footerHidden="false">
     <brls:TabFrame>
@@ -14,4 +14,4 @@
         </brls:Tab>
 
     </brls:TabFrame>
-</brls:AppletFrame>
+</brls:IconApplet>

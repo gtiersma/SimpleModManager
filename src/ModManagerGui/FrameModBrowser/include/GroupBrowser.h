@@ -7,14 +7,17 @@
 
 
 #include "borealis.hpp"
-#include "FrameModBrowser.h"
 
 
-class GroupBrowser : public brls::ScrollingFrame {
+class GroupBrowser : public brls::Box {
   public:
     explicit GroupBrowser();
 
     static GroupBrowser* create();
+
+  private:
+    BRLS_BIND(brls::Sidebar, groupList, "group-list");
+    BRLS_BIND(brls::Box, modListContainer, "mod-list-container");
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

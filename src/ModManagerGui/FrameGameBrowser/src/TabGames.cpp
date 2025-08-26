@@ -46,8 +46,8 @@ TabGames::TabGames() {
       item->registerClickAction([gameEntry](View* view) {
         gameBrowser.selectGame(gameEntry.titleId);
         FrameModBrowser* modsBrowser = new FrameModBrowser();
-        modsBrowser->initialize();
         brls::Application::pushActivity(modsBrowser);
+        modsBrowser->initialize();
         return true;
       });
       item->updateActionHint(brls::BUTTON_A, "Open");

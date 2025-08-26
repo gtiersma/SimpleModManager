@@ -9,31 +9,21 @@
 
 #include <StateAlchemist/controller.h>
 
+#include <icon_applet.hpp>
+
 
 void FrameModBrowser::initialize() {
   Game game = gameBrowser.getGame(controller.titleId).value();
 
-  std::string gamePath = controller.getGamePath();
-
-  brls::AppletFrame* appletFrame = (brls::AppletFrame*)this->getContentView();
-
-  // Construct header
-  // Header must be cleared and rebuilt because there's no setImageFromMem() for the icon in its API
-  brls::Box* header = appletFrame->getHeader();
-  header->clearViews(true);
+  brls::IconApplet* appletFrame = (brls::IconApplet*)this->getContentView();
   
-  brls::Image* icon = new brls::Image();
   if (game.icon.size() > 0) {
-    icon->setImageFromMem(game.icon.data(), 0x20000);
+    appletFrame->setIconFromMem(game.icon.data(), 0x20000);
   } else {
-    icon->setImageFromFile("romfs:/images/icon_corner.png");
+    appletFrame->setIconFromRes("/img/icon_corner.png");
   }
 
-  header->addView(icon);
-
-  brls::Label* title = new brls::Label();
-  title->setText(game.name);
-  header->addView(title);
+  appletFrame->setTitle(game.name);
 
   brls::Label* footerLabel = new brls::Label();
   footerLabel->setText("Simple Mod Alchemist");

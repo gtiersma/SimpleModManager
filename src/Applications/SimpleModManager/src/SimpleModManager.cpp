@@ -12,6 +12,8 @@
 #include <GroupBrowser.h>
 #include <TabModOptions.h>
 
+#include <icon_applet.hpp>
+
 #include "ConfigHandler.h"
 
 #include <borealis.hpp>
@@ -37,6 +39,8 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
     brls::Application::registerXMLView("GroupBrowser", GroupBrowser::create);
     brls::Application::registerXMLView("TabModOptions", TabModOptions::create);
+
+    brls::Application::registerXMLView("brls:IconApplet", brls::IconApplet::create);
 
     nsInitialize();
 

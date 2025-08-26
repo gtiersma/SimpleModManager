@@ -9,16 +9,18 @@
 #include <util.hpp>
 
 
-TabModOptions::TabModOptions() {}
+TabModOptions::TabModOptions() {
+  this->buildDisableAllMods();
+}
 
 void TabModOptions::buildDisableAllMods() {
-  _itemDisableAllMods_ = new brls::NoteCell();
-  _itemDisableAllMods_->setText("Disable all mods");
-  _itemDisableAllMods_->setNote(
+  brls::NoteCell* disableAll = new brls::NoteCell();
+  disableAll->setText("Disable all mods");
+  disableAll->setNote(
     "Turn all mods off for this game, returning all files to under the \"" + ALCHEMIST_FOLDER + "\" folder. "\
     "This is useful if you want to delete some of them from the SD card."
   );
-  _itemDisableAllMods_->registerClickAction([](brls::View* view) {
+  disableAll->registerClickAction([](brls::View* view) {
     brls::Dialog* dialog = new brls::Dialog("Disable all mods? Are you sure?");
 
     dialog->addButton("Yes", []() {
@@ -36,13 +38,11 @@ void TabModOptions::buildDisableAllMods() {
     dialog->open();
     return true;
   });
+  this->addView(disableAll);
 }
 
-void TabModOptions::initialize() {
-  this->buildDisableAllMods();
-  this->addView(_itemDisableAllMods_);
+TabModOptions* TabModOptions::create() {
+  return new TabModOptions();
 }
-
-
 
 
