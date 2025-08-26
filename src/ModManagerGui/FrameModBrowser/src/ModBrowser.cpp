@@ -16,6 +16,7 @@ ModDataSource::ModDataSource(
   const std::vector<std::string>& mod_source_names,
   std::function<void (const ModSource& source, int selectedModIndex)> on_selected
 ) {
+  alchemyLogger.log("ModDataSource::ModDataSource...");
   this->_mod_source_names_ = mod_source_names;
   this->_on_selected_ = on_selected;
 
@@ -25,6 +26,7 @@ ModDataSource::ModDataSource(
 }
 
 void ModDataSource::loadNextPage() {
+  alchemyLogger.log("ModDataSource::loadNextPage");
   size_t pageStart = this->getFirstIndexOfCurrentPage();
   size_t nextPageStart = this->getFirstIndexOfNextPage();
   int sourceCount = this->getModSourceCount();
@@ -68,8 +70,10 @@ size_t ModDataSource::getFirstIndexOfNextPage() {
 
 int ModDataSource::numberOfRows(brls::RecyclerFrame* recycler, int section) {
   if (this->hasLoadedAllModSources()) {
+    alchemyLogger.log("ModDataSource::numberOfRows: " + std::to_string(this->getModSourceCount()));
     return this->getModSourceCount();
   } else {
+    alchemyLogger.log("ModDataSource::numberOfRows 2: " + std::to_string(this->getFirstIndexOfNextPage() + 1));
     return this->getFirstIndexOfNextPage() + 1;
   }
 }
@@ -78,6 +82,7 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
 {
   if (!this->hasModSources()) {
 
+    alchemyLogger.log("ModDataSource::Make the none");
     // CASE: No mod sources in this group
     brls::NoteCell* item = (brls::NoteCell*)recycler->dequeueReusableCell("Note");
     item->setText("No mods have been found in " + controller.getGroupPath());
@@ -88,6 +93,7 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
 
   } else if (indexPath.row == this->getLoadedModSourceCount()) {
 
+    alchemyLogger.log("ModDataSource::Make the show more");
     // CASE: Not all mods loaded into 1 page, and this is the last index, so make it a button to show more
     brls::DetailCell* item = (brls::DetailCell*)recycler->dequeueReusableCell("Detail");
     item->setText("Show more...");
@@ -135,6 +141,7 @@ size_t ModDataSource::getFirstIndex(size_t page) {
 }
 
 ModBrowser::ModBrowser(): brls::Box(brls::Axis::COLUMN) {
+  alchemyLogger.log("ModBrowser::ModBrowser");
   this->_container_ = new brls::RecyclerFrame();
   this->_container_->estimatedRowHeight = 70;
 
