@@ -17,10 +17,9 @@
 class ModDataSource : public brls::RecyclerDataSource
 {
   public:
-    ModDataSource(
-      const std::vector<std::string>& mod_source_names,
-      std::function<void (const ModSource& source, int selectedModIndex)> on_selected
-    );
+    ModDataSource(std::function<void (const ModSource& source, int selectedModIndex)> on_selected);
+
+    void reset();
 
     int numberOfRows(brls::RecyclerFrame* recycler, int section) override;
     brls::RecyclerCell* cellForRow(brls::RecyclerFrame* recycler, brls::IndexPath index) override;
@@ -70,9 +69,14 @@ class ModBrowser : public brls::Box {
 public:
   explicit ModBrowser();
 
+  void handleGroupChange();
+
+  static ModBrowser* create();
+
 private:
-  ModDataSource* _recycled_data_{nullptr};
-  brls::RecyclerFrame* _container_{nullptr};
+  BRLS_BIND(brls::RecyclerFrame, modList, "mod-list");
+
+  ModDataSource* _data_source_;
 
   /**
    * Called when the value of one of the select items is changed

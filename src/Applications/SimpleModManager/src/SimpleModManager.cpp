@@ -38,6 +38,7 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("TabGeneralSettings", TabGeneralSettings::create);
     brls::Application::registerXMLView("TabAbout", TabAbout::create);
     brls::Application::registerXMLView("GroupBrowser", GroupBrowser::create);
+    brls::Application::registerXMLView("ModBrowser", ModBrowser::create);
     brls::Application::registerXMLView("TabModOptions", TabModOptions::create);
 
     brls::Application::registerXMLView("brls:IconApplet", brls::IconApplet::create);

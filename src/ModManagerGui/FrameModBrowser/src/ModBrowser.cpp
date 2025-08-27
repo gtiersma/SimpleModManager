@@ -11,16 +11,15 @@
 
 
 
-ModDataSource::ModDataSource(
-  const std::vector<std::string>& mod_source_names,
-  std::function<void (const ModSource& source, int selectedModIndex)> on_selected
-) {
-  this->_mod_source_names_ = mod_source_names;
+ModDataSource::ModDataSource(std::function<void (const ModSource& source, int selectedModIndex)> on_selected) {
   this->_on_selected_ = on_selected;
+}
 
-  if (mod_source_names.size() > 0) {
-    this->loadNextPage();
-  }
+void ModDataSource::reset() {
+  this->_page_ = 0;
+  this->_loaded_mod_sources_.clear();
+  this->_mod_source_names_ = controller.loadSources(true);
+  this->loadNextPage();
 }
 
 void ModDataSource::loadNextPage() {
@@ -133,23 +132,28 @@ size_t ModDataSource::getFirstIndex(size_t page) {
   return index;
 }
 
-ModBrowser::ModBrowser(): brls::Box(brls::Axis::COLUMN) {
-  this->_container_ = new brls::RecyclerFrame();
-  this->_container_->estimatedRowHeight = 70;
+ModBrowser::ModBrowser() {
+  this->inflateFromXMLRes("xml/FrameModBrowser/mod_browser.xml");
 
-  this->_container_->registerCell("Selector", []() { return new brls::SelectorCell(); });
-  this->_container_->registerCell("Detail", []() { return new brls::DetailCell(); });
-  this->_container_->registerCell("Note", []() { return new brls::NoteCell(); });
+  modList->estimatedRowHeight = 70;
 
-  this->_recycled_data_ = new ModDataSource(
-    controller.loadSources(true),
+  modList->registerCell("Selector", []() { return new brls::SelectorCell(); });
+  modList->registerCell("Detail", []() { return new brls::DetailCell(); });
+  modList->registerCell("Note", []() { return new brls::NoteCell(); });
+
+  this->_data_source_ = new ModDataSource(
     [this](const ModSource& source, int selectedModIndex) {
       this->handleModSelect(source, selectedModIndex);
     }
   );
+  this->_data_source_->reset();
 
-  this->_container_->setDataSource(this->_recycled_data_);
-  this->addView(this->_container_);
+  modList->setDataSource(this->_data_source_);
+}
+
+void ModBrowser::handleGroupChange() {
+  this->_data_source_->reset();
+  modList->reloadData();
 }
 
 void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
@@ -168,4 +172,8 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
     // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
     controller.activateMod(mod.mods[selectedIndex - 1]);
   }
+}
+
+ModBrowser* ModBrowser::create() {
+  return new ModBrowser();
 }
