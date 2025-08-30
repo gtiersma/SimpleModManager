@@ -105,13 +105,10 @@ void ModManager::loadSources(const int& count) {
     for (std::string mod : mods) {
       alchemyLogger.log("ModManager::loadSources: " + mod);
     }
+    int activeIndex = this->getActiveIndex(controller.source, mods);
     this->_mod_source_cache_.insert({
       controller.source,
-      ModSource(
-        controller.source,
-        std::move(mods),
-        this->getActiveIndex(controller.source, mods)
-      )
+      ModSource(controller.source, std::move(mods), activeIndex)
     });
   }
 

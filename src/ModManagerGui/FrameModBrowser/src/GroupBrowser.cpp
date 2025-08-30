@@ -25,6 +25,10 @@ GroupBrowser::GroupBrowser() {
 
   for (std::string& group : groups) {
     this->groupList->addItem(group, [this, group](View* view) {
+      // Only trigger when the sidebar item gains focus
+      if (!view->isFocused())
+        return;
+
       gameBrowser.getModManager().setGroup(group);
       
       if (this->getChildren().size() == 2) {
