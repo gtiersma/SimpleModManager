@@ -13,6 +13,8 @@
 #include <StateAlchemist/controller.h>
 
 
+const int ModManager::_LOAD_CHUNK_SIZE_ = 15;
+
 ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
 
 const ConfigHolder& ModManager::getConfig() const{

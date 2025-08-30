@@ -13,6 +13,7 @@
 #include <TabModOptions.h>
 
 #include <icon_applet.hpp>
+#include <focus_sidebar.hpp>
 
 #include "ConfigHandler.h"
 
@@ -46,6 +47,7 @@ int main(int argc, char* argv[])
     brls::Application::registerXMLView("TabModOptions", TabModOptions::create);
 
     brls::Application::registerXMLView("brls:IconApplet", brls::IconApplet::create);
+    brls::Application::registerXMLView("brls:FocusSidebar", brls::FocusSidebar::create);
 
     nsInitialize();
 
