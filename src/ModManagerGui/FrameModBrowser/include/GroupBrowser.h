@@ -8,8 +8,6 @@
 
 #include "borealis.hpp"
 
-#include "ModBrowser.h"
-
 
 class GroupBrowser : public brls::Box {
   public:
@@ -19,7 +17,6 @@ class GroupBrowser : public brls::Box {
 
   private:
     BRLS_BIND(brls::Sidebar, groupList, "group-list");
-    BRLS_BIND(ModBrowser, modList, "mod-list");
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

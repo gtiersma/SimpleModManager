@@ -8,6 +8,4 @@
         width="@style/brls/tab_frame/sidebar_width"
         height="auto"/>
 
-    <ModBrowser/>
-
 </brls:Box>

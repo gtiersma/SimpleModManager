@@ -3,6 +3,7 @@
 //
 
 #include "GroupBrowser.h"
+#include "ModBrowser.h"
 #include "util.hpp"
 
 #include <StateAlchemist/controller.h>
@@ -24,8 +25,13 @@ GroupBrowser::GroupBrowser() {
 
   for (std::string& group : groups) {
     this->groupList->addItem(group, [this, group](View* view) {
-      controller.group = group;
-      modList->handleGroupChange();
+      gameBrowser.getModManager().setGroup(group);
+      
+      if (this->getChildren().size() == 2) {
+        this->removeView(this->getChildren()[1]);
+      }
+
+      this->addView(new ModBrowser());
     });
   }
 }
