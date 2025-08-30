@@ -11,7 +11,6 @@
 #include <switch.h>
 
 #include <StateAlchemist/controller.h>
-#include <AlchemistLogger.h>
 
 
 ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
@@ -27,6 +26,9 @@ void ModManager::setGroup(const std::string& group) {
   if (controller.group == group) { return; }
   controller.group = group;
   this->_mod_source_names_ = controller.loadSources(true);
+  for (std::string name : this->_mod_source_names_) {
+    alchemyLogger.log("ModManager::setGroup: " + name);
+  }
   this->_last_loaded_index_ = -1;
   this->_mod_source_cache_.clear();
   this->loadSources(ModManager::_LOAD_CHUNK_SIZE_);
@@ -98,6 +100,9 @@ void ModManager::loadSources(const int& count) {
   for (int i = this->_last_loaded_index_ + 1; i < lastIndexToLoad; i++) {
     controller.source = this->_mod_source_names_[i];
     std::vector<std::string> mods = controller.loadMods(true);
+    for (std::string mod : mods) {
+      alchemyLogger.log("ModManager::loadSources: " + mod);
+    }
     this->_mod_source_cache_.insert({
       controller.source,
       ModSource(

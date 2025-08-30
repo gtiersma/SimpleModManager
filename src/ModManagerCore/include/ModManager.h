@@ -6,6 +6,7 @@
 #define MODAPPLIER_MOD_MANAGER_H
 
 #include <ConfigHandler.h>
+#include <AlchemistLogger.h>
 
 #include <map>
 #include <vector>
@@ -30,6 +31,9 @@ struct ModSource {
     activeIndex(activeIndex_) {
       options = mods_;
       options.insert(options.begin(), _DEFAULT_OPTION_);
+      for (std::string option : options) {
+        alchemyLogger.log("ModSource::construcy: " + option);
+      }
     }
 
   std::string source;
