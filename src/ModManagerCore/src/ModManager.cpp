@@ -23,15 +23,44 @@ ConfigHolder& ModManager::getConfig(){
   return _owner_->getConfigHandler().getConfig();
 }
 
+void ModManager::setGroup(const std::string& group) {
+  if (controller.group == group) { return; }
+  controller.group = group;
+  this->_mod_source_names_ = controller.loadSources(true);
+  this->_last_loaded_index_ = -1;
+  this->_mod_source_cache_.clear();
+  this->loadSources(ModManager::_LOAD_CHUNK_SIZE_);
+}
+
 /**
- * Loads data related to a moddable thing in the game (aka source)
+ * Gets the data related to a moddable thing in the game (aka source)
  * 
- * @warning Expects controller.group to be set to the group the source belongs to
+ * @warning Expects we already know there's a loaded object for the specified index.
  */
-ModSource ModManager::loadSource(const std::string& sourceName) {
-  controller.source = sourceName;
-  std::vector<std::string> mods = controller.loadMods(true);
-  return ModSource(sourceName, mods, this->getActiveIndex(sourceName, mods));
+ModSource& ModManager::getSource(const int& index) {
+  return this->_mod_source_cache_[this->_mod_source_names_[index]];
+}
+
+std::string ModManager::getSourceName(const int& index) {
+  return this->_mod_source_names_[index];
+}
+
+int ModManager::getSourceCount() {
+  return this->_mod_source_names_.size();
+}
+
+bool ModManager::isSourceLoaded(const int& index) {
+  return index <= this->_last_loaded_index_;
+}
+
+void ModManager::loadSourcesIfNeeded(const int& index) {
+  if (index > this->_last_loaded_index_ + ModManager::_LOAD_CHUNK_SIZE_) {
+    // This call should ideally never be hit, but it's here just to be safe.
+    // Loads an exceptionally large number of source objects if the "index" argument is significantly further down the list.
+    this->loadSources(index - this->_last_loaded_index_ + ModManager::_LOAD_CHUNK_SIZE_);
+  } else if (!this->isSourceLoaded(index + ModManager::_LOAD_CHUNK_SIZE_)) {
+    this->loadSources(ModManager::_LOAD_CHUNK_SIZE_);
+  }
 }
 
 /**
@@ -57,8 +86,27 @@ int ModManager::getActiveIndex(const std::string& source, const std::vector<std:
   return activeIndex;
 }
 
+void ModManager::loadSources(const int& count) {
+  int sourceCount = this->_mod_source_names_.size();
+  int lastIndexToLoad = this->_last_loaded_index_ + count;
 
+  // Last index shouldn't exceed the source size:
+  if (lastIndexToLoad >= sourceCount) {
+    lastIndexToLoad = sourceCount - 1;
+  };
 
+  for (int i = this->_last_loaded_index_ + 1; i < lastIndexToLoad; i++) {
+    controller.source = this->_mod_source_names_[i];
+    std::vector<std::string> mods = controller.loadMods(true);
+    this->_mod_source_cache_.insert({
+      controller.source,
+      ModSource(
+        controller.source,
+        std::move(mods),
+        this->getActiveIndex(controller.source, mods)
+      )
+    });
+  }
 
-
-
+  this->_last_loaded_index_ = lastIndexToLoad;
+}

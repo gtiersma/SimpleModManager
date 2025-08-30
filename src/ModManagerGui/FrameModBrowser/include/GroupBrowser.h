@@ -17,7 +17,6 @@ class GroupBrowser : public brls::Box {
 
   private:
     BRLS_BIND(brls::Sidebar, groupList, "group-list");
-    BRLS_BIND(brls::Box, modListContainer, "mod-list-container");
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H

@@ -64,14 +64,77 @@ public:
   const ConfigHolder& getConfig() const;
   ConfigHolder& getConfig();
 
-  // selector related
-  ModSource loadSource(const std::string& sourceName);
+  /**
+   * Call this to set the group instead of setting it on the controller directly.
+   * 
+   * This will allow this mod manager to reset its state and load some initial mods for the group list.
+   */
+  void setGroup(const std::string& group);
+
+  /**
+   * Gets the source name at the specified index.
+   * Source does not need to be loaded. 
+   */
+  std::string getSourceName(const int& index);
+
+  /**
+   * Gets the source object for the source name at the specified index.
+   * Assumes that we already know the source object at that index has been loaded.
+   */
+  ModSource& getSource(const int& index);
+
+  /**
+   * Gets the total number of sources in the group; whether loaded or not
+   */
+  int getSourceCount();
+
+  /**
+   * Check if the source object for the source name at the specified index has already been loaded or not.
+   */
+  bool isSourceLoaded(const int& index);
+
+  /**
+   * Checks to see if the source objects within a certain proximity of the specified index are all loaded.
+   * If not, it loads the next chunk.
+   */
+  void loadSourcesIfNeeded(const int& index);
 
 private:
   GameBrowser* _owner_{nullptr};
 
-  // mod management
+  /**
+   * The last index of the source name vector that had its object loaded.
+   * 
+   * Objects are loaded sequentially, parallel to the vector of names.
+   */
+  int _last_loaded_index_{-1};
+
+  /**
+   * All names of all sources belonging to a group.
+   * Includes both those loaded and those not.
+   * Reloaded every time setGroup() is used.
+   */
+  std::vector<std::string> _mod_source_names_;
+
+  /**
+   * Storage for all source objects that have been loaded so far.
+   * Uses map just for fast look-ups.
+   */
+  std::map<std::string, ModSource> _mod_source_cache_;
+
   int getActiveIndex(const std::string& sourceName, const std::vector<std::string>& mods);
+
+  /**
+   * Loads however many more source objects specified by the count param.
+   * Does nothing if all source objects have already been loaded.
+   */
+  void loadSources(const int& count);
+
+  /**
+   * The maximum number of source objects that will be loaded at one time.
+   * Source objects are constructed syncronously while the user is navigating the UI, so we need to keep it small and snappy.
+   */
+  static const int _LOAD_CHUNK_SIZE_{15};
 };
 
 

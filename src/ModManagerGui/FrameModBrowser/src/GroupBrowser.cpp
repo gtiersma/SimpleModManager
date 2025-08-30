@@ -25,13 +25,13 @@ GroupBrowser::GroupBrowser() {
 
   for (std::string& group : groups) {
     this->groupList->addItem(group, [this, group](View* view) {
-      if (this->modListContainer->getChildren().size() == 1) {
-        this->modListContainer->removeView(this->modListContainer->getChildren().at(1));
+      gameBrowser.getModManager().setGroup(group);
+      
+      if (this->getChildren().size() == 2) {
+        this->removeView(this->getChildren()[1]);
       }
 
-      controller.group = group;
-      
-      this->modListContainer->addView(new ModBrowser());
+      this->addView(new ModBrowser());
     });
   }
 }
