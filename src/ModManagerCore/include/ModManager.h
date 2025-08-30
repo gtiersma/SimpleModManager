@@ -134,7 +134,7 @@ private:
    * The maximum number of source objects that will be loaded at one time.
    * Source objects are constructed syncronously while the user is navigating the UI, so we need to keep it small and snappy.
    */
-  static const int _LOAD_CHUNK_SIZE_{15};
+  static const int _LOAD_CHUNK_SIZE_;
 };
 
 

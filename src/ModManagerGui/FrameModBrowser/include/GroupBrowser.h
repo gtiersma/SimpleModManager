@@ -7,6 +7,7 @@
 
 
 #include "borealis.hpp"
+#include "focus_sidebar.hpp"
 
 
 class GroupBrowser : public brls::Box {
@@ -16,7 +17,7 @@ class GroupBrowser : public brls::Box {
     static GroupBrowser* create();
 
   private:
-    BRLS_BIND(brls::Sidebar, groupList, "group-list");
+    BRLS_BIND(brls::FocusSidebar, groupList, "group-list");
 };
 
 #endif //SIMPLEMODMANAGER_GROUPBROWSER_H
