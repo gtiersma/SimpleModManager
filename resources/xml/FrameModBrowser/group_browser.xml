@@ -3,7 +3,7 @@
     height="auto"
     axis="row">
 
-    <brls:FocusSidebar
+    <brls:Sidebar
         id="group-list"
         width="@style/brls/tab_frame/sidebar_width"
         height="auto"/>

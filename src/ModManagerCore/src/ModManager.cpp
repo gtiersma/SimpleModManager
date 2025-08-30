@@ -97,13 +97,10 @@ void ModManager::loadSources(const int& count) {
   for (int i = this->_last_loaded_index_ + 1; i < lastIndexToLoad; i++) {
     controller.source = this->_mod_source_names_[i];
     std::vector<std::string> mods = controller.loadMods(true);
+    int activeIndex = this->getActiveIndex(controller.source, mods);
     this->_mod_source_cache_.insert({
       controller.source,
-      ModSource(
-        controller.source,
-        std::move(mods),
-        this->getActiveIndex(controller.source, mods)
-      )
+      ModSource(controller.source, std::move(mods), activeIndex)
     });
   }
 
