@@ -28,7 +28,7 @@ struct ModSource {
     source(std::move(source_)),
     mods(std::move(mods_)),
     activeIndex(activeIndex_) {
-      options = mods_;
+      options = this->mods;
       options.insert(options.begin(), _DEFAULT_OPTION_);
     }
 
