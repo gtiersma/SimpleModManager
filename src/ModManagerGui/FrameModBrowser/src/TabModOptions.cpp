@@ -10,6 +10,7 @@
 
 
 TabModOptions::TabModOptions() {
+  Util::padTabContent(this);
   this->buildDisableAllMods();
 }
 

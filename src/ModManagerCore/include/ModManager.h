@@ -131,10 +131,16 @@ private:
   void loadSources(const int& count);
 
   /**
-   * The maximum number of source objects that will be loaded at one time.
-   * Source objects are constructed syncronously while the user is navigating the UI, so we need to keep it small and snappy.
+   * The number of mod sources to load data for initially (the first time data is loaded for mods in a group)
+   *
+   * Mod data is loaded in chunks due to the fact that file/folder names need to be read individually per group, so large numbers of sources can cause delays.
    */
-  static const int _LOAD_CHUNK_SIZE_;
+  static const int _INIT_CHUNK_SIZE_;
+
+  /**
+   * Smaller chunks of mod data is loaded at a time after the initial chunk is loaded.
+   */
+  static const int _SEQUENT_CHUNK_SIZE_;
 };
 
 

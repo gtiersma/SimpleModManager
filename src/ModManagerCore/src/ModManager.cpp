@@ -13,7 +13,8 @@
 #include <StateAlchemist/controller.h>
 
 
-const int ModManager::_LOAD_CHUNK_SIZE_ = 15;
+const int ModManager::_INIT_CHUNK_SIZE_ = 15;
+const int ModManager::_SEQUENT_CHUNK_SIZE_ = 10;
 
 ModManager::ModManager(GameBrowser* owner_) : _owner_(owner_) {}
 
@@ -30,7 +31,7 @@ void ModManager::setGroup(const std::string& group) {
   this->_mod_source_names_ = controller.loadSources(true);
   this->_last_loaded_index_ = -1;
   this->_mod_source_cache_.clear();
-  this->loadSources(ModManager::_LOAD_CHUNK_SIZE_);
+  this->loadSources(ModManager::_INIT_CHUNK_SIZE_);
 }
 
 /**
@@ -55,12 +56,12 @@ bool ModManager::isSourceLoaded(const int& index) {
 }
 
 void ModManager::loadSourcesIfNeeded(const int& index) {
-  if (index > this->_last_loaded_index_ + ModManager::_LOAD_CHUNK_SIZE_) {
+  if (index > this->_last_loaded_index_ + ModManager::_SEQUENT_CHUNK_SIZE_) {
     // This call should ideally never be hit, but it's here just to be safe.
     // Loads an exceptionally large number of source objects if the "index" argument is significantly further down the list.
-    this->loadSources(index - this->_last_loaded_index_ + ModManager::_LOAD_CHUNK_SIZE_);
-  } else if (!this->isSourceLoaded(index + ModManager::_LOAD_CHUNK_SIZE_)) {
-    this->loadSources(ModManager::_LOAD_CHUNK_SIZE_);
+    this->loadSources(index - this->_last_loaded_index_ + ModManager::_SEQUENT_CHUNK_SIZE_);
+  } else if (!this->isSourceLoaded(index + ModManager::_SEQUENT_CHUNK_SIZE_)) {
+    this->loadSources(ModManager::_SEQUENT_CHUNK_SIZE_);
   }
 }
 
