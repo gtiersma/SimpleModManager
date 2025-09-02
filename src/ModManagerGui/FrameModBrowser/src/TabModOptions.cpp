@@ -23,6 +23,7 @@ void TabModOptions::buildDisableAllMods() {
     "Turn all mods off for this game, returning all files to under the \"" + ALCHEMIST_FOLDER + "\" folder. "\
     "This is useful if you want to delete some of them from the SD card."
   );
+
   disableAll->registerClickAction([](brls::View* view) {
     brls::Dialog* dialog = new brls::Dialog("Disable all mods? Are you sure?");
 
@@ -41,7 +42,9 @@ void TabModOptions::buildDisableAllMods() {
     dialog->open();
     return true;
   });
+
   disableAll->updateActionHint(brls::BUTTON_A, "Disable Mods");
+
   this->addView(disableAll);
 }
 

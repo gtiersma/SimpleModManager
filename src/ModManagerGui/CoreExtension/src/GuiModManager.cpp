@@ -14,6 +14,7 @@
 #include <StateAlchemist/controller.h>
 
 
+// TODO: Is this file even still in use?
 
 const GameBrowser &GuiModManager::getGameBrowser() const { return _gameBrowser_; }
 GameBrowser &GuiModManager::getGameBrowser(){ return _gameBrowser_; }

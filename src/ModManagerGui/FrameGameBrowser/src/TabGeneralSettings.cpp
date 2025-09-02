@@ -16,8 +16,6 @@ TabGeneralSettings::TabGeneralSettings() {
   this->rebuildLayout();
 }
 
-brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }
-
 void TabGeneralSettings::rebuildLayout() {
   Util::padTabContent(this);
 
@@ -26,7 +24,6 @@ void TabGeneralSettings::rebuildLayout() {
   migrationItem->setNote(
     "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager."
   );
-  migrationItem->setFocusable(true);
   migrationItem->registerClickAction([this](brls::View* view) {
     buildMigrateConfirmDialog()->open();
     return true;
@@ -77,3 +74,5 @@ brls::Dialog* TabGeneralSettings::buildMigrateFinishedDialog() {
   completeDialog->addButton("OK", []() {});
   return completeDialog;
 }
+
+brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }

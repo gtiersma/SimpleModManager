@@ -11,6 +11,7 @@
 
 #include <StateAlchemist/constants.h>
 #include <StateAlchemist/meta_manager.h>
+#include <StateAlchemist/controller.h>
 #include <Game.h>
 #include <util.hpp>
 #include <note_cell.hpp>
@@ -22,9 +23,9 @@ TabGames::TabGames() {
 
   if (gameList.empty()) {
     brls::NoteCell* message = new brls::NoteCell();
-    message->setText("No game folders have been found.");
+    message->setText("No game folders found. Folders should be like this:");
     message->setNote(
-      "To add mods, put them on the SD card in this manner: SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<mod-name>/<mod-files-and-folders>."
+      "SD:/mod-alchemy/<title-id-of-the-game>/<group>/<thing-being-replaced>/<mod-name>/<mod-files-and-folders>"
     );
     Util::padTabContent(message);
     this->addView(message);
@@ -47,6 +48,21 @@ TabGames::TabGames() {
 
       item->registerClickAction([gameEntry](View* view) {
         gameBrowser.selectGame(gameEntry.titleId);
+
+        // Let the user know if there's no mods:
+        // TODO: Mods are loaded only to check if they exist here. Not efficient.
+        std::vector<std::string> groups = controller.loadGroups(false);
+        if (groups.empty()) {
+          brls::Dialog* dialog = new brls::Dialog(
+            "No mod group folders exist in \"" + controller.getGamePath() +
+            "\". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<mod-file-structure>"
+          );
+          dialog->setCancelable(true);
+          dialog->addButton("OK", []() {});
+          dialog->open();
+          return true;
+        }
+
         FrameModBrowser* modsBrowser = new FrameModBrowser();
         brls::Application::pushActivity(modsBrowser);
         modsBrowser->initialize();

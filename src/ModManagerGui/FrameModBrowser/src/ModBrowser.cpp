@@ -43,10 +43,11 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
 
     // CASE: No mod sources in this group
     brls::NoteCell* item = (brls::NoteCell*)recycler->dequeueReusableCell("Note");
-    item->setText("No mods have been found in " + controller.getGroupPath());
+    item->setText("No mods are in the " + controller.group + " folder.");
     item->setNote(
       "Within that folder, organize the mods in this manner: ./<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
     );
+    item->setFocusable(false);
     return item;
 
   } else if (modManager.isSourceLoaded(indexPath.row)) {
@@ -71,6 +72,9 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
 ModBrowser::ModBrowser(brls::View* parentCell): _parent_cell_(parentCell) {
   this->inflateFromXMLRes("xml/FrameModBrowser/mod_browser.xml");
 
+  // This is just a random number I tossed here that sounded right,
+  // and it seems to be working.
+  // TODO: Is this really the right number though?
   modList->estimatedRowHeight = 70;
 
   modList->registerCell("Selector", []() { return new brls::SelectorCell(); });
@@ -114,6 +118,8 @@ void ModBrowser::configureModSelector(brls::SelectorCell* selector, const ModSou
       }
     );
 
+    // If focus is drawing near to the point where we don't have data loaded
+    // for the mod sources that will come into view soon, we need to load the next chunk:
     selector->getFocusEvent()->subscribe([index](brls::View* view) {
       gameBrowser.getModManager().loadSourcesIfNeeded(index);
     });

@@ -9,6 +9,9 @@
 using namespace brls::literals;
 
 TabAbout::TabAbout(): brls::Box(brls::Axis::COLUMN) {
+
+  // Low padding; We got a lot to fit
+  // TODO: Make this scrollable; spread things out a little
   this->setPadding(16.0f, 40.0f, 32.0f, 40.0f);
   this->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   
@@ -23,6 +26,7 @@ TabAbout::TabAbout(): brls::Box(brls::Axis::COLUMN) {
   shortDescription->setFontSize(15.0f);
   this->addView(shortDescription);
 
+  // Two columns of content
   brls::Box* columns = new brls::Box();
   columns->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   columns->setHeight(300.0f);

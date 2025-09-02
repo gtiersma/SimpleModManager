@@ -19,6 +19,7 @@ void FrameModBrowser::initialize() {
 
   brls::IconApplet* appletFrame = (brls::IconApplet*)this->getContentView();
 
+  // Set the tab width to a low percentage, so we have more room for the mod list:
   brls::TabFrame* tabs = (brls::TabFrame*)appletFrame->getContentView();
   brls::Sidebar* sidebar = (brls::Sidebar*)tabs->getChildren().at(0);
   sidebar->setWidthPercentage(25.0f);
@@ -26,6 +27,7 @@ void FrameModBrowser::initialize() {
   if (game.icon.size() > 0) {
     appletFrame->setIconFromMem(game.icon.data(), 0x20000);
   } else {
+    // Use app icon if we couldn't get the game icon for some reason
     appletFrame->setIconFromRes("/img/icon_corner.png");
   }
 

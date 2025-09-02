@@ -14,6 +14,10 @@
 #include <vector>
 #include <string>
 
+/**
+ * Used to provide the virtual-scrolling-esque recycler list
+ * the data it needs as scrolling occurs
+ */
 class ModDataSource : public brls::RecyclerDataSource
 {
   public:
@@ -38,13 +42,26 @@ public:
 private:
   BRLS_BIND(brls::RecyclerFrame, modList, "mod-list");
 
+ /**
+  * The cell from the group list parent that this list belongs to
+  */
   brls::View* _parent_cell_{nullptr};
 
   /**
    * Called when the value of one of the select items is changed
+   *
+   * @param mod The mod source that was changed
+   * @param selectedIndex The index of the mod the user changed to
    */
   void handleModSelect(const ModSource& mod, size_t selectedIndex);
 
+  /**
+   * Configures a single selector cell in the mod list
+   *
+   * @param selector The newly created cell to configure
+   * @param mod The mod data for the cell
+   * @param index The index of the mod source in the cell list
+   */
   void configureModSelector(brls::SelectorCell* selector, const ModSource& mod, const int& index);
 };
 
