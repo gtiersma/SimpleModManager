@@ -9,6 +9,8 @@
 #include <util.hpp>
 
 
+using namespace brls::literals;
+
 TabModOptions::TabModOptions() {
   Util::padTabContent(this);
   this->buildDisableAllMods();
@@ -39,6 +41,7 @@ void TabModOptions::buildDisableAllMods() {
     dialog->open();
     return true;
   });
+  disableAll->updateActionHint(brls::BUTTON_A, "Disable Mods");
   this->addView(disableAll);
 }
 

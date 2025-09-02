@@ -12,6 +12,8 @@
 #include <icon_applet.hpp>
 
 
+using namespace brls::literals;
+
 void FrameModBrowser::initialize() {
   Game game = gameBrowser.getGame(controller.titleId).value();
 
@@ -29,12 +31,8 @@ void FrameModBrowser::initialize() {
 
   appletFrame->setTitle(game.name);
 
-  brls::Label* footerLabel = new brls::Label();
-  footerLabel->setText("Simple Mod Alchemist");
-  appletFrame->getFooter()->addView(footerLabel);
-
-  appletFrame->getContentView()->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
-    brls::Application::popActivity(brls::TransitionAnimation::SLIDE_RIGHT);
+  tabs->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
+    brls::Application::popActivity();
 
     // clear the group/source shown
     controller.source = "";

@@ -6,6 +6,8 @@
 #include <StateAlchemist/constants.h>
 #include <util.hpp>
 
+using namespace brls::literals;
+
 TabAbout::TabAbout(): brls::Box(brls::Axis::COLUMN) {
   this->setPadding(16.0f, 40.0f, 32.0f, 40.0f);
   this->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);

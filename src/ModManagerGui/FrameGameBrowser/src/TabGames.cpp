@@ -15,6 +15,8 @@
 #include <util.hpp>
 #include <note_cell.hpp>
 
+using namespace brls::literals;
+
 TabGames::TabGames() {
   std::vector<Game> gameList = gameBrowser.getGameList();
 
@@ -50,7 +52,7 @@ TabGames::TabGames() {
         modsBrowser->initialize();
         return true;
       });
-      item->updateActionHint(brls::BUTTON_A, "Open");
+      item->updateActionHint(brls::BUTTON_A, "View Mods for Game");
 
       _gameItems_.emplace_back();
       _gameItems_.back().title = gameEntry.name;

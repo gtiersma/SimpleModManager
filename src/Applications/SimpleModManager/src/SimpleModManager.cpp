@@ -24,8 +24,12 @@
 #include "StateAlchemist/fs_manager.h"
 
 
+using namespace brls::literals;
+
 int main(int argc, char* argv[])
 {
+    brls::Platform::APP_LOCALE_DEFAULT = brls::LOCALE_AUTO;
+
     brls::Application::init();
     brls::Application::createWindow("Simple Mod Alchemist");
     brls::Application::getPlatform()->setThemeVariant(brls::ThemeVariant::DARK);
@@ -57,8 +61,7 @@ int main(int argc, char* argv[])
     appFrame->setTitle("Simple Mod Alchemist (v" + APP_VERSION + ")");
 
     // Run the app
-    while (brls::Application::mainLoop())
-        ;
+    while (brls::Application::mainLoop());
 
     nsExit();
 

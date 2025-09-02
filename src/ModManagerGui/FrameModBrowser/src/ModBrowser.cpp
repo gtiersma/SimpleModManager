@@ -10,9 +10,12 @@
 #include <note_cell.hpp>
 
 
+using namespace brls::literals;
 
-ModDataSource::ModDataSource(std::function<void (const ModSource& source, int selectedModIndex)> on_selected) {
-  this->_on_selected_ = on_selected;
+ModDataSource::ModDataSource(
+  std::function<void (brls::SelectorCell* selector, const ModSource& mod, const int& index)> selector_config_fn
+) {
+  this->_selector_config_fn_ = selector_config_fn;
 }
 
 int ModDataSource::getModSourceCount() {
@@ -51,18 +54,7 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
     // CASE: Selector for mods
     brls::SelectorCell* item = (brls::SelectorCell*)recycler->dequeueReusableCell("Selector");
     ModSource& source = modManager.getSource(indexPath.row);
-    item->init(
-      source.source,
-      source.options,
-      source.activeIndex + 1, // Add 1 for the no-mod option added to the beginning
-      [](int selected) {},
-      [this, source](int selected) {
-        this->_on_selected_(source, selected);
-      }
-    );
-    item->getFocusEvent()->subscribe([indexPath](brls::View* view) {
-      gameBrowser.getModManager().loadSourcesIfNeeded(indexPath.row);
-    });
+    this->_selector_config_fn_(item, source, indexPath.row);
     return item;
 
   }
@@ -71,10 +63,12 @@ brls::RecyclerCell* ModDataSource::cellForRow(brls::RecyclerFrame* recycler, brl
   // These should technically never be seen in the UI, but they're here for safety in case something is off.
   brls::SelectorCell* item = (brls::SelectorCell*)recycler->dequeueReusableCell("Selector");
   item->init(modManager.getSourceName(indexPath.row), { "UNKNOWN" }, 0, [](int selected) {}, [](int selected) {});
+  item->updateActionHint(brls::BUTTON_A, "ERROR");
+  item->updateActionHint(brls::BUTTON_B, "To Group List");
   return item;
 }
 
-ModBrowser::ModBrowser() {
+ModBrowser::ModBrowser(brls::View* parentCell): _parent_cell_(parentCell) {
   this->inflateFromXMLRes("xml/FrameModBrowser/mod_browser.xml");
 
   modList->estimatedRowHeight = 70;
@@ -84,8 +78,8 @@ ModBrowser::ModBrowser() {
 
   modList->setDataSource(
     new ModDataSource(
-      [this](const ModSource& source, int selectedModIndex) {
-        this->handleModSelect(source, selectedModIndex);
+      [this](brls::SelectorCell* selector, const ModSource& mod, const int& index) {
+        this->configureModSelector(selector, mod, index);
       }
     )
   );
@@ -107,4 +101,27 @@ void ModBrowser::handleModSelect(const ModSource& mod, size_t selectedIndex) {
     // mod.mods doesn't have the default option at the begining, so index must be offset by -1:
     controller.activateMod(mod.mods[selectedIndex - 1]);
   }
+}
+
+void ModBrowser::configureModSelector(brls::SelectorCell* selector, const ModSource& mod, const int& index) {
+    selector->init(
+      mod.source,
+      mod.options,
+      mod.activeIndex + 1, // Add 1 for the no-mod option added to the beginning
+      [](int selected) {},
+      [this, mod](int selected) {
+        this->handleModSelect(mod, selected);
+      }
+    );
+
+    selector->getFocusEvent()->subscribe([index](brls::View* view) {
+      gameBrowser.getModManager().loadSourcesIfNeeded(index);
+    });
+
+    selector->registerAction("To Group List", brls::BUTTON_B, [this](brls::View* view) {
+      brls::Application::giveFocus(this->_parent_cell_);
+      return true;
+    });
+
+    selector->updateActionHint(brls::BUTTON_A, "Change Mod");
 }

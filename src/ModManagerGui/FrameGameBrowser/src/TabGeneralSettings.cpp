@@ -10,6 +10,8 @@
 #include <util.hpp>
 #include <note_cell.hpp>
 
+using namespace brls::literals;
+
 TabGeneralSettings::TabGeneralSettings() {
   this->rebuildLayout();
 }
@@ -29,6 +31,7 @@ void TabGeneralSettings::rebuildLayout() {
     buildMigrateConfirmDialog()->open();
     return true;
   });
+  migrationItem->updateActionHint(brls::BUTTON_A, "Move Mods");
   this->addView(migrationItem);
 }
 

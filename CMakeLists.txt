@@ -31,7 +31,7 @@ set(VERSION_BUILD "0")
 set(PACKAGE_NAME "com.borealis.sma")
 set(PSN_TITLE_ID  "n/a")
 set(PSN_VERSION  "n/a")
-set(PROJECT_AUTHOR "nadrino, gtiersma")
+set(PROJECT_AUTHOR "nadrino and gtiersma")
 set(PROJECT_ICON ${CMAKE_CURRENT_SOURCE_DIR}/src/Applications/SimpleModManager/resources/assets/icon_gui.jpg)
 set(PROJECT_RESOURCES ${CMAKE_CURRENT_SOURCE_DIR}/resources)
 

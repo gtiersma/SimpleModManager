@@ -9,6 +9,8 @@
 #include <StateAlchemist/controller.h>
 
 
+using namespace brls::literals;
+
 GroupBrowser::GroupBrowser() {
   this->inflateFromXMLRes("xml/FrameModBrowser/group_browser.xml");
 
@@ -35,7 +37,7 @@ GroupBrowser::GroupBrowser() {
         this->removeView(this->getChildren()[1]);
       }
 
-      this->addView(new ModBrowser());
+      this->addView(new ModBrowser(view));
     });
   }
 }
