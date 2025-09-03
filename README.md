@@ -32,7 +32,7 @@ Simple Mod Alchemist is the definitive Nintendo Switch mod management solution. 
 </details>
 
 
-# Quick Start (tl;dr)
+## Quick Start (tl;dr)
 
 1. Extract the contents of the latest release to the root of your SD card.
 
@@ -51,7 +51,7 @@ Simple Mod Alchemist is the definitive Nintendo Switch mod management solution. 
 8. If this **Quick Start** guide doesn't make sense, read the detailed instructions below for a more thorough explanation.
 
 
-# Installation
+## Installation
 
 1. This assumes you already have a Nintendo Switch set up with Atmosphere CFW installed.
 
@@ -88,7 +88,7 @@ Once you're sure it's disabled, deleting the mod is as easy as deleting the `mod
 Disabling the mod is necessary because enabled mods have their files mixed in with all the other enabled mod files within the `/atmosphere/contents/<title_id>/` folder. Disabling the mod will move its files back to the original folder they were in: `mod_alchemy/<title_id>/<group_name>/<thing_being_modded>/<mod_name>`, that way, when you delete the folder, you can be sure all files for that mod are being deleted as well.
 
 
-# Help / FAQs
+## Help / FAQs
 
 ### There's a game that isn't appearing in the game list
 
@@ -302,7 +302,7 @@ cmake -B build_switch -DPLATFORM_SWITCH=ON
 make -C build_switch Simple_Mod_Alchemist.nro -j$(nproc)
 ```
 
-# Special Thanks
+## Special Thanks
 
 * **SciresM** and the other contributors for creating and maintaining LayeredFs and Atmosphere
 
@@ -312,7 +312,7 @@ make -C build_switch Simple_Mod_Alchemist.nro -j$(nproc)
 
 * **Natinusala**, **xfangfang** and any other contributors to Borealis
 
-# Legal Disclaimers
+## Legal Disclaimers
 
 This software is built with the sole intention of running unofficially on the Nintendo Switch console. The Nintendo Switch is a product consisting of both hardware and software developed by Nintendo Co. Ltd. This software has not been licensed by Nintendo in any form. Nintendo is not affiliated with the creation of this software in any form.
 
