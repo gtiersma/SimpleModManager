@@ -3,7 +3,7 @@
 
 # Simple Mod Alchemist
 
-Simple Mod Alchemist is the definitive Nintendo Switch mod management solution. It originated from merging the UI of the well-known [SimpleModManager](https://github.com/nadrino/SimpleModManager) app with the efficient backend functionality of the (now depricated) [State Alchemist](https://github.com/gtiersma/state-alchemist) overlay, introducing new improvements and increased stability through the process!
+Simple Mod Alchemist is the definitive Nintendo Switch mod management solution. It originated from merging the UI of the well-known [SimpleModManager](https://github.com/nadrino/SimpleModManager) app with the efficient backend functionality of the (now deprecated) [State Alchemist](https://github.com/gtiersma/state-alchemist) overlay, introducing new improvements and increased stability through the process!
 
 <p align="center"><img src="./screenshots/full_size.png" width="25%"></p>
 
