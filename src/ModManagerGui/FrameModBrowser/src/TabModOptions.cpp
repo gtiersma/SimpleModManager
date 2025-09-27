@@ -13,7 +13,26 @@ using namespace brls::literals;
 
 TabModOptions::TabModOptions() {
   Util::padTabContent(this);
+  this->buildRandomPicks();
   this->buildDisableAllMods();
+}
+
+void TabModOptions::buildRandomPicks() {
+  brls::DetailCell* randomPicks = new brls::DetailCell();
+  randomPicks->setText("Randomly change all mods");
+
+  randomPicks->registerClickAction([](brls::View* view) {
+    Util::buildConfirmDialog(
+      "Enable/disable mods for this game at random?",
+      "Changing mods.",
+      []() { controller.randomize(); }
+    )->open();
+    return true;
+  });
+
+  randomPicks->updateActionHint(brls::BUTTON_A, "Random Mods");
+
+  this->addView(randomPicks);
 }
 
 void TabModOptions::buildDisableAllMods() {
@@ -25,21 +44,11 @@ void TabModOptions::buildDisableAllMods() {
   );
 
   disableAll->registerClickAction([](brls::View* view) {
-    brls::Dialog* dialog = new brls::Dialog("Disable all mods? Are you sure?");
-
-    dialog->addButton("Yes", []() {
-      brls::Dialog* loadingDialog = Util::buildLoadingDialog("Disabling all mods. Please wait");
-      loadingDialog->open();
-
-      new std::thread([loadingDialog]() {
-        controller.deactivateAll();
-        loadingDialog->close();
-      });
-    });
-    dialog->addButton("No", []() {});
-
-    dialog->setCancelable(true);
-    dialog->open();
+    Util::buildConfirmDialog(
+      "Disable all mods?",
+      "Disabling all mods",
+      []() { controller.deactivateAll(); }
+    )->open();
     return true;
   });
 
