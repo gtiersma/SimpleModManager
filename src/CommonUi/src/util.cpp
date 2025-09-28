@@ -19,7 +19,7 @@ brls::Dialog* Util::buildConfirmDialog(
   brls::Dialog* dialog = new brls::Dialog(warning + " Are you sure?");
 
   dialog->addButton("Yes", [task, finishedCallback, action]() {
-    brls::Dialog* loadingDialog = Util::buildLoadingDialog(action);
+    brls::Dialog* loadingDialog = buildLoadingDialog(action);
     loadingDialog->open();
 
     new std::thread([task, finishedCallback, loadingDialog]() {
@@ -29,7 +29,6 @@ brls::Dialog* Util::buildConfirmDialog(
   });
   dialog->addButton("No", []() {});
 
-  dialog->setCancelable(true);
   return dialog;
 }
 
@@ -40,6 +39,8 @@ brls::Dialog* Util::buildConfirmDialog(
  */
 brls::Dialog* Util::buildLoadingDialog(std::string action) {
   brls::Box* container = new brls::Box(brls::Axis::COLUMN);
+  container->setFocusable(true);
+  padTabContent(container);
 
   brls::Label* label = new brls::Label();
   label->setText(action + " Please wait...");
@@ -50,6 +51,9 @@ brls::Dialog* Util::buildLoadingDialog(std::string action) {
 
   brls::Dialog* dialog = new brls::Dialog(container);
   dialog->setCancelable(false);
+
+  // Work-around to keep anything behind it from becoming focused
+  brls::Application::giveFocus(container);
 
   return dialog;
 }

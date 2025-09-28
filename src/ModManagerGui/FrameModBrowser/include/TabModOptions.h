@@ -7,10 +7,7 @@
 
 #include <ModBrowser.h>
 
-#include "ModManager.h"
-
 #include <borealis.hpp>
-#include <note_cell.hpp>
 
 
 class FrameModBrowser;
@@ -25,7 +22,6 @@ public:
   void buildDisableAllMods();
 
   static TabModOptions* create();
-
 };
 
 

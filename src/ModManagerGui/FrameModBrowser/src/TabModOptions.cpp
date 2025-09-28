@@ -6,12 +6,13 @@
 #include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
+#include <note_cell.hpp>
 #include <util.hpp>
 
 
 using namespace brls::literals;
 
-TabModOptions::TabModOptions() {
+TabModOptions::TabModOptions(): brls::Box(brls::Axis::COLUMN) {
   Util::padTabContent(this);
   this->buildRandomPicks();
   this->buildDisableAllMods();
