@@ -4,7 +4,6 @@
 
 #include "TabGames.h"
 #include "FrameModBrowser.h"
-#include "icon_cell.hpp"
 
 #include "GenericToolbox.Switch.h"
 #include "GenericToolbox.Vector.h"
@@ -37,42 +36,9 @@ TabGames::TabGames() {
     _gameItems_.reserve(gameList.size());
 
     for(auto& gameEntry : gameList) {
-      std::string gamePath { GenericToolbox::joinPath(ALCHEMIST_FOLDER, MetaManager::getHexTitleId(gameEntry.titleId)) };
-
-      brls::IconCell* item = new brls::IconCell();
-
-      item->setText(gameEntry.name);
-      if (gameEntry.icon.size() > 0) {
-        item->setIconFromMem(gameEntry.icon.data(), 0x20000);
-      }
-
-      item->registerClickAction([gameEntry](View* view) {
-        gameBrowser.selectGame(gameEntry.titleId);
-
-        // Let the user know if there's no mods:
-        // TODO: Mods are loaded only to check if they exist here. Not efficient.
-        std::vector<std::string> groups = controller.loadGroups(false);
-        if (groups.empty()) {
-          brls::Dialog* dialog = new brls::Dialog(
-            "No mod group folders exist in \"" + controller.getGamePath() +
-            "\". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<mod-file-structure>"
-          );
-          dialog->setCancelable(true);
-          dialog->addButton("OK", []() {});
-          dialog->open();
-          return true;
-        }
-
-        FrameModBrowser* modsBrowser = new FrameModBrowser();
-        brls::Application::pushActivity(modsBrowser);
-        modsBrowser->initialize();
-        return true;
-      });
-      item->updateActionHint(brls::BUTTON_A, "View Mods for Game");
-
       _gameItems_.emplace_back();
       _gameItems_.back().title = gameEntry.name;
-      _gameItems_.back().item = item;
+      _gameItems_.back().item = this->buildGameCell(gameEntry);
     }
 
     GenericToolbox::sortVector(_gameItems_, [](const GameItem& a_, const GameItem& b_){
@@ -82,6 +48,52 @@ TabGames::TabGames() {
     // add to the view
     for (auto& game : _gameItems_) { container->addView( game.item ); }
   }
+}
+
+brls::IconCell* TabGames::buildGameCell(const Game& game) {
+  brls::IconCell* item = new brls::IconCell();
+
+  item->setText(game.name);
+  if (game.icon.size() > 0) {
+    item->setIconFromMem(game.icon.data(), 0x20000);
+  }
+
+  item->registerClickAction([game](brls::View* view) {
+    gameBrowser.selectGame(game.titleId);
+
+    // Let the user know if there's no mods:
+    // TODO: Mods are loaded only to check if they exist here. Not efficient.
+    std::vector<std::string> groups = controller.loadGroups(false);
+    if (groups.empty()) {
+      brls::Dialog* dialog = new brls::Dialog(
+        "No mod group folders exist in \"" + controller.getGamePath() +
+        "\". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<mod-file-structure>"
+      );
+      dialog->setCancelable(true);
+      dialog->addButton("OK", []() {});
+      dialog->open();
+      return true;
+    }
+
+    FrameModBrowser* modsBrowser = new FrameModBrowser();
+    brls::Application::pushActivity(modsBrowser);
+    modsBrowser->initialize();
+    return true;
+  });
+
+  item->registerAction("Randomly Change Game's Mods", brls::BUTTON_X, [game](brls::View* view) {
+    gameBrowser.selectGame(game.titleId);
+    Util::buildConfirmDialog(
+      "Enable/disable mods for this game at random?",
+      "Changing mods.",
+      []() { controller.randomize(); }
+    )->open();
+    return true;
+  });
+
+  item->updateActionHint(brls::BUTTON_A, "View Game's Mods");
+
+  return item;
 }
 
 brls::View* TabGames::create() { return new TabGames(); }

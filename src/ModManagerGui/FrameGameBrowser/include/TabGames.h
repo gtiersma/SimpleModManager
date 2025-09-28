@@ -6,6 +6,7 @@
 #define SIMPLEMODMANAGER_TABGAMES_H
 
 
+#include "icon_cell.hpp"
 #include "GameBrowser.h"
 
 #include "borealis.hpp"
@@ -19,6 +20,9 @@ class TabGames : public brls::ScrollingFrame {
 
 public:
   explicit TabGames();
+
+  brls::IconCell* buildGameCell(const Game& game);
+
   static brls::View* create();
 
 private:
