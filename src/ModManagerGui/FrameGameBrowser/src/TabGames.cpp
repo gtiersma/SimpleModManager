@@ -58,7 +58,7 @@ brls::IconCell* TabGames::buildGameCell(const Game& game) {
     item->setIconFromMem(game.icon.data(), 0x20000);
   }
 
-  item->registerClickAction([&game](brls::View* view) {
+  item->registerClickAction([game](brls::View* view) {
     gameBrowser.selectGame(game.titleId);
 
     // Let the user know if there's no mods:

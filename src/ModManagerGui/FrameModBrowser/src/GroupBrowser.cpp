@@ -21,7 +21,7 @@ GroupBrowser::GroupBrowser() {
   std::vector<std::string> groups = controller.loadGroups(true);
 
   for (std::string& group : groups) {
-    this->groupList->addItem(group, [this, &group](View* view) {
+    this->groupList->addItem(group, [this, group](View* view) {
       // Only trigger when the sidebar item gains focus
       if (!view->isFocused())
         return;
