@@ -101,7 +101,7 @@ void ModBrowser::refreshSelections() {
 
 void ModBrowser::handleModSelect(ModSource& mod, size_t selectedIndex) {
   alchemyLogger.log("ModBrowser::handleModSelect: selecting index " + std::to_string(selectedIndex));
-  alchemyLogger.log("ModBrowser::handleModSelect: selecting source " + mod.source);
+  alchemyLogger.log("ModBrowser::handleModSelect: selecting source " + mod.getSource());
 
   // Note: selection is -1 if backed out of selecting
   if (selectedIndex == -1) return;
@@ -123,43 +123,6 @@ void ModBrowser::handleModSelect(ModSource& mod, size_t selectedIndex) {
     controller.activateMod(mod.getMods()[selectedIndex - 1]);
     alchemyLogger.log("ModBrowser::handleModSelect: mod activated");
   }
-}
-
-void ModBrowser::configureModSelector(brls::SelectorCell* selector, ModSource& mod, const int& index) {
-  selector->init(
-    mod.getSource(),
-    mod.getOptions(),
-    mod.getActiveIndex() + 1, // Add 1 for the no-mod option added to the beginning
-    [](int selected) {},
-    [this, &mod](int selected) {
-      this->handleModSelect(mod, selected);
-    }
-  );
-
-  // If focus is drawing near to the point where we don't have data loaded
-  // for the mod sources that will come into view soon, we need to load the next chunk:
-  selector->getFocusEvent()->subscribe([index](brls::View* view) {
-    gameBrowser.getModManager().loadSourcesIfNeeded(index);
-  });
-
-  selector->registerAction("To Group List", brls::BUTTON_B, [this](brls::View* view) {
-    brls::Application::giveFocus(this->_parent_cell_);
-    return true;
-  });
-
-  selector->updateActionHint(brls::BUTTON_A, "Change Mod");
-
-  selector->registerAction("Randomly Pick", brls::BUTTON_X, [this, &mod](brls::View* view) {
-    brls::SelectorCell* cell = dynamic_cast<brls::SelectorCell*>(view);
-
-    controller.source = mod.getSource();
-    controller.randomizeSource();
-
-    mod.setActiveIndex(
-      gameBrowser.getModManager().getActiveIndex(mod.getSource(), mod.getMods())
-    );
-    return true;
-  });
 }
 
 void ModBrowser::configureModSelector(brls::SelectorCell* selector, ModSource& mod, const int& index) {
