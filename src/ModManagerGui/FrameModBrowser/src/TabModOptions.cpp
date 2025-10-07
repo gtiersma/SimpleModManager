@@ -26,7 +26,7 @@ void TabModOptions::buildRandomPicks() {
     Util::buildConfirmDialog(
       "Enable/disable mods for this game at random?",
       "Changing mods.",
-      []() { controller.randomize(); }
+      []() { controller.randomizeGame(); }
     )->open();
     return true;
   });

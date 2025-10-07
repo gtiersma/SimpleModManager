@@ -16,33 +16,42 @@
 /**
  * Object containing data related to a "source" (something moddable in a game)
  */
-struct ModSource {
-  ModSource() = default;
+class ModSource {
+  public:
 
-  /**
-   * @param source_ String label of the name of the moddable thing (source)
-   * @param mods_ List of available mods of the source
-   * @param activeIndex_ Index of "mods" vector of mod that is currently active (-1 if none active)
-   */
-  explicit ModSource(std::string source_, std::vector<std::string> mods_, size_t activeIndex_):
-    source(std::move(source_)),
-    mods(std::move(mods_)),
-    activeIndex(activeIndex_) {
-      options = this->mods;
-      options.insert(options.begin(), _DEFAULT_OPTION_);
-    }
+    // Option used for the setting to turn a mod off
+    const std::string _DEFAULT_OPTION_{"UNMODIFIED"}; 
 
-  std::string source;
-  std::vector<std::string> mods;
+    /**
+     * @param source_ String label of the name of the moddable thing (source)
+     * @param mods_ List of available mods of the source
+     * @param activeIndex_ Index of "mods" vector of mod that is currently active (-1 if none active)
+     */
+    explicit ModSource(std::string source_, std::vector<std::string> mods_, size_t activeIndex_):
+      source(std::move(source_)),
+      mods(std::move(mods_)),
+      activeIndex(activeIndex_) {
+        options = this->mods;
+        options.insert(options.begin(), _DEFAULT_OPTION_);
+      }
 
-  // Essentially just the mods list, but as options for the UI.
-  // The main difference is it also has the option for using no mod at the beginning as an additional element.
-  std::vector<std::string> options;
+    std::string& getSource() { return this->source; }
+    std::vector<std::string>& getMods() { return this->mods; }
+    std::vector<std::string>& getOptions() { return this->options; }
 
-  size_t activeIndex;
+    size_t getActiveIndex() { return this->activeIndex; }
+    void setActiveIndex(size_t index) { this->activeIndex = index; }
 
-  // Option used for the setting to turn a mod off
-  const std::string _DEFAULT_OPTION_{"UNMODIFIED"}; 
+  private:
+
+    std::string source;
+    std::vector<std::string> mods;
+
+    // Essentially just the mods list, but as options for the UI.
+    // The main difference is it also has the option for using no mod at the beginning as an additional element.
+    std::vector<std::string> options;
+
+    size_t activeIndex;
 };
 
 
@@ -89,6 +98,15 @@ public:
   int getSourceCount();
 
   /**
+   * Gets the index of the currently-active mod listed in the source_'s "mods" vector
+   * 
+   * Returns -1 if no mod is active
+   * 
+   * @param mods Ordered vector of mod names that belong to the source.
+   */
+  int getActiveIndex(const std::string& sourceName, const std::vector<std::string>& mods);
+
+  /**
    * Check if the source object for the source name at the specified index has already been loaded or not.
    */
   bool isSourceLoaded(const int& index);
@@ -121,8 +139,6 @@ private:
    * Uses map just for fast look-ups.
    */
   std::map<std::string, ModSource> _mod_source_cache_;
-
-  int getActiveIndex(const std::string& sourceName, const std::vector<std::string>& mods);
 
   /**
    * Loads however many more source objects specified by the count param.

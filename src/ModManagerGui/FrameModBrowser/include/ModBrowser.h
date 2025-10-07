@@ -21,14 +21,14 @@
 class ModDataSource : public brls::RecyclerDataSource
 {
   public:
-    ModDataSource(std::function<void (brls::SelectorCell* selector, const ModSource& mod, const int& index)> selector_config_fn);
+    ModDataSource(std::function<void (brls::SelectorCell* selector, ModSource& mod, const int& index)> selector_config_fn);
 
     int numberOfRows(brls::RecyclerFrame* recycler, int section) override;
     brls::RecyclerCell* cellForRow(brls::RecyclerFrame* recycler, brls::IndexPath index) override;
 
   private:
     // Configures a selector cell for the specified mod source that located at the specified index in the list
-    std::function<void (brls::SelectorCell* selector, const ModSource& mod, const int& index)> _selector_config_fn_{nullptr};
+    std::function<void (brls::SelectorCell* selector, ModSource& mod, const int& index)> _selector_config_fn_{nullptr};
 
     int getModSourceCount();
     bool hasModSources();
@@ -38,6 +38,8 @@ class ModBrowser : public brls::Box {
 
 public:
   explicit ModBrowser(brls::View* parentCell);
+
+  void refreshSelections();
 
 private:
   BRLS_BIND(brls::RecyclerFrame, modList, "mod-list");
@@ -53,7 +55,7 @@ private:
    * @param mod The mod source that was changed
    * @param selectedIndex The index of the mod the user changed to
    */
-  void handleModSelect(const ModSource& mod, size_t selectedIndex);
+  void handleModSelect(ModSource& mod, size_t selectedIndex);
 
   /**
    * Configures a single selector cell in the mod list
@@ -62,7 +64,7 @@ private:
    * @param mod The mod data for the cell
    * @param index The index of the mod source in the cell list
    */
-  void configureModSelector(brls::SelectorCell* selector, const ModSource& mod, const int& index);
+  void configureModSelector(brls::SelectorCell* selector, ModSource& mod, const int& index);
 };
 
 

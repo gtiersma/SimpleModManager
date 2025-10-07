@@ -21,7 +21,7 @@ GroupBrowser::GroupBrowser() {
   std::vector<std::string> groups = controller.loadGroups(true);
 
   for (std::string& group : groups) {
-    this->groupList->addItem(group, [this, group](View* view) {
+    this->groupList->addItem(group, [this, &group](View* view) {
       // Only trigger when the sidebar item gains focus
       if (!view->isFocused())
         return;
@@ -36,9 +36,22 @@ GroupBrowser::GroupBrowser() {
         this->removeView(this->getChildren()[1]);
       }
 
-      this->addView(new ModBrowser(view));
+      this->_current_mod_browser_ = new ModBrowser(view);
+      this->addView(this->_current_mod_browser_);
     });
   }
+
+  this->groupList->registerAction("Randomly Change Group's Mods", brls::BUTTON_X, [this](brls::View* view) {
+    Util::buildConfirmDialog(
+      "Enable/disable all mods in \"" + controller.group + "\" at random?",
+      "Changing mods in \"" + controller.group + "\".",
+      [this]() {
+        controller.randomizeGroup();
+        this->_current_mod_browser_->refreshSelections();
+      }
+    )->open();
+    return true;
+  });
 }
 
 GroupBrowser* GroupBrowser::create() {

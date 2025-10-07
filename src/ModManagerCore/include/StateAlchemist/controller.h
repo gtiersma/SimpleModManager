@@ -110,16 +110,23 @@ class Controller {
     void deactivateAll();
 
     /**
-     * Randomly activates/deactivates all mods based upon their ratings
+     * Randomly activates/deactivates all mods in the current game based upon their ratings
      */
-    void randomize();
+    void randomizeGame();
 
     /**
-     * Randomly activates a mod from the current group and source
+     * Randomly activates/deactivates all mods in the current group
+     * 
+     * @requirement: group must be set
+     */
+    void randomizeGroup();
+
+    /**
+     * Randomly activates/deactivates a mod for the current source in the current group
      * 
      * @requirement: group and source must be set
      */
-    void pickMod();
+    void randomizeSource();
 
     /**
      * Gets Mod Alchemist's game directory:

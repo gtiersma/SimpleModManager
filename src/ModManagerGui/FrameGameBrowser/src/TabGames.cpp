@@ -58,7 +58,7 @@ brls::IconCell* TabGames::buildGameCell(const Game& game) {
     item->setIconFromMem(game.icon.data(), 0x20000);
   }
 
-  item->registerClickAction([game](brls::View* view) {
+  item->registerClickAction([&game](brls::View* view) {
     gameBrowser.selectGame(game.titleId);
 
     // Let the user know if there's no mods:
@@ -81,12 +81,12 @@ brls::IconCell* TabGames::buildGameCell(const Game& game) {
     return true;
   });
 
-  item->registerAction("Randomly Change Game's Mods", brls::BUTTON_X, [game](brls::View* view) {
+  item->registerAction("Randomly Change Game's Mods", brls::BUTTON_X, [&game](brls::View* view) {
     gameBrowser.selectGame(game.titleId);
     Util::buildConfirmDialog(
-      "Enable/disable mods for this game at random?",
+      "Enable/disable mods for " + game.name + " at random?",
       "Changing mods.",
-      []() { controller.randomize(); }
+      []() { controller.randomizeGame(); }
     )->open();
     return true;
   });
