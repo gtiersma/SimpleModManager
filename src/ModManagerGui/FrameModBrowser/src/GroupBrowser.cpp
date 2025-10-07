@@ -9,35 +9,49 @@
 #include <StateAlchemist/controller.h>
 
 
+using namespace brls::literals;
+
+/**
+ * This is using a side bar directly just because having a second tab frame was crashing.
+ * TODO: That could've been something else at the time. Try again?
+ */
 GroupBrowser::GroupBrowser() {
   this->inflateFromXMLRes("xml/FrameModBrowser/group_browser.xml");
 
   std::vector<std::string> groups = controller.loadGroups(true);
 
-  if (groups.empty()) {
-    brls::Dialog* dialog = new brls::Dialog(
-      "No mod groups have been found in " + controller.getGamePath() +
-      ". Within that folder, organize the mods in this manner: ./<group>/<thing-being-replaced>/<mod-name>/<file-structure-in-installed-directory>"
-    );
-    dialog->open();
-    return;
-  }
-
   for (std::string& group : groups) {
-    this->groupList->addItem(group, [this, group](View* view) {
+    this->groupList->addItem(group, [this, &group](View* view) {
       // Only trigger when the sidebar item gains focus
       if (!view->isFocused())
         return;
 
       gameBrowser.getModManager().setGroup(group);
       
+      // Remove the old group list before showing the new one
+      // (if there is currently one shown).
+      //
+      // TODO: Would be a little safer if we were using an ID
       if (this->getChildren().size() == 2) {
         this->removeView(this->getChildren()[1]);
       }
 
-      this->addView(new ModBrowser());
+      this->_current_mod_browser_ = new ModBrowser(view);
+      this->addView(this->_current_mod_browser_);
     });
   }
+
+  this->groupList->registerAction("Randomly Change Group's Mods", brls::BUTTON_X, [this](brls::View* view) {
+    Util::buildConfirmDialog(
+      "Enable/disable all mods in \"" + controller.group + "\" at random?",
+      "Changing mods in \"" + controller.group + "\".",
+      [this]() {
+        controller.randomizeGroup();
+        this->_current_mod_browser_->refreshSelections();
+      }
+    )->open();
+    return true;
+  });
 }
 
 GroupBrowser* GroupBrowser::create() {

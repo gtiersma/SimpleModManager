@@ -13,28 +13,31 @@
 #include <icon_applet.hpp>
 
 
+using namespace brls::literals;
+
 void FrameModBrowser::initialize() {
   alchemyLogger.log("FrameModBrowser::FrameModBrowser...");
   Game game = gameBrowser.getGame(controller.titleId).value();
 
   brls::IconApplet* appletFrame = (brls::IconApplet*)this->getContentView();
+
+  // Set the tab width to a low percentage, so we have more room for the mod list:
+  brls::TabFrame* tabs = (brls::TabFrame*)appletFrame->getContentView();
+  brls::Sidebar* sidebar = (brls::Sidebar*)tabs->getChildren().at(0);
+  sidebar->setWidthPercentage(25.0f);
   
   alchemyLogger.log("FrameModBrowser::Setting header image...");
   if (game.icon.size() > 0) {
     appletFrame->setIconFromMem(game.icon.data(), 0x20000);
   } else {
+    // Use app icon if we couldn't get the game icon for some reason
     appletFrame->setIconFromRes("/img/icon_corner.png");
   }
 
   appletFrame->setTitle(game.name);
 
-  alchemyLogger.log("FrameModBrowser::Setting footer...");
-  brls::Label* footerLabel = new brls::Label();
-  footerLabel->setText("Simple Mod Alchemist");
-  appletFrame->getFooter()->addView(footerLabel);
-
-  appletFrame->getContentView()->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
-    brls::Application::popActivity(brls::TransitionAnimation::SLIDE_RIGHT);
+  tabs->registerAction("Back to Game Selection", brls::BUTTON_B, [](brls::View* view) {
+    brls::Application::popActivity();
 
     // clear the group/source shown
     controller.source = "";

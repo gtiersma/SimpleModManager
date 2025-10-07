@@ -5,7 +5,7 @@
 
     <brls:Sidebar
         id="group-list"
-        width="@style/brls/tab_frame/sidebar_width"
+        width="25%"
         height="auto"/>
 
 </brls:Box>

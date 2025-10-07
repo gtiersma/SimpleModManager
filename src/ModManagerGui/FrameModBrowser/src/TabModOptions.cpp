@@ -6,13 +6,36 @@
 #include "FrameModBrowser.h"
 
 #include <StateAlchemist/controller.h>
+#include <note_cell.hpp>
 #include <util.hpp>
 #include <AlchemistLogger.h>
 
 
 
-TabModOptions::TabModOptions() {
+using namespace brls::literals;
+
+TabModOptions::TabModOptions(): brls::Box(brls::Axis::COLUMN) {
+  Util::padTabContent(this);
+  this->buildRandomPicks();
   this->buildDisableAllMods();
+}
+
+void TabModOptions::buildRandomPicks() {
+  brls::DetailCell* randomPicks = new brls::DetailCell();
+  randomPicks->setText("Randomly change all mods");
+
+  randomPicks->registerClickAction([](brls::View* view) {
+    Util::buildConfirmDialog(
+      "Enable/disable mods for this game at random?",
+      "Changing mods.",
+      []() { controller.randomizeGame(); }
+    )->open();
+    return true;
+  });
+
+  randomPicks->updateActionHint(brls::BUTTON_A, "Random Mods");
+
+  this->addView(randomPicks);
 }
 
 void TabModOptions::buildDisableAllMods() {
@@ -23,24 +46,18 @@ void TabModOptions::buildDisableAllMods() {
     "Turn all mods off for this game, returning all files to under the \"" + ALCHEMIST_FOLDER + "\" folder. "\
     "This is useful if you want to delete some of them from the SD card."
   );
+
   disableAll->registerClickAction([](brls::View* view) {
-    brls::Dialog* dialog = new brls::Dialog("Disable all mods? Are you sure?");
-
-    dialog->addButton("Yes", []() {
-      brls::Dialog* loadingDialog = Util::buildLoadingDialog("Disabling all mods. Please wait");
-      loadingDialog->open();
-
-      new std::thread([loadingDialog]() {
-        controller.deactivateAll();
-        loadingDialog->close();
-      });
-    });
-    dialog->addButton("No", []() {});
-
-    dialog->setCancelable(true);
-    dialog->open();
+    Util::buildConfirmDialog(
+      "Disable all mods?",
+      "Disabling all mods",
+      []() { controller.deactivateAll(); }
+    )->open();
     return true;
   });
+
+  disableAll->updateActionHint(brls::BUTTON_A, "Disable Mods");
+
   this->addView(disableAll);
 }
 

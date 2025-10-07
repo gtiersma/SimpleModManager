@@ -7,6 +7,10 @@
         id="mod-list"
         width="auto"
         height="auto"
+        paddingLeft="20px"
+        paddingRight="20px"
+        paddingTop="14px"
+        paddingBottom="14px"
         grow="1.0"/>
 
 </brls:Box>

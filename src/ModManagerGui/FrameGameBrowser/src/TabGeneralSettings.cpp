@@ -10,12 +10,12 @@
 #include <util.hpp>
 #include <note_cell.hpp>
 
+using namespace brls::literals;
+
 TabGeneralSettings::TabGeneralSettings() {
   alchemyLogger.log("TabGeneralSettings::TabGeneralSettings();");
   this->rebuildLayout();
 }
-
-brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }
 
 void TabGeneralSettings::rebuildLayout() {
   alchemyLogger.log("TabGeneralSettings::rebuildLayout();");
@@ -26,41 +26,19 @@ void TabGeneralSettings::rebuildLayout() {
   migrationItem->setNote(
     "This will take any mods on the SD card that were set up for the original SimpleModManager to work with this manager."
   );
-  migrationItem->setFocusable(true);
   migrationItem->registerClickAction([this](brls::View* view) {
-    buildMigrateConfirmDialog()->open();
+    Util::buildConfirmDialog(
+      "Migrate the mods from SimpleModManager?\n\n"\
+      "This action cannot easily be undone.\n"\
+      "Turn all the mods off in SimpleModManager first to clear them out before running this.",
+      "Moving mods from the old SimpleModManager to this app.",
+      []() { ModMigrator().begin(); },
+      [this]() { buildMigrateFinishedDialog()->open(); }
+    )->open();
     return true;
   });
+  migrationItem->updateActionHint(brls::BUTTON_A, "Move Mods");
   this->addView(migrationItem);
-}
-
-/**
- * Builds a confirmation dialog that will allow the user to migrate mods from the old SMM
- */
-brls::Dialog* TabGeneralSettings::buildMigrateConfirmDialog() {
-  brls::Dialog* confirmDialog = new brls::Dialog(
-    "Migrate the mods from SimpleModManager?\n\n"\
-    "This action cannot easily be undone.\n"\
-    "Turn all the mods off in SimpleModManager first to clear them out before running this."
-  );
-
-  confirmDialog->addButton("Yes", [this, confirmDialog]() {
-    brls::Dialog* loadingDialog = Util::buildLoadingDialog(
-      "Moving mods from the old SimpleModManager to this app. Please wait"
-    );
-    loadingDialog->open();
-  
-    new std::thread([this, loadingDialog]() {
-      ModMigrator().begin();
-      loadingDialog->close([this]() {
-        buildMigrateFinishedDialog()->open();
-      });
-    });
-  });
-
-  confirmDialog->addButton("No", []() {});
-
-  return confirmDialog;
 }
 
 /**
@@ -76,3 +54,5 @@ brls::Dialog* TabGeneralSettings::buildMigrateFinishedDialog() {
   completeDialog->addButton("OK", []() {});
   return completeDialog;
 }
+
+brls::View* TabGeneralSettings::create() { return new TabGeneralSettings(); }

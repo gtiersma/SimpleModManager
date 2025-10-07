@@ -24,9 +24,13 @@
 #include "StateAlchemist/fs_manager.h"
 
 
+using namespace brls::literals;
+
 int main(int argc, char* argv[])
 {
     alchemyLogger.log("main:::init");
+    brls::Platform::APP_LOCALE_DEFAULT = brls::LOCALE_AUTO;
+
     brls::Application::init();
     alchemyLogger.log("main:::createWindow");
     brls::Application::createWindow("Simple Mod Alchemist");
@@ -65,8 +69,7 @@ int main(int argc, char* argv[])
 
     // Run the app
     alchemyLogger.log("main:::mainLoop");
-    while (brls::Application::mainLoop())
-        ;
+    while (brls::Application::mainLoop());
 
     nsExit();
 

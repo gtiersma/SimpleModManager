@@ -454,21 +454,13 @@ void Controller::deactivateAll() {
 /**
  * Randomly activates/deactivates all mods based upon their ratings
  */
-void Controller::randomize() {
-  
-  // Seed the random number generator with the current time
-  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+void Controller::randomizeGame() {
 
   std::vector<std::string> groups = this->loadGroups(false);
 
   for (const std::string& group : groups) {
     this->group = group;
-    std::vector<std::string> sources = this->loadUnlockedSources();
-
-    for (const std::string& source : sources) {
-      this->source = source;
-      this->pickMod();
-    }
+    this->randomizeGroup();
   }
 
   this->group = "";
@@ -476,11 +468,29 @@ void Controller::randomize() {
 }
 
 /**
- * Randomly activates a mod from the current group and source
+ * Randomly activates/deactivates all mods in the current group
+ * 
+ * @requirement: group must be set
+ */
+void Controller::randomizeGroup() {
+  std::vector<std::string> sources = this->loadUnlockedSources();
+
+  for (const std::string& source : sources) {
+    this->source = source;
+    this->randomizeSource();
+  }
+}
+
+/**
+ * Randomly activates/deactivates a mod for the current source in the current group
  * 
  * @requirement: group and source must be set
  */
-void Controller::pickMod() {
+void Controller::randomizeSource() {
+  
+  // Seed the random number generator with the current time
+  std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
   std::map<std::string, u8> ratings = this->loadRatings();
   u8 defaultRating = this->loadDefaultRating(this->source);
 

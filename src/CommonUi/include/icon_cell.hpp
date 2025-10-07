@@ -12,6 +12,12 @@
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+    -----
+
+    Not an official file that's part of the Borealis library,
+    but rather a direct copy with minimal modifications,
+    so the license above still applies.
 */
 
 #pragma once
@@ -25,6 +31,7 @@
 namespace brls
 {
 
+// A copy of the detail cell except it also has a settable icon
 class IconCell : public RecyclerCell
 {
   public:

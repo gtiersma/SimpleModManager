@@ -7,8 +7,13 @@
 #include <util.hpp>
 #include <AlchemistLogger.h>
 
+using namespace brls::literals;
+
 TabAbout::TabAbout(): brls::Box(brls::Axis::COLUMN) {
   alchemyLogger.log("TabAbout:::TabAbout");
+
+  // Low padding; We got a lot to fit
+  // TODO: Make this scrollable; spread things out a little
   this->setPadding(16.0f, 40.0f, 32.0f, 40.0f);
   this->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);
   
@@ -24,6 +29,7 @@ TabAbout::TabAbout(): brls::Box(brls::Axis::COLUMN) {
   shortDescription->setFontSize(15.0f);
   this->addView(shortDescription);
 
+  // Two columns of content
   alchemyLogger.log("TabAbout:::2");
   brls::Box* columns = new brls::Box();
   columns->setJustifyContent(brls::JustifyContent::SPACE_BETWEEN);

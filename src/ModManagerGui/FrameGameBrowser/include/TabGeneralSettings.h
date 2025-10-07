@@ -26,7 +26,6 @@ public:
   ConfigHolder& getConfig();
 
 private:
-  brls::Dialog* buildMigrateConfirmDialog();
   brls::Dialog* buildMigrateFinishedDialog();
 };
 
