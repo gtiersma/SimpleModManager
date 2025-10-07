@@ -96,6 +96,17 @@ int ModManager::getActiveIndex(const std::string& source, const std::vector<std:
 }
 
 /**
+ * Updates all sources currently rendered in the UI with what mods are currently active
+ */
+void ModManager::refreshActiveIndices() {
+  for (auto& source : this->_mod_source_cache_) {
+    source.second.setActiveIndex(
+      this->getActiveIndex(source.first, source.second.getMods())
+    );
+  }
+}
+
+/**
  * Loads more data for the mod sources.
  *
  * There could be a lot of sources and each one requires individual filesystem operations

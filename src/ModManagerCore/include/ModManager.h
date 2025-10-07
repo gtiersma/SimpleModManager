@@ -35,6 +35,8 @@ class ModSource {
         options.insert(options.begin(), _DEFAULT_OPTION_);
       }
 
+    ModSource() : source(""), mods(), options(), activeIndex(-1) {}
+
     std::string& getSource() { return this->source; }
     std::vector<std::string>& getMods() { return this->mods; }
     std::vector<std::string>& getOptions() { return this->options; }
@@ -105,6 +107,11 @@ public:
    * @param mods Ordered vector of mod names that belong to the source.
    */
   int getActiveIndex(const std::string& sourceName, const std::vector<std::string>& mods);
+
+  /**
+   * Updates all sources currently rendered in the UI with what mods are currently active
+   */
+  void refreshActiveIndices();
 
   /**
    * Check if the source object for the source name at the specified index has already been loaded or not.
